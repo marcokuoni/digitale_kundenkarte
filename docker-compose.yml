@@ -1,0 +1,48 @@
+version: '3.4'
+
+services:
+
+  api:
+    depends_on: 
+      - mongodb
+    build: server
+    env_file: .env
+    environment:
+      - NODE_ENV=production
+      - MONGO_USERNAME=$MONGO_USERNAME
+      - MONGO_PASSWORD=$MONGO_PASSWORD
+      - MONGO_HOSTNAME=$MONGO_HOSTNAME
+      - MONGO_PORT=$MONGO_PORT
+      - MONGO_DB=$MONGO_DB
+    restart: always
+    volumes:
+      - ./server:/usr/src/app
+      - node_modules:/usr/src/app/node_modules
+    # command: ./wait-for.sh mongodb:27017 -- /usr/src/app/node_modules/.bin/nodemon app.js
+
+  nginx:
+    build:
+      context : ./nginx/
+      dockerfile: Nginx.Dockerfile
+    ports:
+      - "5100:5100"
+    restart: always
+
+
+  mongodb:
+    image: mongo:latest
+    container_name: "mongodb"
+    env_file: .env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGO_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
+    ports:
+      - $MONGO_PORT:$MONGO_PORT
+    volumes:  
+      - dbdata:/data/db 
+
+    
+
+volumes:
+  dbdata:
+  node_modules: 

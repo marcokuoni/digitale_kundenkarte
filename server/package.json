@@ -1,0 +1,18 @@
+{
+    "name": "digitale_kundenkarte",
+    "version": "0.1.0",
+    "description": "",
+    "main": "app.js",
+    "scripts": {
+      "start": "node app.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+      "dotenv": "^8.2.0",
+      "express": "^4.17.1",
+      "ejs": "^2.6.1",
+      "mongoose": "^5.4.10"
+    }
+  }
