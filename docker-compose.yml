@@ -18,15 +18,54 @@ services:
     volumes:
       - ./server:/usr/src/app
       - node_modules:/usr/src/app/node_modules
-    # command: ./wait-for.sh mongodb:27017 -- /usr/src/app/node_modules/.bin/nodemon app.js
+    labels:
+      # Explicitly instruct Traefik to expose this service
+      - traefik.enable=true
+      # Router configuration
+      ## Listen to the `web` entrypoint
+      - traefik.http.routers.api_route.entrypoints=api_secure
+      ## Rule based on the Host of the request
+      - traefik.http.routers.api_route.tls=true
+      - traefik.http.routers.api_route.rule=Host(`example.localhost`)
+      - traefik.http.routers.api_route.service=api_service
+      # Service configuration
+      ## 80 is the port that the whoami container is listening to
+      - traefik.http.services.api_service.loadbalancer.server.port=3003
+      - traefik.http.services.api_service.loadbalancer.healthcheck.path=/
+      - traefik.http.services.api_service.loadbalancer.healthcheck.interval=1000ms
+      - traefik.http.services.api_service.loadbalancer.healthcheck.timeout=750ms
+      - traefik.http.services.api_service.loadbalancer.healthcheck.scheme=http
 
-  nginx:
-    build:
-      context : ./nginx/
-      dockerfile: Nginx.Dockerfile
+  # nginx: #kann man nicht einfach dynamisch scallen
+  #   build:
+  #     context : ./nginx/
+  #     dockerfile: Nginx.Dockerfile
+  #   ports:
+  #     - "5100:5100"
+  #   restart: always
+
+  api-reverse-proxy:
+    image: traefik:latest
+
+    command:
+      - --api.insecure=true
+      # Entrypoints configuration
+      - --entrypoints.api_secure.address=:3003
+      - --entrypoints.api_secure.http3
+      - --experimental.http3=true
+      # Docker provider configuration
+      - --providers.docker=true
+      # Logging levels are DEBUG, PANIC, FATAL, ERROR, WARN, and INFO.
+      - --log.level=debug
+      - --providers.file.directory=/etc/traefik/dynamic
     ports:
-      - "5100:5100"
-    restart: always
+      - 5102:3003/tcp
+      - 5102:3003/udp
+      - 5101:8080
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock 
+      - ./traefik:/etc/traefik
 
 
   mongodb:

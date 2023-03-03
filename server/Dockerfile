@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:19.7
 ENV NODE_ENV production
 ENV LISTEN_PORT=3003
 WORKDIR /usr/src/app

@@ -29,6 +29,8 @@ Falls mongodb lokal installiert
 `sudo systemctl stop mongod`
 
 Benutzerfreundlicher gehts so: https://docs.docker.com/desktop/install/ubuntu/
+Proxy API: http://localhost:5101
+
 
 
 ## Nice links
@@ -45,3 +47,33 @@ https://blog.logrocket.com/building-a-pwa-with-svelte/
 ### API
 https://blog.richardev.com/custom-api-server-with-basic-crud-js-apollo-graphql-mongodb
 https://www.apollographql.com/docs/apollo-server/monitoring/health-checks/
+
+
+# TLS
+`cd traefik`
+
+
+# Generate an example Root CA:
+`openssl genrsa -aes256 -out ca.key 2048`
+`openssl req -new -x509 -days 7 -key ca.key -sha256 -extensions v3_ca -out ca.crt`
+Common Name (e.g. server FQDN or YOUR name) []:RootCA
+
+# Generate the domain key:
+`openssl genrsa -out example.localhost.key 2048`
+
+# Generate the certificate signing request
+`openssl req -sha256 -new -key example.localhost.key -out example.localhost.csr`
+Common Name (e.g. server FQDN or YOUR name) []:example.localhost
+
+# Sign the request and generate a certificate
+`openssl x509 -sha256 -req -in example.localhost.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out example.localhost.crt -days 7`
+
+# Verify the certificate
+`openssl verify -CAfile ca.crt example.localhost.crt`
+example.localhost.crt: OK
+
+
+`docker run --net=host --rm ymuski/curl-http3 curl https://example.localhost:5102 --http3`
+`docker run --net=host --rm ymuski/curl-http3 curl -IL https://example.localhost:5102 --http3`
+
+https://github.com/nodejs/node/issues/38478 no http3 on nodejs?
