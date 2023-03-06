@@ -1,8 +1,53 @@
 version: '3.4'
 
 services:
+  reverse-proxy:
+    depends_on: 
+      - client
+      - server
+    image: traefik:latest
 
-  api:
+    command:
+      - --api.insecure=true
+      - --entrypoints.server_secure.address=:5001
+      - --entrypoints.server_secure.http3.advertisedPort=5001
+      - --entrypoints.client_secure.address=:443
+      - --entrypoints.client_secure.http3.advertisedPort=443
+      - --experimental.http3=true
+      - --providers.docker=true
+      # Logging levels are DEBUG, PANIC, FATAL, ERROR, WARN, and INFO.
+      - --log.level=debug
+    ports:
+      - "5001:5001/tcp"
+      - "5001:5001/udp"
+      - "443:443/tcp"
+      - "443:443/udp"
+      - 5101:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock 
+      - ./traefik:/etc/traefik
+
+  client:
+    depends_on: 
+      - server
+    build: client
+    env_file: .env
+    environment:
+      - NODE_ENV=production
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.client_route.entrypoints=client_secure
+      - traefik.http.routers.client_route.tls=true
+      - traefik.http.routers.client_route.rule=Host(`client.localhost`)
+      - traefik.http.routers.client_route.service=client_service
+      - traefik.http.services.client_service.loadbalancer.server.port=3001
+      - traefik.http.services.client_service.loadbalancer.healthcheck.path=/
+      - traefik.http.services.client_service.loadbalancer.healthcheck.interval=2000ms
+      - traefik.http.services.client_service.loadbalancer.healthcheck.timeout=500ms
+      - traefik.http.services.client_service.loadbalancer.healthcheck.scheme=http
+
+  server:
     depends_on: 
       - mongodb
     build: server
@@ -19,54 +64,17 @@ services:
       - ./server:/usr/src/app
       - node_modules:/usr/src/app/node_modules
     labels:
-      # Explicitly instruct Traefik to expose this service
       - traefik.enable=true
-      # Router configuration
-      ## Listen to the `web` entrypoint
-      - traefik.http.routers.api_route.entrypoints=api_secure
-      ## Rule based on the Host of the request
-      - traefik.http.routers.api_route.tls=true
-      - traefik.http.routers.api_route.rule=Host(`example.localhost`)
-      - traefik.http.routers.api_route.service=api_service
-      # Service configuration
-      ## 80 is the port that the whoami container is listening to
-      - traefik.http.services.api_service.loadbalancer.server.port=3003
-      - traefik.http.services.api_service.loadbalancer.healthcheck.path=/
-      - traefik.http.services.api_service.loadbalancer.healthcheck.interval=1000ms
-      - traefik.http.services.api_service.loadbalancer.healthcheck.timeout=750ms
-      - traefik.http.services.api_service.loadbalancer.healthcheck.scheme=http
-
-  # nginx: #kann man nicht einfach dynamisch scallen
-  #   build:
-  #     context : ./nginx/
-  #     dockerfile: Nginx.Dockerfile
-  #   ports:
-  #     - "5100:5100"
-  #   restart: always
-
-  api-reverse-proxy:
-    image: traefik:latest
-
-    command:
-      - --api.insecure=true
-      # Entrypoints configuration
-      - --entrypoints.api_secure.address=:3003
-      - --entrypoints.api_secure.http3
-      - --experimental.http3=true
-      # Docker provider configuration
-      - --providers.docker=true
-      # Logging levels are DEBUG, PANIC, FATAL, ERROR, WARN, and INFO.
-      - --log.level=debug
-      - --providers.file.directory=/etc/traefik/dynamic
-    ports:
-      - 5102:3003/tcp
-      - 5102:3003/udp
-      - 5101:8080
-    volumes:
-      # So that Traefik can listen to the Docker events
-      - /var/run/docker.sock:/var/run/docker.sock 
-      - ./traefik:/etc/traefik
-
+      - traefik.http.routers.server_route.entrypoints=server_secure
+      - traefik.http.routers.server_route.tls=true
+      - traefik.http.routers.server_route.rule=Host(`server.localhost`)
+      - traefik.http.routers.server_route.service=server_service
+      - traefik.http.services.server_service.loadbalancer.server.port=3003
+      #todo: This lines will work as soon as graphql is in place https://www.apollographql.com/docs/apollo-server/monitoring/health-checks/
+      # - traefik.http.services.server_service.loadbalancer.healthcheck.path=/graphql?query=%7B__typename%7D
+      # - traefik.http.services.server_service.loadbalancer.healthcheck.interval=1000ms
+      # - traefik.http.services.server_service.loadbalancer.healthcheck.timeout=750ms
+      # - traefik.http.services.server_service.loadbalancer.healthcheck.scheme=http
 
   mongodb:
     image: mongo:latest
@@ -79,8 +87,6 @@ services:
       - $MONGO_PORT:$MONGO_PORT
     volumes:  
       - dbdata:/data/db 
-
-    
 
 volumes:
   dbdata:

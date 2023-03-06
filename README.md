@@ -2,10 +2,18 @@
 
 Let's go
 
+## Prepare
+do the hosts entry `sudo vi /etc/hosts`
+
+```
+127.0.0.1 client.localhost
+127.0.0.1 server.localhost
+```
+
 ## Running
 mit drei Servern
-`docker compose up --scale api=3 -d`
-`docker compose up --scale api=3 --build`
+`docker compose up --scale server=2 --scale client=2 -d`
+`docker compose up --scale server=2 --scale client=2 --build`
 
 Docker state
 `docker compose ps`
@@ -73,7 +81,9 @@ Common Name (e.g. server FQDN or YOUR name) []:example.localhost
 example.localhost.crt: OK
 
 
-`docker run --net=host --rm ymuski/curl-http3 curl https://example.localhost:5102 --http3`
-`docker run --net=host --rm ymuski/curl-http3 curl -IL https://example.localhost:5102 --http3`
+`docker run --net=host --rm ymuski/curl-http3 curl https://example.localhost:600 --http3`
+`docker run --net=host --rm ymuski/curl-http3 curl -IL https://example.localhost:600 --http3`
 
 https://github.com/nodejs/node/issues/38478 no http3 on nodejs?
+https://github.com/macbre/docker-nginx-http3 nginx mit http3
+nwtgck/nginx-http3 docker image
