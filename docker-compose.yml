@@ -9,20 +9,20 @@ services:
 
     command:
       - --api.insecure=true
-      - --entrypoints.server_secure.address=:5001
-      - --entrypoints.server_secure.http3.advertisedPort=5001
-      - --entrypoints.client_secure.address=:443
-      - --entrypoints.client_secure.http3.advertisedPort=443
+      - --entrypoints.server_secure.address=:$SERVER_ENTRY_PORT
+      - --entrypoints.server_secure.http3.advertisedPort=$SERVER_ENTRY_PORT
+      - --entrypoints.client_secure.address=:$CLIENT_ENTRY_PORT
+      - --entrypoints.client_secure.http3.advertisedPort=$CLIENT_ENTRY_PORT
       - --experimental.http3=true
       - --providers.docker=true
       # Logging levels are DEBUG, PANIC, FATAL, ERROR, WARN, and INFO.
       - --log.level=debug
     ports:
-      - "5001:5001/tcp"
-      - "5001:5001/udp"
-      - "443:443/tcp"
-      - "443:443/udp"
-      - 5101:8080
+      - "$SERVER_ENTRY_PORT:$SERVER_ENTRY_PORT/tcp"
+      - "$SERVER_ENTRY_PORT:$SERVER_ENTRY_PORT/udp"
+      - "$CLIENT_ENTRY_PORT:$CLIENT_ENTRY_PORT/tcp"
+      - "$CLIENT_ENTRY_PORT:$CLIENT_ENTRY_PORT/udp"
+      - $TRAEFIK_DASHBOARD_PORT:$TRAEFIK_DASHBOARD_PORT
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock 
       - ./traefik:/etc/traefik
@@ -30,18 +30,19 @@ services:
   client:
     depends_on: 
       - server
-    build: client
-    env_file: .env
-    environment:
-      - NODE_ENV=production
+    build: 
+      context: client
+      args:
+        - CLIENT_PORT=$CLIENT_PORT
+        - CLIENT_HOST_IP=$CLIENT_HOST_IP
     restart: always
     labels:
       - traefik.enable=true
       - traefik.http.routers.client_route.entrypoints=client_secure
       - traefik.http.routers.client_route.tls=true
-      - traefik.http.routers.client_route.rule=Host(`client.localhost`)
+      - traefik.http.routers.client_route.rule=Host(`$CLIENT_HOST`)
       - traefik.http.routers.client_route.service=client_service
-      - traefik.http.services.client_service.loadbalancer.server.port=3001
+      - traefik.http.services.client_service.loadbalancer.server.port=$CLIENT_PORT
       - traefik.http.services.client_service.loadbalancer.healthcheck.path=/
       - traefik.http.services.client_service.loadbalancer.healthcheck.interval=2000ms
       - traefik.http.services.client_service.loadbalancer.healthcheck.timeout=500ms
@@ -50,8 +51,10 @@ services:
   server:
     depends_on: 
       - mongodb
-    build: server
-    env_file: .env
+    build: 
+      context: server
+      args:
+        - SERVER_PORT=$SERVER_PORT
     environment:
       - NODE_ENV=production
       - MONGO_USERNAME=$MONGO_USERNAME
@@ -67,9 +70,9 @@ services:
       - traefik.enable=true
       - traefik.http.routers.server_route.entrypoints=server_secure
       - traefik.http.routers.server_route.tls=true
-      - traefik.http.routers.server_route.rule=Host(`server.localhost`)
+      - traefik.http.routers.server_route.rule=Host(`$SERVER_HOST`)
       - traefik.http.routers.server_route.service=server_service
-      - traefik.http.services.server_service.loadbalancer.server.port=3003
+      - traefik.http.services.server_service.loadbalancer.server.port=$SERVER_PORT
       #todo: This lines will work as soon as graphql is in place https://www.apollographql.com/docs/apollo-server/monitoring/health-checks/
       # - traefik.http.services.server_service.loadbalancer.healthcheck.path=/graphql?query=%7B__typename%7D
       # - traefik.http.services.server_service.loadbalancer.healthcheck.interval=1000ms
@@ -79,7 +82,6 @@ services:
   mongodb:
     image: mongo:latest
     container_name: "mongodb"
-    env_file: .env
     environment:
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_USERNAME
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD

@@ -1,5 +1,4 @@
 FROM node:latest
-ENV LISTEN_PORT=3003
 WORKDIR /usr/src/app
 
 COPY package*.json ./
@@ -7,5 +6,8 @@ COPY package*.json ./
 RUN npm install --silent
 
 COPY . .
+
+ARG SERVER_PORT
+ENV LISTEN_PORT=${SERVER_PORT}
 
 CMD [ "npm", "start" ]

@@ -12,8 +12,9 @@ COPY ./public ./public
 
 RUN npm run-script build
 
-
-ENV PORT=3001
-ENV HOST=0.0.0.0
+ARG CLIENT_PORT
+ENV PORT=${CLIENT_PORT}
+ARG CLIENT_HOST_IP
+ENV HOST=${CLIENT_HOST_IP}
 
 CMD [ "npm", "start" ]
