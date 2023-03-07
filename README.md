@@ -87,3 +87,8 @@ example.localhost.crt: OK
 https://github.com/nodejs/node/issues/38478 no http3 on nodejs?
 https://github.com/macbre/docker-nginx-http3 nginx mit http3
 nwtgck/nginx-http3 docker image
+
+
+# Work on API
+`cd server && npm run dev`
+`http://localhost:3003/`
