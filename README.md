@@ -12,7 +12,7 @@ do the hosts entry `sudo vi /etc/hosts`
 
 ## Running
 mit drei Servern
-`docker compose up --scale server=1 --scale client=1 -d`
+`docker compose up --scale server=1 --scale client=1 --build -d`
 `docker compose up --scale server=2 --scale client=2 -d`
 `docker compose up --scale server=2 --scale client=2 --build`
 
@@ -90,6 +90,6 @@ https://github.com/macbre/docker-nginx-http3 nginx mit http3
 nwtgck/nginx-http3 docker image
 
 
-# Work on API
-`cd server && npm run dev`
-`http://localhost:3003/`
+
+* autoreload läuft nicht
+* graphql api browser kommt nicht

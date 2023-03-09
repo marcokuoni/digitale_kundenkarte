@@ -1,0 +1,14 @@
+schema: 
+  - '../server/src/schemas/**/*.graphql'
+overwrite: true
+skipSSLValidation: true
+documents:
+  - './src/**/*.gql'
+generates:
+  src/codegen.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - graphql-codegen-svelte-apollo
+    config:
+      clientPath: 'src/apollo-client'

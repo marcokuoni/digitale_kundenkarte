@@ -1,30 +1,46 @@
-<script lang="ts">
-	export let name: string;
+<script>
+  import { Router, Route } from 'svelte-routing';
+  import PageQueries from './routes/PageQueries.svelte';
+  import PageMutation from './routes/PageMutation.svelte';
+  import NavLink from './components/NavLink.svelte';
+
+  export let url = '';
 </script>
 
-<main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
-</main>
-
 <style>
-	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
+  .title {
+    background-color: #444444;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: xx-large;
+  }
 
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
+  nav {
+    background-color: #ff3e00;
+    height: 60px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    color: white; 
+  }
 </style>
+
+<div class="title">graphql-codegen-svelte-apollo</div>
+
+<Router {url}>
+  <nav>
+    <NavLink to="/">Query</NavLink>
+    <NavLink to="mutation">Mutation</NavLink>
+  </nav>
+  <div>
+    <Route path="">
+      <PageQueries />
+    </Route>
+    <Route path="mutation">
+      <PageMutation />
+    </Route>
+  </div>
+</Router>

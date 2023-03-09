@@ -1,13 +1,13 @@
 FROM node:latest
 WORKDIR /usr/src/app
 
-COPY package*.json .
-COPY tsconfig*.json ./
+# COPY package*.json .
+# COPY tsconfig*.json ./
 
-# RUN npm install -g npm@9.6.0
-RUN npm install --silent
+# # RUN npm install -g npm@9.6.0
+# RUN npm install --silent
 
-COPY . .
+# COPY . .
 
 ARG SERVER_PORT
 ENV SERVER_PORT=${SERVER_PORT}

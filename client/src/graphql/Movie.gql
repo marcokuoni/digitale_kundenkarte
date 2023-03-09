@@ -1,0 +1,15 @@
+query GetMovies {
+  movies {
+    _id
+    title
+    director
+  }
+}
+
+mutation AddMovie($title: String!, $director: String!){
+  addMovie(title: $title, director: $director){
+    _id
+    title
+    director
+  }
+}
