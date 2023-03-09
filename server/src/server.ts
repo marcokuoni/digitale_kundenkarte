@@ -1,4 +1,4 @@
-import { loadGraphQlSchema } from './loader.js'
+import { loadGraphQlSchema } from './loader'
 import { ApolloServer } from '@apollo/server'
 import { startStandaloneServer } from '@apollo/server/standalone'
 

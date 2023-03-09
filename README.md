@@ -12,6 +12,7 @@ do the hosts entry `sudo vi /etc/hosts`
 
 ## Running
 mit drei Servern
+`docker compose up --scale server=1 --scale client=1 -d`
 `docker compose up --scale server=2 --scale client=2 -d`
 `docker compose up --scale server=2 --scale client=2 --build`
 
