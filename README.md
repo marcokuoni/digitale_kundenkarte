@@ -93,3 +93,15 @@ nwtgck/nginx-http3 docker image
 
 * autoreload läuft nicht
 * graphql api browser kommt nicht
+
+### Mongo DB structure
+user
+- id: number
+- creationDate: Date
+- name: string?
+- email: string?
+- newsletter: boolean
+- card: Card
+  - cardCreationDate: Date
+  - stamps: [Date?]
+
