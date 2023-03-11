@@ -38,7 +38,7 @@ export const startupServer = async function () {
       resolve
     )
   )
-  console.log(`🚀 Server ready at http://localhost:3003/graphql`)
+  console.log(`🚀 Server ready at http://server.localhost:3003/graphql`)
 
   app.get('/health', (req, res) => {
     res.status(200).send('Okay!');  
