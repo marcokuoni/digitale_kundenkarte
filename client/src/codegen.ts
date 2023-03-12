@@ -17,85 +17,112 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  Date: any;
 };
 
-export type Movie = {
-  __typename?: 'Movie';
-  _id: Scalars['ID'];
-  director?: Maybe<Scalars['String']>;
-  title?: Maybe<Scalars['String']>;
+export type Card = {
+  __typename?: 'Card';
+  creationDate: Scalars['Date'];
+  stamps: Array<Maybe<Stamp>>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addMovie: Movie;
+  addUser: User;
 };
 
 
-export type MutationAddMovieArgs = {
-  director: Scalars['String'];
-  title: Scalars['String'];
+export type MutationAddUserArgs = {
+  name: Scalars['String'];
 };
 
 export type Query = {
   __typename?: 'Query';
-  movies?: Maybe<Array<Maybe<Movie>>>;
+  getUsers: Array<User>;
 };
 
-export type GetMoviesQueryVariables = Exact<{ [key: string]: never; }>;
+export type Stamp = {
+  __typename?: 'Stamp';
+  creationDate: Scalars['Date'];
+};
+
+export type User = {
+  __typename?: 'User';
+  _id: Scalars['ID'];
+  cards: Array<Maybe<Card>>;
+  createdAt: Scalars['Date'];
+  email?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  newsletter?: Maybe<Scalars['Boolean']>;
+  updatedAt: Scalars['Date'];
+};
+
+export type UserFragmentFragment = { __typename?: 'User', _id: string, name?: string | null, email?: string | null, newsletter?: boolean | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, stamps: Array<{ __typename?: 'Stamp', creationDate: any } | null> } | null> };
+
+export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMoviesQuery = { __typename?: 'Query', movies?: Array<{ __typename?: 'Movie', _id: string, title?: string | null, director?: string | null } | null> | null };
+export type GetUsersQuery = { __typename?: 'Query', getUsers: Array<{ __typename?: 'User', _id: string, name?: string | null, email?: string | null, newsletter?: boolean | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, stamps: Array<{ __typename?: 'Stamp', creationDate: any } | null> } | null> }> };
 
-export type AddMovieMutationVariables = Exact<{
-  title: Scalars['String'];
-  director: Scalars['String'];
+export type AddUserMutationVariables = Exact<{
+  name: Scalars['String'];
 }>;
 
 
-export type AddMovieMutation = { __typename?: 'Mutation', addMovie: { __typename?: 'Movie', _id: string, title?: string | null, director?: string | null } };
+export type AddUserMutation = { __typename?: 'Mutation', addUser: { __typename?: 'User', _id: string, name?: string | null, email?: string | null, newsletter?: boolean | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, stamps: Array<{ __typename?: 'Stamp', creationDate: any } | null> } | null> } };
 
-
-export const GetMoviesDoc = gql`
-    query GetMovies {
-  movies {
-    _id
-    title
-    director
+export const UserFragmentFragmentDoc = gql`
+    fragment UserFragment on User {
+  _id
+  name
+  email
+  newsletter
+  cards {
+    creationDate
+    stamps {
+      creationDate
+    }
   }
+  createdAt
+  updatedAt
 }
     `;
-export const AddMovieDoc = gql`
-    mutation AddMovie($title: String!, $director: String!) {
-  addMovie(title: $title, director: $director) {
-    _id
-    title
-    director
+export const GetUsersDoc = gql`
+    query getUsers {
+  getUsers {
+    ...UserFragment
   }
 }
-    `;
-export const GetMovies = (
+    ${UserFragmentFragmentDoc}`;
+export const AddUserDoc = gql`
+    mutation addUser($name: String!) {
+  addUser(name: $name) {
+    ...UserFragment
+  }
+}
+    ${UserFragmentFragmentDoc}`;
+export const getUsers = (
             options: Omit<
-              WatchQueryOptions<GetMoviesQueryVariables>, 
+              WatchQueryOptions<GetUsersQueryVariables>, 
               "query"
             >
           ): Readable<
-            ApolloQueryResult<GetMoviesQuery> & {
+            ApolloQueryResult<GetUsersQuery> & {
               query: ObservableQuery<
-                GetMoviesQuery,
-                GetMoviesQueryVariables
+                GetUsersQuery,
+                GetUsersQueryVariables
               >;
             }
           > => {
             const q = client.watchQuery({
-              query: GetMoviesDoc,
+              query: GetUsersDoc,
               ...options,
             });
             var result = readable<
-              ApolloQueryResult<GetMoviesQuery> & {
+              ApolloQueryResult<GetUsersQuery> & {
                 query: ObservableQuery<
-                  GetMoviesQuery,
-                  GetMoviesQueryVariables
+                  GetUsersQuery,
+                  GetUsersQueryVariables
                 >;
               }
             >(
@@ -109,14 +136,14 @@ export const GetMovies = (
             return result;
           }
         
-export const AddMovie = (
+export const addUser = (
             options: Omit<
-              MutationOptions<any, AddMovieMutationVariables>, 
+              MutationOptions<any, AddUserMutationVariables>, 
               "mutation"
             >
           ) => {
-            const m = client.mutate<AddMovieMutation, AddMovieMutationVariables>({
-              mutation: AddMovieDoc,
+            const m = client.mutate<AddUserMutation, AddUserMutationVariables>({
+              mutation: AddUserDoc,
               ...options,
             });
             return m;

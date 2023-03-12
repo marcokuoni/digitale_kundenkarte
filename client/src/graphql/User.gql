@@ -1,0 +1,26 @@
+fragment UserFragment on User {
+  _id
+  name
+  email
+  newsletter
+  cards {
+    creationDate
+    stamps {
+      creationDate
+    }
+  }
+  createdAt
+  updatedAt
+}
+
+query getUsers {
+  getUsers {
+    ...UserFragment
+  }
+}
+
+mutation addUser($name: String!) {
+  addUser(name: $name) {
+    ...UserFragment
+  }
+}

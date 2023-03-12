@@ -95,6 +95,8 @@ nwtgck/nginx-http3 docker image
 * graphql api browser kommt nicht
 
 ### Mongo DB structure
+Connection String for Compass App: mongodb://digKuUsr:123456@localhost:27017/digKu?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false
+
 user
 - id: number
 - creationDate: Date

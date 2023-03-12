@@ -1,0 +1,28 @@
+scalar Date
+
+type Stamp {
+   creationDate: Date!
+}
+
+type Card {
+   creationDate: Date!
+   stamps: [Stamp]!
+}
+
+type User {
+  _id: ID!
+  name: String
+  email: String,
+  newsletter: Boolean
+  cards: [Card]!
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+type Query {
+   getUsers: [User!]!
+}
+
+type Mutation {
+   addUser(name: String!): User!
+}

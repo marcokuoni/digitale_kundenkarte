@@ -1,12 +1,12 @@
 <script lang="ts">
   import {
-    AddMovie,
-    GetMovies,
-    GetMoviesDoc
+    addUser,
+    getUsers,
+    GetUsersDoc
   } from "../codegen";
 
-  $: userName = "";
-  $: query = GetMovies({});
+  $: name = "";
+  $: query = getUsers({});
 </script>
 
 <style>
@@ -27,17 +27,16 @@
 <main class="cards">
   <div class="card">
     <h2>Add User</h2>
-    <input placeholder="User name..." bind:value={userName} />
+    <input placeholder="User name..." bind:value={name} />
     <button
-      disabled={userName.length === 0}
+      disabled={name.length === 0}
       on:click={() => {
-        AddMovie({variables: {
-                    title: userName,
-                    director: 'asdf'
+        addUser({variables: {
+                    name
                   },
-        refetchQueries: [{ query: GetMoviesDoc }],
+        refetchQueries: [{ query: GetUsersDoc }],
                 });
-        userName = '';
+        name = '';
       }}>Add</button>
   </div>
   <div class="card">
@@ -45,11 +44,11 @@
     {#if $query.loading}
       <p>...loading users</p>
     {:else}
-      {#if $query.data?.movies.length === 0}
+      {#if $query.data?.getUsers.length === 0}
         <p>No User (Add some!)</p>
       {/if}
-      {#each $query.data?.movies || [] as movie, i}
-        <div>User {i + 1} -&gt; {movie.title} {movie.director}</div>
+      {#each $query.data?.getUsers || [] as user, i}
+        <div>User {i + 1} -&gt; {user.name}</div>
       {/each}
       <button on:click={() => $query.query.refetch({})}>Refresh</button>
     {/if}

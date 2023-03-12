@@ -1,9 +1,9 @@
 <script lang="ts">
   import { fade } from 'svelte/transition';
-  import { GetMovies } from '../codegen';
+  import { getUsers } from '../codegen';
   import { Wave } from 'svelte-loading-spinners';
 
-  $: query = GetMovies({});
+  $: query = getUsers({});
 </script>
 
 <style>
@@ -26,9 +26,9 @@
     {#if $query.loading}
       <Wave size="100" color="#FF3E00" unit="px" />
     {/if}
-    {#each $query.data?.movies || [] as movie (movie._id)}
+    {#each $query.data?.getUsers || [] as user (user._id)}
       <div transition:fade>
-        {movie.title}
+        {user.name}
       </div>
     {/each}
   </div> 
