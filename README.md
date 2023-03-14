@@ -107,3 +107,5 @@ user
   - cardCreationDate: Date
   - stamps: [Date?]
 
+
+Sandbox für Apollo Server kann mit Link auf http://karte.localhost:5001/ gestartet werden
