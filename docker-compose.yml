@@ -9,8 +9,7 @@ services:
 
     command:
       - --api.insecure=true
-      - --entrypoints.server_secure.address=:$SERVER_ENTRY_PORT
-      - --entrypoints.server_secure.http3.advertisedPort=$SERVER_ENTRY_PORT
+      - --entrypoints.server.address=:$SERVER_ENTRY_PORT
       - --entrypoints.client_secure.address=:$CLIENT_ENTRY_PORT
       - --entrypoints.client_secure.http3.advertisedPort=$CLIENT_ENTRY_PORT
       - --experimental.http3=true
@@ -34,7 +33,7 @@ services:
       context: client
       args:
         - CLIENT_PORT=$CLIENT_PORT
-        - CLIENT_HOST_IP=$CLIENT_HOST_IP
+        - SERVER_URL=$DOMAIN:$SERVER_ENTRY_PORT
     restart: always
     volumes:
       - ./client:/usr/src/app
@@ -42,7 +41,7 @@ services:
       - traefik.enable=true
       - traefik.http.routers.client_route.entrypoints=client_secure
       - traefik.http.routers.client_route.tls=true
-      - traefik.http.routers.client_route.rule=Host(`$CLIENT_HOST`)
+      - traefik.http.routers.client_route.rule=Host(`$DOMAIN`)
       - traefik.http.routers.client_route.service=client_service
       - traefik.http.services.client_service.loadbalancer.server.port=$CLIENT_PORT
       - traefik.http.services.client_service.loadbalancer.healthcheck.path=/
@@ -69,12 +68,12 @@ services:
       - ./server:/usr/src/app
     labels:
       - traefik.enable=true
-      - traefik.http.routers.server_route.entrypoints=server_secure
-      - traefik.http.routers.server_route.tls=true
-      - traefik.http.routers.server_route.rule=Host(`$SERVER_HOST`)
+      - traefik.http.routers.server_route.entrypoints=server
+      - traefik.http.routers.server_route.rule=Host(`$DOMAIN`)
       - traefik.http.routers.server_route.service=server_service
       - traefik.http.services.server_service.loadbalancer.server.port=$SERVER_PORT
-      - traefik.http.services.server_service.loadbalancer.healthcheck.path=/health
+      - traefik.http.services.server_service.loadbalancer.healthcheck.path=/graphql?query=%7B__typename%7D
+      - traefik.http.services.server_service.loadbalancer.healthcheck.headers.apollo-require-preflight=true
       - traefik.http.services.server_service.loadbalancer.healthcheck.interval=1000ms
       - traefik.http.services.server_service.loadbalancer.healthcheck.timeout=750ms
       - traefik.http.services.server_service.loadbalancer.healthcheck.scheme=http
