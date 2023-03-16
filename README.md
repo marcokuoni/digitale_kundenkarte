@@ -52,6 +52,7 @@ https://docs.nginx.com/nginx/admin-guide/load-balancer/http-health-check/
 ### Client
 https://github.com/ticruz38/graphql-codegen-svelte-apollo
 https://blog.logrocket.com/building-a-pwa-with-svelte/
+https://rubygarage.org/blog/pwa-with-react-apollo
 
 ### API
 https://blog.richardev.com/custom-api-server-with-basic-crud-js-apollo-graphql-mongodb
@@ -109,3 +110,7 @@ user
 
 
 Sandbox für Apollo Server kann mit Link auf http://karte.localhost:5001/ gestartet werden
+
+/usr/bin/google-chrome --allow-insecure-localhost
+
+/usr/bin/google-chrome --user-data-dir=/tmp/foo --unsafely-treat-insecure-origin-as-secure=https://karte.localhost
