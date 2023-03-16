@@ -8,6 +8,7 @@ import livereload from 'rollup-plugin-livereload'
 import css from 'rollup-plugin-css-only'
 import sveltePreprocess from 'svelte-preprocess'
 import typescript from '@rollup/plugin-typescript'
+import { generateSW } from 'rollup-plugin-workbox'
 
 const production = !process.env.ROLLUP_WATCH
 
@@ -44,6 +45,8 @@ export default {
     replace({
       preventAssignment: true,
       'process.env.SERVER_URL': process.env.SERVER_URL,
+      'process.env.SCHEMA_VERSION': process.env.SCHEMA_VERSION,
+      'process.env.SCHEMA_VERSION_KEY': process.env.SCHEMA_VERSION_KEY,
     }),
     svelte({
       preprocess: sveltePreprocess({ sourceMap: !production }),
@@ -78,11 +81,23 @@ export default {
 
     // Watch the `public` directory and refresh the
     // browser on changes when not in production
-    !production && livereload('public'),
+    // !production && livereload('public'),
 
     // If we're building for production (npm run build
     // instead of npm run dev), minify
     production && terser(),
+
+    generateSW({
+      swDest: './public/sw.js',
+      globDirectory: './public/build/',
+    },
+    function render({ swDest, count, size }) {
+      console.log(
+        '📦', swDest,
+        '#️⃣', count,
+        '🐘', size,
+      )
+    }),
   ],
   watch: {
     clearScreen: false,

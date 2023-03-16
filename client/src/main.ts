@@ -1,10 +1,9 @@
-import App from './App.svelte';
+import App from './App.svelte'
+import { initPersistor } from './apollo-client'
+;(async () => {
+  await initPersistor()
 
-const app = new App({
-	target: document.body,
-	props: {
-		name: 'world'
-	}
-});
-
-export default app;
+  new App({
+    target: document.body,
+  })
+})()

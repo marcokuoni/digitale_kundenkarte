@@ -1,11 +1,29 @@
 <script>
-  import { Router, Route } from 'svelte-routing';
-  import PageQueries from './routes/PageQueries.svelte';
-  import PageMutation from './routes/PageMutation.svelte';
-  import NavLink from './components/NavLink.svelte';
+  import { Router, Route } from 'svelte-routing'
+  import PageQueries from './routes/PageQueries.svelte'
+  import PageMutation from './routes/PageMutation.svelte'
+  import NavLink from './components/NavLink.svelte'
+  import { onMount } from 'svelte'
 
-  export let url = '';
+  export let url = ''
 </script>
+
+  <div class="title">graphql-codegen-svelte-apollo</div>
+
+  <Router {url}>
+    <nav>
+      <NavLink to="/">Query</NavLink>
+      <NavLink to="mutation">Mutation</NavLink>
+    </nav>
+    <div>
+      <Route path="">
+        <PageQueries />
+      </Route>
+      <Route path="mutation">
+        <PageMutation />
+      </Route>
+    </div>
+  </Router>
 
 <style>
   .title {
@@ -24,23 +42,6 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-    color: white; 
+    color: white;
   }
 </style>
-
-<div class="title">graphql-codegen-svelte-apollo</div>
-
-<Router {url}>
-  <nav>
-    <NavLink to="/">Query</NavLink>
-    <NavLink to="mutation">Mutation</NavLink>
-  </nav>
-  <div>
-    <Route path="">
-      <PageQueries />
-    </Route>
-    <Route path="mutation">
-      <PageMutation />
-    </Route>
-  </div>
-</Router>

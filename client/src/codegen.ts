@@ -1,6 +1,6 @@
 import client from "./apollo-client";
 import type {
-        ApolloQueryResult, ObservableQuery, WatchQueryOptions, MutationOptions
+        ApolloQueryResult, ObservableQuery, WatchQueryOptions, QueryOptions, MutationOptions
       } from "@apollo/client";
 import { readable } from "svelte/store";
 import type { Readable } from "svelte/store";
@@ -136,6 +136,15 @@ export const getUsers = (
             return result;
           }
         
+              export const AsyncgetUsers = (
+                options: Omit<
+                  QueryOptions<GetUsersQueryVariables>,
+                  "query"
+                >
+              ) => {
+                return client.query<GetUsersQuery>({query: GetUsersDoc, ...options})
+              }
+            
 export const addUser = (
             options: Omit<
               MutationOptions<any, AddUserMutationVariables>, 
