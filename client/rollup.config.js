@@ -91,6 +91,7 @@ export default {
     generateSW({
       swDest: './public/sw.js',
       globDirectory: 'public',
+      navigateFallback: '/index.html',
       runtimeCaching: [{
         urlPattern: () => true,
         handler: 'NetworkFirst',
