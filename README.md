@@ -129,3 +129,6 @@ sudo cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
 `mkcert -install`
 3. create certificate
 `mkcert karte.localhost localhost 127.0.0.1 ::1`
+
+
+https://medium.com/@jono/cache-graphql-post-requests-with-service-worker-100a822a388a

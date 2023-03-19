@@ -91,6 +91,19 @@ export default {
     generateSW({
       swDest: './public/sw.js',
       globDirectory: 'public',
+      runtimeCaching: [{
+        urlPattern: () => true,
+        handler: 'NetworkFirst',
+        method: 'POST',
+        options: {
+          backgroundSync: {
+            name: 'graphql_posts',
+            options: {
+              maxRetentionTime: 60 * 60,
+            },
+          },
+        },
+      }]
     },
     function render({ swDest, count, size }) {
       console.log(

@@ -6,7 +6,6 @@ import { initPersistor } from './apollo-client'
     const { Workbox } = await import('workbox-window')
 
     const wb = new Workbox('/sw.js')
-    let registration;
 
     const showSkipWaitingPrompt = async (event) => {
       wb.addEventListener('controlling', () => {

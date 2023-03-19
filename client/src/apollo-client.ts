@@ -1,15 +1,12 @@
 import { ApolloClient, InMemoryCache, ApolloLink, HttpLink } from '@apollo/client'
-import { RetryLink } from "@apollo/client/link/retry";
 import { onError } from "@apollo/client/link/error";
 import { setContext } from "@apollo/client/link/context";
 import { CachePersistor, LocalStorageWrapper } from 'apollo3-cache-persist'
-import QueueLink from 'apollo-link-queue'
-import SerializingLink from 'apollo-link-serialize'
+import OfflineLink from "apollo-link-offline";
 import Cookies from 'js-cookie'
 
 //!the process.env gets replaced by precompiler
 const httpLink = new HttpLink({ uri: `https://process.env.SERVER_URL/graphql` })
-const retryLink = new RetryLink({ attempts: { max: Infinity } })
 
 const authLink = setContext(() => {
   const token = Cookies.get('token')
@@ -33,53 +30,12 @@ const errorLink = onError(({ graphQLErrors}) => {
   }
 });
 
-const queueLink = new QueueLink()
-
-window.addEventListener('offline', () => queueLink.close())
-window.addEventListener('online', () => queueLink.open())
-
-const serializingLink = new SerializingLink()
-
-const trackerLink = new ApolloLink((operation, forward) => {
-  if (forward === undefined) return null
-
-  const context = operation.getContext()
-  const trackedQueries =
-    JSON.parse(window.localStorage.getItem('trackedQueries') || null) || []
-
-  if (context.tracked) {
-    const { operationName, query, variables } = operation
-
-    const newTrackedQuery = {
-      query,
-      context,
-      variables,
-      operationName,
-    }
-
-    window.localStorage.setItem(
-      'trackedQueries',
-      JSON.stringify([...trackedQueries, newTrackedQuery])
-    )
-  }
-
-  return forward(operation).map((data) => {
-    if (context.tracked) {
-      window.localStorage.setItem(
-        'trackedQueries',
-        JSON.stringify(trackedQueries)
-      )
-    }
-
-    return data
-  })
-})
+const offlineLink = new OfflineLink({
+  storage: new LocalStorageWrapper(window.localStorage)
+});
 
 const link = ApolloLink.from([
-  trackerLink,
-  queueLink,
-  serializingLink,
-  retryLink,
+  offlineLink,
   errorLink,
   authLink,
   httpLink,
@@ -99,33 +55,19 @@ const currentVersion = window.localStorage.getItem(
 const client = new ApolloClient({
   link,
   cache,
-})
-
-const execute = async () => {
-  const trackedQueries =
-    JSON.parse(window.localStorage.getItem('trackedQueries') || null) || []
-
-  const promises = trackedQueries.map(
-    ({ variables, query, context, operationName }) =>
-      client.mutate({
-        context,
-        variables,
-        mutation: query,
-        // update: updateFunctions[operationName],
-        // optimisticResponse: context.optimisticResponse,
-      })
-  )
-
-  try {
-    await Promise.all(promises)
-  } catch (error) {
-    // A good place to show notification
+  defaultOptions: {
+    watchQuery: {
+      errorPolicy: "all",
+    },
+    query: {
+      errorPolicy: "all",
+    },
+    mutate: {
+      errorPolicy: "all"
+    }
   }
-
-  window.localStorage.removeItem('trackedQueries')
-}
-
-execute()
+})
+offlineLink.setup(client);
 
 export default client
 

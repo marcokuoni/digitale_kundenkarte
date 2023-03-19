@@ -1,6 +1,6 @@
 <script lang="ts">
   import { addUser, getUsers, GetUsersDoc, AddUserDoc } from '../codegen'
-import gql from "graphql-tag"
+  import gql from 'graphql-tag'
 
   $: name = ''
   $: query = getUsers({})
@@ -26,6 +26,13 @@ import gql from "graphql-tag"
                     data: addUser,
                     fragment: gql`
                       fragment NewUser on User {
+                        __typename
+                        _id
+                        email
+                        newsletter
+                        cards
+                        createdAt
+                        updatedAt
                         name
                       }
                     `,
@@ -38,7 +45,7 @@ import gql from "graphql-tag"
           optimisticResponse: {
             addUser: {
               __typename: 'User',
-              _id: -1,
+              _id: new Date().getTime(),
               email: '',
               newsletter: false,
               cards: new Array(),
@@ -46,9 +53,6 @@ import gql from "graphql-tag"
               updatedAt: Date.now(),
               name,
             },
-          },
-          context: {
-            serializationKey: 'ADD_USER',
           },
         })
         name = ''
