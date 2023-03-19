@@ -89,7 +89,7 @@ export default {
 
     generateSW({
       swDest: './public/sw.js',
-      globDirectory: './public/build/',
+      globDirectory: 'public',
     },
     function render({ swDest, count, size }) {
       console.log(
