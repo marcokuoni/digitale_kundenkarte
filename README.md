@@ -109,7 +109,7 @@ user
   - stamps: [Date?]
 
 
-Sandbox für Apollo Server kann mit Link auf http://karte.localhost:5001/ gestartet werden
+Sandbox für Apollo Server kann mit Link auf https://karte.localhost:5001/ gestartet werden
 
 /usr/bin/google-chrome --allow-insecure-localhost
 
