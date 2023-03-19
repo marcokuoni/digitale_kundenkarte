@@ -11,23 +11,27 @@ import Cookies from 'js-cookie'
 const httpLink = new HttpLink({ uri: `https://process.env.SERVER_URL/graphql` })
 const retryLink = new RetryLink({ attempts: { max: Infinity } })
 
-const authLink = setContext(({ headers }) => {
+const authLink = setContext(() => {
   const token = Cookies.get('token')
 
   return {
     headers: {
-      ...headers,
-      Authorization: token ? `Bearer ${token}` : '',
+      Authorization: token ? token : '',
     },
   }
 })
 
-const errorLink = onError(({ networkError }) => {
-  if (networkError && networkError.statusCode === 401) {
-    Cookies.remove('token')
-    window.location.replace('/login')
+const errorLink = onError(({ graphQLErrors}) => {
+  if (graphQLErrors) {
+    for (const err of graphQLErrors) {
+      switch (err.extensions.code) {
+        case "UNAUTHENTICATED":
+          Cookies.remove('token')
+          window.location.replace('/login')
+      }
+    }
   }
-})
+});
 
 const queueLink = new QueueLink()
 
@@ -118,7 +122,7 @@ const execute = async () => {
     // A good place to show notification
   }
 
-  window.localStorage.setItem('trackedQueries', [])
+  window.localStorage.removeItem('trackedQueries')
 }
 
 execute()
