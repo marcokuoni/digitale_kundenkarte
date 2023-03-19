@@ -8,7 +8,7 @@ import SerializingLink from 'apollo-link-serialize'
 import Cookies from 'js-cookie'
 
 //!the process.env gets replaced by precompiler
-const httpLink = new HttpLink({ uri: `http://process.env.SERVER_URL/graphql` })
+const httpLink = new HttpLink({ uri: `https://process.env.SERVER_URL/graphql` })
 const retryLink = new RetryLink({ attempts: { max: Infinity } })
 
 const authLink = setContext(({ headers }) => {
