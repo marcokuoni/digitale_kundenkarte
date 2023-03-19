@@ -14,6 +14,7 @@ services:
       - --providers.file.directory=/etc/traefik/dynamic
       - --entrypoints.server.address=:$SERVER_ENTRY_PORT
       - --entrypoints.client.address=:$CLIENT_ENTRY_PORT
+      - --entrypoints.client_live_reload.address=:$CLIENT_LIVE_RELOAD_PORT
       - --entrypoints.client_secure.address=:$CLIENT_SECURE_ENTRY_PORT
       - --entrypoints.client_secure.http3.advertisedPort=$CLIENT_SECURE_ENTRY_PORT
       - --entrypoints.client.http.redirections.entryPoint.to=client_secure
@@ -21,7 +22,8 @@ services:
       # Logging levels are DEBUG, PANIC, FATAL, ERROR, WARN, and INFO.
       - --log.level=debug
     ports:
-      - "$SERVER_ENTRY_PORT:$SERVER_ENTRY_PORT/tcp"
+      - $SERVER_ENTRY_PORT:$SERVER_ENTRY_PORT
+      - $CLIENT_LIVE_RELOAD_PORT:$CLIENT_LIVE_RELOAD_PORT
       - "$CLIENT_SECURE_ENTRY_PORT:$CLIENT_SECURE_ENTRY_PORT/tcp"
       - "$CLIENT_SECURE_ENTRY_PORT:$CLIENT_SECURE_ENTRY_PORT/udp"
       - $TRAEFIK_DASHBOARD_PORT:$TRAEFIK_DASHBOARD_PORT
@@ -45,10 +47,17 @@ services:
       - ./client:/usr/src/app
     labels:
       - traefik.enable=true
+      - traefik.http.middlewares.customHeader.headers.customresponseheaders.x-content-type-options=
+      - traefik.http.routers.client_live_reload_route.entrypoints=client_live_reload
+      - traefik.http.routers.client_live_reload_route.middlewares=customHeader
+      - traefik.http.routers.client_live_reload_route.tls=true
+      - traefik.http.routers.client_live_reload_route.rule=Host(`$DOMAIN`)
+      - traefik.http.routers.client_live_reload_route.service=client_live_reload_service
       - traefik.http.routers.client_route.entrypoints=client_secure
       - traefik.http.routers.client_route.tls=true
       - traefik.http.routers.client_route.rule=Host(`$DOMAIN`)
       - traefik.http.routers.client_route.service=client_service
+      - traefik.http.services.client_live_reload_service.loadbalancer.server.port=$CLIENT_LIVE_RELOAD_PORT
       - traefik.http.services.client_service.loadbalancer.server.port=$CLIENT_PORT
       - traefik.http.services.client_service.loadbalancer.healthcheck.path=/
       - traefik.http.services.client_service.loadbalancer.healthcheck.interval=2000ms
@@ -75,6 +84,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.server_route.entrypoints=server
+      - traefik.http.routers.server_route.tls=true
       - traefik.http.routers.server_route.rule=Host(`$DOMAIN`)
       - traefik.http.routers.server_route.service=server_service
       - traefik.http.services.server_service.loadbalancer.server.port=$SERVER_PORT
