@@ -9,22 +9,26 @@ services:
 
     command:
       - --api.insecure=true
-      - --entrypoints.server.address=:$SERVER_ENTRY_PORT
-      - --entrypoints.client_secure.address=:$CLIENT_ENTRY_PORT
-      - --entrypoints.client_secure.http3.advertisedPort=$CLIENT_ENTRY_PORT
       - --experimental.http3=true
       - --providers.docker=true
+      - --providers.file.directory=/etc/traefik/dynamic
+      - --entrypoints.server.address=:$SERVER_ENTRY_PORT
+      - --entrypoints.client.address=:$CLIENT_ENTRY_PORT
+      - --entrypoints.client_secure.address=:$CLIENT_SECURE_ENTRY_PORT
+      - --entrypoints.client_secure.http3.advertisedPort=$CLIENT_SECURE_ENTRY_PORT
+      - --entrypoints.client.http.redirections.entryPoint.to=client_secure
+      - --entrypoints.client.http.redirections.entryPoint.scheme=https
       # Logging levels are DEBUG, PANIC, FATAL, ERROR, WARN, and INFO.
       - --log.level=debug
     ports:
       - "$SERVER_ENTRY_PORT:$SERVER_ENTRY_PORT/tcp"
-      - "$SERVER_ENTRY_PORT:$SERVER_ENTRY_PORT/udp"
-      - "$CLIENT_ENTRY_PORT:$CLIENT_ENTRY_PORT/tcp"
-      - "$CLIENT_ENTRY_PORT:$CLIENT_ENTRY_PORT/udp"
+      - "$CLIENT_SECURE_ENTRY_PORT:$CLIENT_SECURE_ENTRY_PORT/tcp"
+      - "$CLIENT_SECURE_ENTRY_PORT:$CLIENT_SECURE_ENTRY_PORT/udp"
       - $TRAEFIK_DASHBOARD_PORT:$TRAEFIK_DASHBOARD_PORT
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock 
-      - ./traefik:/etc/traefik
+      - ./traefik/certs-traefik.yaml:/etc/traefik/dynamic/certs-traefik.yaml
+      - ./traefik/certs/:/etc/certs/
 
   client:
     depends_on: 

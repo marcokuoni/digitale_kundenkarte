@@ -1,0 +1,4 @@
+tls:
+  certificates:
+    - certFile: /etc/certs/karte.localhost+3.pem
+      keyFile: /etc/certs/karte.localhost+3-key.pem

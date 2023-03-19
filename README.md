@@ -114,3 +114,18 @@ Sandbox für Apollo Server kann mit Link auf http://karte.localhost:5001/ gestar
 /usr/bin/google-chrome --allow-insecure-localhost
 
 /usr/bin/google-chrome --user-data-dir=/tmp/foo --unsafely-treat-insecure-origin-as-secure=https://karte.localhost
+
+trusted localhost certificates
+https://github.com/FiloSottile/mkcert
+
+1. Install 
+`sudo yum install nss-tools`
+```
+curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
+chmod +x mkcert-v*-linux-amd64
+sudo cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
+```
+2. register CA in the system
+`mkcert -install`
+3. create certificate
+`mkcert karte.localhost localhost 127.0.0.1 ::1`
