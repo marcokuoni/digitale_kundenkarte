@@ -21,7 +21,6 @@ export const usersResolvers = {
    }),
    Query: {
      async getUsers() {
-      console.log('%cuser.ts line:24 object', 'color: #007acc;', await User.find());
        return await User.find()
      },
    },

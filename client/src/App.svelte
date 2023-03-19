@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { Router, Route } from 'svelte-routing'
   import PageQueries from './routes/PageQueries.svelte'
   import PageMutation from './routes/PageMutation.svelte'
