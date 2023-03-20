@@ -2,7 +2,7 @@ import { ApolloClient, InMemoryCache, ApolloLink, HttpLink } from '@apollo/clien
 import { onError } from "@apollo/client/link/error";
 import { setContext } from "@apollo/client/link/context";
 import { CachePersistor, LocalStorageWrapper } from 'apollo3-cache-persist'
-import OfflineLink from "apollo-link-offline";
+import OfflineLink from "./lib/OfflineLink";
 import Cookies from 'js-cookie'
 
 //!the process.env gets replaced by precompiler
@@ -30,9 +30,7 @@ const errorLink = onError(({ graphQLErrors}) => {
   }
 });
 
-const offlineLink = new OfflineLink({
-  storage: new LocalStorageWrapper(window.localStorage)
-});
+const offlineLink = new OfflineLink();
 
 const link = ApolloLink.from([
   offlineLink,
@@ -67,7 +65,6 @@ const client = new ApolloClient({
     }
   }
 })
-offlineLink.setup(client);
 
 export default client
 
