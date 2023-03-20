@@ -94,7 +94,7 @@ export default {
       navigateFallback: '/index.html',
       runtimeCaching: [{
         urlPattern: () => true,
-        handler: 'NetworkFirst',
+        handler: 'NetworkOnly',
         method: 'POST',
         options: {
           backgroundSync: {
