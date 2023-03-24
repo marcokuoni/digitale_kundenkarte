@@ -76,7 +76,7 @@ services:
       - MONGO_USERNAME=$MONGO_USERNAME
       - MONGO_PASSWORD=$MONGO_PASSWORD
       - MONGO_HOSTNAME=$MONGO_HOSTNAME
-      - MONGO_PORT=$MONGO_PORT
+      - MONGO_PORT=$MONGO_PUBPLIC_PORT
       - MONGO_DB=$MONGO_DB
     restart: always
     volumes:
@@ -101,7 +101,7 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_USERNAME
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
     ports:
-      - $MONGO_PORT:$MONGO_PORT
+      - $MONGO_PUBPLIC_PORT:$MONGO_PORT
     volumes:  
       - dbdata:/data/db 
 
