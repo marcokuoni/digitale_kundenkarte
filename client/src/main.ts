@@ -25,7 +25,7 @@ import { initPersistor } from './apollo-client'
     wb.addEventListener('waiting', (event) => {
       showSkipWaitingPrompt(event);
     });
-    wb.register()
+    wb.register()  // turn of to disable service worker (stop caching)
   }
 
   await initPersistor()
