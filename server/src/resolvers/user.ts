@@ -21,7 +21,7 @@ export const usersResolvers = {
    }),
    Query: {
      async getUsers() {
-       return await User.find()
+       return User.find()
      },
    },
    Mutation: {
