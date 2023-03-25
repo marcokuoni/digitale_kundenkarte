@@ -78,6 +78,10 @@ services:
       - MONGO_HOSTNAME=$MONGO_HOSTNAME
       - MONGO_PORT=$MONGO_PORT
       - MONGO_DB=$MONGO_DB
+      # Apollo
+      - APOLLO_KEY=$APOLLO_KEY
+      - APOLLO_GRAPH_REF=$APOLLO_GRAPH_REF
+      - APOLLO_SCHEMA_REPORTING=$APOLLO_SCHEMA_REPORTING
     restart: always
     volumes:
       - ./server:/usr/src/app
