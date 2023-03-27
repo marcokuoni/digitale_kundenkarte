@@ -1,31 +1,32 @@
 import App from './App.svelte'
 import { initPersistor } from './apollo-client'
-
 ;(async () => {
   if ('serviceWorker' in navigator) {
-    const { Workbox } = await import('workbox-window')
+    window.addEventListener('load', async () => {
+      const { Workbox } = await import('workbox-window')
 
-    const wb = new Workbox('/sw.js')
+      const wb = new Workbox('/sw.js')
 
-    const showSkipWaitingPrompt = async (event) => {
-      wb.addEventListener('controlling', () => {
-        window.location.reload();
-      });
+      const showSkipWaitingPrompt = async (event) => {
+        wb.addEventListener('controlling', () => {
+          window.location.reload()
+        })
 
-      //TODO: Make this nice looking
-      const updateAccepted = await new Promise((resolve) => {
-        resolve(confirm("soll die App ein Update erfahren?"))
-      })
+        //TODO: Make this nice looking
+        const updateAccepted = await new Promise((resolve) => {
+          resolve(confirm('soll die App ein Update erfahren?'))
+        })
 
-      if (updateAccepted) {
-        wb.messageSkipWaiting();
+        if (updateAccepted) {
+          wb.messageSkipWaiting()
+        }
       }
-    };
 
-    wb.addEventListener('waiting', (event) => {
-      showSkipWaitingPrompt(event);
-    });
-    // wb.register()  // turn of to disable service worker (stop caching)
+      wb.addEventListener('waiting', (event) => {
+        showSkipWaitingPrompt(event)
+      })
+      wb.register() // turn of to disable service worker (stop caching)
+    })
   }
 
   await initPersistor()
