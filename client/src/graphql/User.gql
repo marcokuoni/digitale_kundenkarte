@@ -19,8 +19,16 @@ query getUsers {
   }
 }
 
-mutation addUser($name: String!) {
-  addUser(name: $name) {
+mutation addUser(
+  $name: String!,
+  $email: String,
+  $newsletter: Boolean!
+) {
+  addUser(
+    name: $name,
+    email: $email,
+    newsletter: $newsletter
+  ) {
     ...UserFragment
   }
 }
