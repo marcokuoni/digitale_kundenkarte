@@ -10,43 +10,56 @@
   import PageCreate from './routes/PageCreate.svelte'
   import PageStamp from './routes/PageStamp.svelte'
   import PageHome from './routes/PageHome.svelte'
+  import { onMount } from 'svelte'
 
   export let url = ''
-  const checkForOneMinute = 60
+  const clientPingIntervall = 5000 //TODO: Go in Settings
+  const serverRequestCountCheckIntervall = 1000 //TODO: Go in Settings
+  const checkForHowManyCycles = 600 //TODO: Go in Settings
   let checkCounter = 0
-  let offline = false
+  let clientOffline = window.navigator.onLine
+  let serverOffline = false
   let queuedRequestSize = 0
   let db = null
   const DBOpenRequest = window.indexedDB.open('workbox-background-sync')
+  onMount(async () => {
+    pingClientRecursive()
+  })
 
   window.addEventListener('offline', () => {
-    offline = true
+    clientOffline = true
   })
 
   window.addEventListener('online', () => {
-    offline = false
-    if (queuedRequestSize > 0) {
-      checkCounter = 0
-      checkRequestCountRecursive()
-    }
+    clientOffline = false
   })
 
   window.addEventListener('apolloError', () => {
-    checkQueuedRequestCount()
+    serverOffline = true
+    checkCounter = 0
+    checkRequestCountRecursive()
   })
 
   DBOpenRequest.onsuccess = (event) => {
     db = DBOpenRequest.result
+    checkRequestCountRecursive()
+  }
+
+  async function pingClientRecursive() {
+    pingClient()
+    setTimeout(() => {
+      pingClientRecursive()
+    }, clientPingIntervall)
   }
 
   async function checkRequestCountRecursive() {
+    checkQueuedRequestCount()
     setTimeout(() => {
-      checkQueuedRequestCount()
-      if (queuedRequestSize > 0 && checkCounter < checkForOneMinute) {
+      if (queuedRequestSize > 0 && checkCounter < checkForHowManyCycles) {
         checkCounter++
         checkRequestCountRecursive()
       }
-    }, 1000)
+    }, serverRequestCountCheckIntervall)
   }
 
   async function checkQueuedRequestCount() {
@@ -57,14 +70,32 @@
     const countRequest = myIndex.count()
     countRequest.onsuccess = () => {
       queuedRequestSize = countRequest.result || 0
+      serverOffline = queuedRequestSize > 0
     }
+  }
+
+  async function pingClient() {
+    fetch('/favicon.png?d=' + Date.now())
+      .then((response) => {
+        if (!response.ok) {
+          clientOffline = true
+        } else {
+          clientOffline = false
+        }
+      })
+      .catch((error) => {
+        clientOffline = true
+      })
   }
 </script>
 
 <Router {url}>
   <!-- TODO: Make this nice looking -->
-  {#if offline}
-    <span>OFFLINE :(</span>
+  {#if clientOffline}
+    <span>CLIENT OFFLINE :(</span>
+  {/if}
+  {#if serverOffline}
+    <span>SERVER OFFLINE :(</span>
   {/if}
 
   {#if queuedRequestSize > 0}
