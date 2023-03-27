@@ -1,6 +1,10 @@
 <script lang="ts">
   import { Router, Route } from 'svelte-routing';
 
+  import PageQueries from './routes/PageQueries.svelte';
+  import PageMutation from './routes/PageMutation.svelte';
+  import NavLink from './components/NavLink.svelte';
+
   // Our routes from /src/routes/
   import PageCard from './routes/PageCard.svelte'
   import PageCreate from './routes/PageCreate.svelte'
@@ -34,6 +38,18 @@
 </style>
 
 <Router {url}>
+  <nav>
+    <NavLink to="query">Query</NavLink>
+    <NavLink to="mutation">Mutation</NavLink>
+  </nav>
+  <div>
+    <Route path="query">
+      <PageQueries />
+    </Route>
+    <Route path="mutation">
+      <PageMutation />
+    </Route>
+  </div>
   <div>
 
     <Route path="">
