@@ -33,7 +33,9 @@ export type Mutation = {
 
 
 export type MutationAddUserArgs = {
+  email?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
+  newsletter: Scalars['Boolean'];
 };
 
 export type Query = {
@@ -66,6 +68,8 @@ export type GetUsersQuery = { __typename?: 'Query', getUsers: Array<{ __typename
 
 export type AddUserMutationVariables = Exact<{
   name: Scalars['String'];
+  email?: InputMaybe<Scalars['String']>;
+  newsletter: Scalars['Boolean'];
 }>;
 
 
@@ -95,8 +99,8 @@ export const GetUsersDoc = gql`
 }
     ${UserFragmentFragmentDoc}`;
 export const AddUserDoc = gql`
-    mutation addUser($name: String!) {
-  addUser(name: $name) {
+    mutation addUser($name: String!, $email: String, $newsletter: Boolean!) {
+  addUser(name: $name, email: $email, newsletter: $newsletter) {
     ...UserFragment
   }
 }

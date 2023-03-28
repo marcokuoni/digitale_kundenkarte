@@ -25,9 +25,13 @@ export const usersResolvers = {
      },
    },
    Mutation: {
-      async addUser(root: never, { name }: {name: string}) {
+      async addUser(root: never, { name, email, newsletter }: {
+          name: string,
+          email: string,
+          newsletter: boolean
+      }) {
          return await User.create({
-            name,
+            name, email, newsletter
          })
       },
    }
