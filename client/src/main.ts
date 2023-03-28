@@ -14,7 +14,8 @@ import { initPersistor } from './apollo-client'
 
         //TODO: Make this nice looking
         const updateAccepted = await new Promise((resolve) => {
-          resolve(confirm('soll die App ein Update erfahren?'))
+          resolve(true)
+          // resolve(confirm('soll die App ein Update erfahren?'))
         })
 
         if (updateAccepted) {
