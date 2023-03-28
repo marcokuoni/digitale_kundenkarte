@@ -92,16 +92,18 @@
 
 <Router {url}>
   <!-- TODO: Make this nice looking -->
-  {#if clientOffline}
-    <span>CLIENT OFFLINE :(</span>
-  {/if}
-  {#if serverOffline}
-    <span>SERVER OFFLINE :(</span>
-  {/if}
+  <div class="offline-indicator">
+    {#if clientOffline}
+      <span>CLIENT OFFLINE :(</span>
+    {/if}
+    {#if serverOffline}
+      <span>SERVER OFFLINE :(</span>
+    {/if}
 
-  {#if queuedRequestSize > 0}
-    <span>Queued Requests: {queuedRequestSize}</span>
-  {/if}
+    {#if queuedRequestSize > 0}
+      <span>Queued Requests: {queuedRequestSize}</span>
+    {/if}
+  </div>
   <!--
   <nav>
     <NavLink to="query">Query</NavLink>
@@ -147,14 +149,11 @@
     font-size: xx-large;
   }
 
-  /* ... */
 
-  nav {
-    background-color: #ff3e00;
-    height: 60px;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    color: white;
+  .offline-indicator {
+    font-size: 8px;
+    color: var(--secondary-color);
+    text-align: center;
   }
+
 </style>
