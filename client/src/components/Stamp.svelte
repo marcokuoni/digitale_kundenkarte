@@ -13,6 +13,8 @@
     .stamp {
         width: 40px;
         height: 40px;
+        margin-right: 3vw;
+        margin-bottom: 3vw;
 
         display: flex;
         justify-content: center;
