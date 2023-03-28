@@ -102,10 +102,13 @@
   {#if queuedRequestSize > 0}
     <span>Queued Requests: {queuedRequestSize}</span>
   {/if}
+  <!--
   <nav>
     <NavLink to="query">Query</NavLink>
     <NavLink to="mutation">Mutation</NavLink>
   </nav>
+  -->
+  <!-- TODO: remove demo routes-->
   <div>
     <Route path="query">
       <PageQueries />
