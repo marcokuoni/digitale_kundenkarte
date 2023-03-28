@@ -1,6 +1,58 @@
 <main>
-    <h1>Card Page</h1>
 
+    <section class="card-section">
+        <div class="card">
+            <!--<p class="subtitle">THE CROWN BAR</p>-->
+            <h1 class="title">Ehrenkarte</h1>
+            <div class="stamp-wrapper">
+                <Stamp status/>
+                <Stamp status/>
+                <Stamp status/>
+                <Stamp status/>
+                <Stamp/>
+                <Stamp/>
+                <Stamp/>
+                <Stamp/>
+                <div class="surprise-wrapper">
+                    <img src="/images/surprise-arrow.svg" class="surprise-arrow" alt="an arrow pointing left">
+                    <p>Ehrenhafte<br>Überraschung</p>
+                </div>
+            </div>
+        </div>
+        <button class="all-cards-button">ALLE KARTEN</button>
+    </section>
+
+    <section class="info-section">
+        <div class="info-wrapper">
+            <p class="info-label">NAME</p>
+            <p class="info-text">Silvan Helbling</p>
+
+            <div class="info-group">
+                <div>
+                    <p class="info-label">STEMPEL</p>
+                    <p class="info-text">4<span class="stamps-secondary-text">/ 8</span></p>
+                </div>
+                <div>
+                    <p class="info-label">LETZTER</p>
+                    <p class="info-text">vor 12 Tagen</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="footer-section">
+        <div class="footer">
+            <button>EINSTELLUNGEN</button>
+            <a href="https://thecrownbar.ch">WEBSITE</a>
+            <a href="https://instagram.com/thecrownbarrappi">INSTAGRAM</a>
+        </div>
+    </section>
+
+    <section>
+        <!-- TODO: implement settings overlay -->
+    </section>
+
+    <!--
     {#if $getUsersQuery.loading}
         <p>loading...</p>
     {:else}
@@ -12,20 +64,22 @@
         {/each}
         <button on:click={() => $getUsersQuery.query.refetch({})}>Refresh</button>
     {/if}
+    -->
 
     <!--<button on:click={logUsers}>Log users</button>-->
-
+    <!--
     <p>Add user:</p>
     <input type="text" placeholder="username" bind:value={inputName}/>
     <input type="email" placeholder="email" bind:value={inputEmail}/>
     <input type="checkbox" name="newsletter" bind:checked={inputNewsletter}/>
     <button on:click={handleUserClick} disabled={inputName.length === 0}>Add User</button>
+    -->
 </main>
-
 
 <script lang="ts">
     import {addUser, getUsers} from '../codegen.js'
     import gql from 'graphql-tag'
+    import Stamp from '../components/Stamp.svelte'
 
     let inputName = ''
     let inputEmail = ''
@@ -91,3 +145,137 @@
     }
 
 </script>
+
+<style>
+
+    main {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 80vh;
+    }
+
+    /* card */
+
+    .card-section {
+        width: 100vw;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .card {
+        width: 70vw;
+        max-width: 400px;
+        padding: 16px 24px;
+        background-color: #000000;
+        box-shadow: 0 0 33px 0 rgba(255, 91, 80, 0.33);
+        border-radius: 4px;
+    }
+
+    .title {
+        font-family: "Tiempos Fine", serif;
+        font-size: 26pt;
+        padding-bottom: 8px;
+    }
+
+    .subtitle {
+        font-size: 8pt;
+        line-height: 8pt;
+        font-weight: bold;
+    }
+
+    .stamp-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    button, a {
+        padding: 2px 4px;
+
+        font-size: 8pt;
+        font-weight: bold;
+        color: var(--secondary-color);
+        background-color: transparent;
+
+        border: none;
+        text-decoration: none;
+    }
+
+    .all-cards-button {
+        margin-top: 20px;
+    }
+
+    .surprise-wrapper {
+        display: flex;
+        align-items: center;
+        height: 40px;
+
+        color: var(--secondary-color);
+        font-size: 8px;
+    }
+
+    .surprise-arrow {
+        margin-right: 4px;
+    }
+
+    /* info */
+
+    .info-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .info-wrapper {
+        /*padding: 20px;*/
+        width: 70vw;
+        max-width: 400px;
+        margin: 40px -20px -20px;
+    }
+
+    .info-group {
+        display: flex;
+        margin-top: 20px;
+    }
+
+    .info-group div {
+        margin-right: 20px;
+    }
+
+    .info-label {
+        font-size: 9pt;
+        font-weight: bold;
+        color: var(--accent-color);
+    }
+
+    .info-text {
+        font-size: 22pt;
+        font-family: "Tiempos Fine", serif;
+        font-weight: bold;
+    }
+
+    .stamps-secondary-text {
+        color: var(--secondary-color);
+        font-size: 14pt;
+        margin-left: 4px;
+    }
+
+    /* footer */
+
+    .footer-section {
+        position: absolute;
+        bottom: 40px;
+        width: 100vw;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .footer {
+        width: 70vw;
+        max-width: 400px;
+    }
+
+</style>
