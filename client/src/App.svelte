@@ -22,6 +22,7 @@
   let queuedRequestSize = 0
   let db = null
   const DBOpenRequest = window.indexedDB.open('workbox-background-sync')
+  
   onMount(async () => {
     pingClientRecursive()
   })

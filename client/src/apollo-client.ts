@@ -33,7 +33,9 @@ const errorLink = onError(({ graphQLErrors}) => {
 const offlineLink = new OfflineLink();
 
 const link = ApolloLink.from([
-  offlineLink,
+  //NOTE deactivate local storage cache
+  // offlineLink,
+  /// NOTE deactivate local storage cache
   errorLink,
   authLink,
   httpLink,
@@ -41,10 +43,12 @@ const link = ApolloLink.from([
 
 const cache = new InMemoryCache()
 
-const persistor = new CachePersistor({
-  cache,
-  storage: new LocalStorageWrapper(window.localStorage),
-})
+//NOTE deactivate local storage cache
+// const persistor = new CachePersistor({
+//   cache,
+//   storage: new LocalStorageWrapper(window.localStorage),
+// })
+// /NOTE deactivate local storage cache
 
 const currentVersion = window.localStorage.getItem(
   'process.env.SCHEMA_VERSION_KEY'
@@ -69,13 +73,15 @@ const client = new ApolloClient({
 export default client
 
 export const initPersistor = async () => {
-  if (currentVersion === 'process.env.SCHEMA_VERSION') {
-    await persistor.restore()
-  } else {
-    await persistor.purge()
-    window.localStorage.setItem(
-      'process.env.SCHEMA_VERSION_KEY',
-      'process.env.SCHEMA_VERSION'
-    )
-  }
+  //NOTE deactivate local storage cache
+  // if (currentVersion === 'process.env.SCHEMA_VERSION') {
+  //   await persistor.restore()
+  // } else {
+  //   await persistor.purge()
+  //   window.localStorage.setItem(
+  //     'process.env.SCHEMA_VERSION_KEY',
+  //     'process.env.SCHEMA_VERSION'
+  //   )
+  // }
+  // /NOTE deactivate local storage cache
 }
