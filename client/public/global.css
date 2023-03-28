@@ -37,3 +37,12 @@ p, h1, h2, h3, h4, h5, h6 { overflow-wrap: break-word; }
 
 /* endregion */
 
+/* GLOBAL STYLES */
+/* styles that affect all pages should go here */
+
+body {
+	color: var(--foreground-color);
+	background-color: var(--background-color);
+
+	font-family: "Helvetica Now Display", "Helvetica Neue", "Helvetica", sans-serif;
+}
