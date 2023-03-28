@@ -34,7 +34,7 @@ const offlineLink = new OfflineLink();
 
 const link = ApolloLink.from([
   //NOTE deactivate local storage cache
-  // offlineLink,
+  offlineLink,
   /// NOTE deactivate local storage cache
   errorLink,
   authLink,
@@ -44,10 +44,10 @@ const link = ApolloLink.from([
 const cache = new InMemoryCache()
 
 //NOTE deactivate local storage cache
-// const persistor = new CachePersistor({
-//   cache,
-//   storage: new LocalStorageWrapper(window.localStorage),
-// })
+const persistor = new CachePersistor({
+  cache,
+  storage: new LocalStorageWrapper(window.localStorage),
+})
 // /NOTE deactivate local storage cache
 
 const currentVersion = window.localStorage.getItem(
@@ -74,14 +74,14 @@ export default client
 
 export const initPersistor = async () => {
   //NOTE deactivate local storage cache
-  // if (currentVersion === 'process.env.SCHEMA_VERSION') {
-  //   await persistor.restore()
-  // } else {
-  //   await persistor.purge()
-  //   window.localStorage.setItem(
-  //     'process.env.SCHEMA_VERSION_KEY',
-  //     'process.env.SCHEMA_VERSION'
-  //   )
-  // }
+  if (currentVersion === 'process.env.SCHEMA_VERSION') {
+    await persistor.restore()
+  } else {
+    await persistor.purge()
+    window.localStorage.setItem(
+      'process.env.SCHEMA_VERSION_KEY',
+      'process.env.SCHEMA_VERSION'
+    )
+  }
   // /NOTE deactivate local storage cache
 }

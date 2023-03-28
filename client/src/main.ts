@@ -27,7 +27,7 @@ import { initPersistor } from './apollo-client'
       })
 
       //NOTE deactivate local storage cache
-      // wb.register()
+      wb.register()
       // /NOTE deactivate local storage cache
     })
   }
