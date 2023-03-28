@@ -6,4 +6,22 @@
 	--background-color: #101010;
 }
 
-/* TODO: Add default styles for body, text, usw... */
+/* FONTS */
+
+@font-face {
+	font-family: "Helvetica Now Display";
+	src: local('/fonts/HelveticaNowDisplay-Regular.woff2');
+	font-weight: normal;
+}
+
+@font-face {
+	font-family: "Helvetica Now Display";
+	src: local('/fonts/HelveticaNowDisplay-ExtraBold.woff2');
+	font-weight: bold;
+}
+
+@font-face {
+	font-family: "Tiempos Fine";
+	src: local('/fonts/TiemposFine-Black.woff2');
+}
+
