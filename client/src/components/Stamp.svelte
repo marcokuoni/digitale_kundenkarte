@@ -11,10 +11,10 @@
 <style>
 
     .stamp {
-        width: 40px;
-        height: 40px;
-        margin-right: 3vw;
-        margin-bottom: 3vw;
+        width: 15%;
+        aspect-ratio: 1;
+        margin-right: 4%;
+        margin-bottom: 4%;
 
         display: flex;
         justify-content: center;

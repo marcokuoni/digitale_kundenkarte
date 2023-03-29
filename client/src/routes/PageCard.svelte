@@ -1,23 +1,8 @@
 <main>
 
     <section class="card-section">
-        <div class="card">
-            <!--<p class="subtitle">THE CROWN BAR</p>-->
-            <h1 class="title">Ehrenkarte</h1>
-            <div class="stamp-wrapper">
-                <Stamp status/>
-                <Stamp status/>
-                <Stamp status/>
-                <Stamp status/>
-                <Stamp/>
-                <Stamp/>
-                <Stamp/>
-                <Stamp/>
-                <div class="surprise-wrapper">
-                    <img src="/images/surprise-arrow.svg" class="surprise-arrow" alt="an arrow pointing left">
-                    <p>Ehrenhafte<br>Überraschung</p>
-                </div>
-            </div>
+        <div class="card-wrapper">
+            <Card />
         </div>
         <button class="all-cards-button">ALLE KARTEN</button>
     </section>
@@ -80,6 +65,7 @@
     import {addUser, getUsers} from '../codegen.js'
     import gql from 'graphql-tag'
     import Stamp from '../components/Stamp.svelte'
+    import Card from '../components/Card.svelte'
 
     let inputName = ''
     let inputEmail = ''
@@ -155,39 +141,15 @@
         min-height: 80vh;
     }
 
-    /* card */
+    .card-wrapper {
+        width: 80vw;
+    }
 
     .card-section {
         width: 100vw;
         display: flex;
         align-items: center;
         flex-direction: column;
-    }
-
-    .card {
-        width: 70vw;
-        max-width: 400px;
-        padding: 16px 24px;
-        background-color: #000000;
-        box-shadow: 0 0 33px 0 rgba(255, 91, 80, 0.33);
-        border-radius: 4px;
-    }
-
-    .title {
-        font-family: "Tiempos Fine", serif;
-        font-size: 26pt;
-        padding-bottom: 8px;
-    }
-
-    .subtitle {
-        font-size: 8pt;
-        line-height: 8pt;
-        font-weight: bold;
-    }
-
-    .stamp-wrapper {
-        display: flex;
-        flex-wrap: wrap;
     }
 
     button, a {
@@ -206,19 +168,6 @@
         margin-top: 20px;
     }
 
-    .surprise-wrapper {
-        display: flex;
-        align-items: center;
-        height: 40px;
-
-        color: var(--secondary-color);
-        font-size: 8px;
-    }
-
-    .surprise-arrow {
-        margin-right: 4px;
-    }
-
     /* info */
 
     .info-section {
@@ -229,7 +178,7 @@
 
     .info-wrapper {
         /*padding: 20px;*/
-        width: 70vw;
+        width: 80vw;
         max-width: 400px;
         margin: 40px -20px -20px;
     }
