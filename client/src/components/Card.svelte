@@ -30,8 +30,6 @@
 
 
     .card {
-        /*width: 100%;*/
-        max-width: 400px;
         padding: 16px 24px;
         background-color: #000000;
         box-shadow: 0 0 33px 0 rgba(255, 91, 80, 0.33);

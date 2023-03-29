@@ -150,6 +150,7 @@
 
     .card-wrapper {
         width: 80vw;
+        max-width: 400px;
     }
 
     .card-section {
