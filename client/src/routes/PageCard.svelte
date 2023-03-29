@@ -2,7 +2,7 @@
 
     <section class="card-section">
         <div class="card-wrapper">
-            <Card />
+            <Card stamps="{stampsPlaceholder}"/>
         </div>
         <button class="all-cards-button">ALLE KARTEN</button>
     </section>
@@ -72,6 +72,13 @@
     let inputNewsletter = false
 
     $: getUsersQuery = getUsers({})
+
+    const stampsPlaceholder = [
+        new Date('2023-03-02T18:00:00.000Z'),
+        new Date('2023-03-09T18:00:00.000Z'),
+        new Date('2023-03-16T18:00:00.000Z'),
+        new Date('2023-03-23T18:00:00.000Z'),
+    ]
 
     /*function logUsers() {
         console.log(getUsersQuery)
@@ -177,7 +184,6 @@
     }
 
     .info-wrapper {
-        /*padding: 20px;*/
         width: 80vw;
         max-width: 400px;
         margin: 40px -20px -20px;
