@@ -27,15 +27,13 @@
 
     <section class="footer-section">
         <div class="footer">
-            <button>EINSTELLUNGEN</button>
+            <button on:click={toggleOverlayVisibility}>EINSTELLUNGEN</button>
             <a href="https://thecrownbar.ch">WEBSITE</a>
             <a href="https://instagram.com/thecrownbarrappi">INSTAGRAM</a>
         </div>
     </section>
 
-    <section>
-        <!-- TODO: implement settings overlay -->
-    </section>
+    <CardSettings visible={settingsOverlayVisible} on:toggleOverlay={toggleOverlayVisibility}/>
 
     <!--
     {#if $getUsersQuery.loading}
@@ -66,12 +64,19 @@
     import gql from 'graphql-tag'
     import Stamp from '../components/Stamp.svelte'
     import Card from '../components/Card.svelte'
+    import CardSettings from '../components/CardSettings.svelte'
 
     let inputName = ''
     let inputEmail = ''
     let inputNewsletter = false
 
     $: getUsersQuery = getUsers({})
+
+    let settingsOverlayVisible = false
+
+    function toggleOverlayVisibility() {
+        settingsOverlayVisible = !settingsOverlayVisible
+    }
 
     const stampsPlaceholder = [
         new Date('2023-03-02T18:00:00.000Z'),
