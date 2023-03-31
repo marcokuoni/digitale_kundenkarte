@@ -166,6 +166,7 @@
     }
 
     button, a {
+        cursor: pointer;
         padding: 2px 4px;
 
         font-size: 8pt;
