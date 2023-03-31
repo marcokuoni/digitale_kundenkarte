@@ -31,8 +31,8 @@
 
     .card {
         padding: 16px 24px;
-        background-color: #000000;
-        box-shadow: 0 0 33px 0 rgba(255, 91, 80, 0.33);
+        background-color: var(--black);
+        box-shadow: 0 0 33px 0 var(--box-shadow);
         border-radius: 4px;
     }
 
