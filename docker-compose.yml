@@ -82,6 +82,8 @@ services:
       - APOLLO_KEY=$APOLLO_KEY
       - APOLLO_GRAPH_REF=$APOLLO_GRAPH_REF
       - APOLLO_SCHEMA_REPORTING=$APOLLO_SCHEMA_REPORTING
+      - JWT_KEY=$JWT_KEY
+      - JWT_EXPIRES_IN=$JWT_EXPIRES_IN
     restart: always
     volumes:
       - ./server:/usr/src/app

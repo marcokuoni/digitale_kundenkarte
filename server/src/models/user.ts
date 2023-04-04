@@ -18,6 +18,11 @@ const UserSchema = new Schema(
       default: false,
       required: false,
     },
+    transfercode: {
+      type: String,
+      default: false,
+      required: false,
+    },
     cards: [
       {
         creationDate: {

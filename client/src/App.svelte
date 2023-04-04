@@ -38,7 +38,7 @@
           <PageCard />
         </Route>
 
-        <Route path="create">
+        <Route path="create-user">
           <PageCreate />
         </Route>
 

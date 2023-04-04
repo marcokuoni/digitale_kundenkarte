@@ -29,4 +29,8 @@ type Mutation {
        email: String,
        newsletter: Boolean!
    ): User!
+   signIn(transferCode: String!): String!
+   signUp(): String!
+   refresh(): String!
+   logout(): Boolean!
 }

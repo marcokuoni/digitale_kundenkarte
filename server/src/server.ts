@@ -1,11 +1,24 @@
 import { ApolloServer } from '@apollo/server'
 import { startStandaloneServer } from '@apollo/server/standalone'
-import { ApolloServerPluginLandingPageLocalDefault, ApolloServerPluginLandingPageProductionDefault } from '@apollo/server/plugin/landingPage/default';
+import {
+  ApolloServerPluginLandingPageLocalDefault,
+  ApolloServerPluginLandingPageProductionDefault,
+} from '@apollo/server/plugin/landingPage/default'
+import {httpHeadersPlugin} from 'apollo-server-plugin-http-headers'
 
 import { loadGraphQlSchema } from './loader'
+import type { JwtUserPayloadInterface } from './services/auth'
+import { verifyTokenAndGetUser } from './services/auth'
+import type { IncomingMessage, ServerResponse } from 'http'
+
+export type ServerContext = MyContext & {
+  req: IncomingMessage
+  res: ServerResponse<IncomingMessage>
+
+}
 
 interface MyContext {
-  token?: string
+  user?: JwtUserPayloadInterface
 }
 
 export const startupServer = async function () {
@@ -21,10 +34,18 @@ export const startupServer = async function () {
             footer: false,
           })
         : ApolloServerPluginLandingPageLocalDefault({ footer: false }),
+        httpHeadersPlugin
     ],
   })
   const { url } = await startStandaloneServer(server, {
-    context: async ({ req }) => ({ token: req.headers.token }),
+    context: async ({ req, res }) => {
+      const user = verifyTokenAndGetUser(req, res)
+      return { 
+        user,
+        req,
+        res,
+       }
+    },
     listen: { port: parseInt(process.env.SERVER_PORT || '3003') },
   })
   console.log(`🚀  Server ready at ${url}`)
