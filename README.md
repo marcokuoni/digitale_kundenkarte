@@ -138,3 +138,20 @@ https://jasonwatmore.com/post/2020/06/17/nodejs-mongodb-api-jwt-authentication-w
 https://www.sohamkamani.com/nodejs/jwt-authentication/
 
 https://www.bezkoder.com/jwt-refresh-token-node-js/
+
+/***
+Irgendwo habe ich einmal gelesen, dass ein fingerprint (nicht ip) für die Benutzer-Session besser ist. Aber ich habe es nicht gefunden. Ich habe es auch nicht selbst ausprobiert, aber ich denke, es ist eine gute Idee, da die IP-Adresse des Benutzers sich ändern kann, wenn er sich an einem anderen Ort anmeldet. Aber der Fingerabdruck des Benutzers bleibt gleich.
+https://stackoverflow.com/questions/51492752/how-to-keep-the-user-logged-in-even-after-closing-the-browser-or-reloading-the-pag
+
+https://www.bezkoder.com/jwt-refresh-token-node-js/
+
+=======
+
+Irgendwo habe ich einmal gelesen, dass ein fingerprint (nicht ip) besser ist, um eine session zu tracken. Sicher ist sicher.
+
+https://www.npmjs.com/package/express-session
+
+=======
+https://www.npmjs.com/package/fingerprintjs2
+
+***/
