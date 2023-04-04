@@ -132,3 +132,9 @@ sudo cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
 
 
 https://medium.com/@jono/cache-graphql-post-requests-with-service-worker-100a822a388a
+
+
+https://jasonwatmore.com/post/2020/06/17/nodejs-mongodb-api-jwt-authentication-with-refresh-tokens
+https://www.sohamkamani.com/nodejs/jwt-authentication/
+
+https://www.bezkoder.com/jwt-refresh-token-node-js/
