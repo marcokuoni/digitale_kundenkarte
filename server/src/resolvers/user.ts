@@ -1,7 +1,7 @@
 import User from '../models/user'
 import { GraphQLScalarType } from 'graphql'
 import { Kind } from 'graphql/language'
-import { signIn } from '../services/auth'
+import { signIn, signUp, refresh, logout } from '../services/auth'
 import type { ServerContext } from '../server'
 
 export const usersResolvers = {
@@ -49,21 +49,27 @@ export const usersResolvers = {
       root: never,
       {
         transferCode,
+        password,
       }: {
         transferCode: string
+        password: string
       },
       context: ServerContext
     ) {
-      return await signIn(context.res, transferCode)
+      await signIn(context.req, context.res, transferCode, password)
+      return true
     },
-    signUp() {
-
+    async signUp(root: never, {password}: {password?: string}, context: ServerContext) {
+      await signUp(context.req, context.res, password)
+      return true
     },
-    refresh() {
-
+    async refresh(root: never, args: never, context: ServerContext) {
+      await refresh(context.req, context.res)
+      return true
     },
-    logout() {
-
+    async logout(root: never, args: never, context: ServerContext) {
+      await logout(context.req, context.res)
+      return true
     },
   },
 }
