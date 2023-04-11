@@ -1,5 +1,6 @@
 import * as jwt from 'jsonwebtoken'
 import type Jwt from 'jsonwebtoken'
+import crypto from 'crypto'
 import { GraphQLError } from 'graphql'
 import type { IncomingMessage, ServerResponse } from 'http'
 
@@ -84,8 +85,9 @@ export const signUp = async (
   res: ServerResponse<IncomingMessage>,
   password?: string
 ) => {
+  const count = (await User.count() + 1).toString()
   const user = await User.create({
-    transfercode: '1234',
+    transfercode: '0000'.substring(String(count).length) + count,
     password, //TODO: HASH PASSWORD
   })
 
