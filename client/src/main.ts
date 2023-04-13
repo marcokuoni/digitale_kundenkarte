@@ -1,5 +1,5 @@
 import App from './App.svelte'
-import { initPersistor } from './apollo-client'
+import initPersistor from './lib/apollo/persistor'
 ;(async () => {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', async () => {

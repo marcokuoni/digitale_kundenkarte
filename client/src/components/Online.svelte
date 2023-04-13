@@ -56,14 +56,17 @@
   }
 
   async function checkQueuedRequestCount() {
-    const objectStore = db
-      .transaction(['requests'], 'readonly')
-      .objectStore('requests')
-    const myIndex = objectStore.index('queueName')
-    const countRequest = myIndex.count()
-    countRequest.onsuccess = () => {
-      queuedRequestSize = countRequest.result || 0
-      serverOffline = queuedRequestSize > 0
+    if (db && db.objectStoreNames.contains('requests')) {
+      const transaction = db.transaction(['requests'], 'readonly')
+      if (transaction) {
+        const objectStore = transaction.objectStore('requests')
+        const myIndex = objectStore.index('queueName')
+        const countRequest = myIndex.count()
+        countRequest.onsuccess = () => {
+          queuedRequestSize = countRequest.result || 0
+          serverOffline = queuedRequestSize > 0
+        }
+      }
     }
   }
 

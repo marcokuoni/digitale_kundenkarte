@@ -1,4 +1,4 @@
-import client from "./apollo-client";
+import client from "./lib/apollo/client";
 import type {
         ApolloQueryResult, ObservableQuery, WatchQueryOptions, QueryOptions, MutationOptions
       } from "@apollo/client";

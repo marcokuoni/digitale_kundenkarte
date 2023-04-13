@@ -42,6 +42,7 @@ services:
         - SERVER_URL=$DOMAIN:$SERVER_ENTRY_PORT
         - SCHEMA_VERSION_KEY=$SCHEMA_VERSION_KEY
         - SCHEMA_VERSION=$SCHEMA_VERSION
+        - JWT_COOKIE_NAME=$JWT_COOKIE_NAME
     restart: always
     volumes:
       - ./client:/usr/src/app

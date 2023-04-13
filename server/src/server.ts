@@ -4,11 +4,12 @@ import {
   ApolloServerPluginLandingPageLocalDefault,
   ApolloServerPluginLandingPageProductionDefault,
 } from '@apollo/server/plugin/landingPage/default'
+import type { IncomingMessage, ServerResponse } from 'http'
 
 import { loadGraphQlSchema } from './loader'
 import type { JwtUserPayloadInterface } from './services/auth'
 import { verifyTokenAndGetUser } from './services/auth'
-import type { IncomingMessage, ServerResponse } from 'http'
+import { ACCESS_CONTROL_ALLOW_ORIGIN, ACCESS_CONTROL_EXPOSE_HEADERS, AUTHORIZATION } from './lib/const'
 
 export type ServerContext = MyContext & {
   req: IncomingMessage
@@ -18,9 +19,6 @@ export type ServerContext = MyContext & {
 interface MyContext {
   user?: JwtUserPayloadInterface
 }
-
-const OPTIONS = 'OPTIONS'
-const ACCESS_CONTROL_ALLOW_ORIGIN = 'Access-Control-Allow-Origin'
 
 export const startupServer = async function () {
   const { resolvers, typeDefs } = await loadGraphQlSchema()
@@ -45,6 +43,7 @@ export const startupServer = async function () {
         ACCESS_CONTROL_ALLOW_ORIGIN,
         process.env.CLIENT_URL || 'https://karte.localhost'
       )
+      res.setHeader(ACCESS_CONTROL_EXPOSE_HEADERS, AUTHORIZATION)
 
       return {
         user,

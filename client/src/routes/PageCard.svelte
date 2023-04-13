@@ -4,6 +4,7 @@
   import Stamp from '../components/Stamp.svelte'
   import Card from '../components/Card.svelte'
   import CardSettings from '../components/CardSettings.svelte'
+  import Logout from '../components/Logout.svelte'
 
   let inputName = ''
   let inputEmail = ''
@@ -126,6 +127,7 @@
       <button on:click={toggleOverlayVisibility}>EINSTELLUNGEN</button>
       <a href="https://thecrownbar.ch">WEBSITE</a>
       <a href="https://instagram.com/thecrownbarrappi">INSTAGRAM</a>
+      <Logout />
     </div>
   </section>
 

@@ -5,15 +5,16 @@
     <label for="email">Email</label>
     <input type="email" id="email" bind:value={email} />
     <label for="newsletter"><input type="checkbox" id="newsletter" value="true" bind:checked={newsletter} /> Wants Newsletter</label>
-     
+     <!-- TODO: Password should only be visible if requested -->
     <label for="password">Password</label>
     <input type="password" id="password" bind:value={password} />
     <button type="submit">Create User</button>
 </form>
 
-<script>
+<script lang="ts">
     import { signUp } from '../codegen'
     import { navigate } from 'svelte-routing'
+    import { PATHS } from '../lib/const'
 
     let name = ''
     let email = ''
@@ -30,7 +31,7 @@
             },
         })
         if (data && data.signUp) {
-            navigate('/card')
+            navigate(`/${PATHS.CARD}`)
         } else {
             alert('Error')
         }

@@ -48,6 +48,7 @@ export default {
       'process.env.SERVER_URL': process.env.SERVER_URL,
       'process.env.SCHEMA_VERSION': process.env.SCHEMA_VERSION,
       'process.env.SCHEMA_VERSION_KEY': process.env.SCHEMA_VERSION_KEY,
+      'process.env.JWT_COOKIE_NAME': process.env.JWT_COOKIE_NAME,
     }),
     svelte({
       preprocess: sveltePreprocess({ sourceMap: !production }),

@@ -11,6 +11,7 @@ import {
 } from '../services/token'
 import User from '../models/user'
 import { iNewUser } from '../resolvers/user'
+import { AUTHORIZATION, BEARER, SET_COOKIE, COOKIE_DEFAULT_SETTINGS } from '../lib/const'
 
 const jwtKey = process.env.JWT_KEY as Jwt.Secret
 const jwtRefreshKey = process.env.JWT_REFRESH_KEY as Jwt.Secret
@@ -18,10 +19,6 @@ const jwtExpiry = parseInt(process.env.JWT_EXPIRES_IN || '0')
 const jwtRefreshExpiry = parseInt(process.env.JWT_REFRESH_EXPIRES_IN || '0')
 const jwtRefreshCookieName =
   process.env.JWT_REFRESH_COOKIE_NAME || 'refresh_token'
-const AUTHORIZATION = 'Authorization'
-const BEARER = 'Bearer'
-const SET_COOKIE = 'Set-Cookie'
-const COOKIE_DEFAULT_SETTINGS = 'HttpOnly; SameSite=Strict; Secure;'
 
 export interface JwtUserPayloadInterface {
   token: string

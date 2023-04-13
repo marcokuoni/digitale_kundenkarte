@@ -42,12 +42,6 @@
         padding-bottom: 4px;
     }
 
-    .subtitle {
-        font-size: 8pt;
-        line-height: 8pt;
-        font-weight: bold;
-    }
-
     .stamp-wrapper {
         display: flex;
         flex-wrap: wrap;

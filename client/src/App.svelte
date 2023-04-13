@@ -10,6 +10,8 @@
   import PageCreate from './routes/PageCreate.svelte'
   import PageStamp from './routes/PageStamp.svelte'
   import PageHome from './routes/PageHome.svelte'
+  import PageLogin from './routes/PageLogin.svelte'
+  import { PATHS } from './lib/const'
 
   export let url = ''
 </script>
@@ -30,19 +32,23 @@
         </Route>
       </div>
       <div>
-        <Route path="">
+        <Route path={PATHS.HOME}>
           <PageHome />
         </Route>
 
-        <Route path="card">
+        <Route path={PATHS.CARD}>
           <PageCard />
         </Route>
 
-        <Route path="create-user">
+        <Route path={PATHS.CREATE_USER}>
           <PageCreate />
         </Route>
 
-        <Route path="stamp">
+        <Route path={PATHS.LOGIN_USER}>
+          <PageLogin />
+        </Route>
+
+        <Route path={PATHS.STAMP}>
           <PageStamp />
         </Route>
       </div>
