@@ -4,7 +4,6 @@ import {
   ApolloServerPluginLandingPageLocalDefault,
   ApolloServerPluginLandingPageProductionDefault,
 } from '@apollo/server/plugin/landingPage/default'
-import {httpHeadersPlugin} from 'apollo-server-plugin-http-headers'
 
 import { loadGraphQlSchema } from './loader'
 import type { JwtUserPayloadInterface } from './services/auth'
@@ -14,12 +13,14 @@ import type { IncomingMessage, ServerResponse } from 'http'
 export type ServerContext = MyContext & {
   req: IncomingMessage
   res: ServerResponse<IncomingMessage>
-
 }
 
 interface MyContext {
   user?: JwtUserPayloadInterface
 }
+
+const OPTIONS = 'OPTIONS'
+const ACCESS_CONTROL_ALLOW_ORIGIN = 'Access-Control-Allow-Origin'
 
 export const startupServer = async function () {
   const { resolvers, typeDefs } = await loadGraphQlSchema()
@@ -34,17 +35,22 @@ export const startupServer = async function () {
             footer: false,
           })
         : ApolloServerPluginLandingPageLocalDefault({ footer: false }),
-        httpHeadersPlugin
     ],
   })
   const { url } = await startStandaloneServer(server, {
     context: async ({ req, res }) => {
       const user = verifyTokenAndGetUser(req, res)
-      return { 
+
+      res.setHeader(
+        ACCESS_CONTROL_ALLOW_ORIGIN,
+        process.env.CLIENT_URL || 'https://karte.localhost'
+      )
+
+      return {
         user,
         req,
         res,
-       }
+      }
     },
     listen: { port: parseInt(process.env.SERVER_PORT || '3003') },
   })

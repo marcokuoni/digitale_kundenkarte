@@ -32,3 +32,35 @@ mutation addUser(
     ...UserFragment
   }
 }
+
+mutation signUp(
+  $name: String, 
+  $email: String, 
+  $newsletter: Boolean!, 
+  $password: String
+) {
+  signUp(
+    name: $name,
+    email: $email,
+    newsletter: $newsletter,
+    password: $password
+  )
+}
+
+mutation signIn(
+  $transferCode: String!,
+  $password: String
+) {
+  signIn(
+    transferCode: $transferCode,
+    password: $password
+  )
+}
+
+mutation signOut {
+  signOut
+}
+
+mutation refresh {
+  refresh
+}

@@ -11,4 +11,6 @@
 
 <script>
     import NavLink from '../components/NavLink.svelte'
+
+    //TODO: call refresh for auto redirect to card by success otherwise stay on home
 </script>

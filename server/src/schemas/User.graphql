@@ -30,7 +30,7 @@ type Mutation {
        newsletter: Boolean!
    ): User!
    signIn(transferCode: String!, password: String): Boolean!
-   signUp(password: String): Boolean!
-   refresh(): Boolean!
-   logout(): Boolean!
+   signUp(name: String, email: String, newsletter: Boolean!, password: String): Boolean!
+   refresh: Boolean!
+   signOut: Boolean!
 }

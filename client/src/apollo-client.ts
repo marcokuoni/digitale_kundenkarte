@@ -19,15 +19,15 @@ const authLink = setContext(() => {
 })
 
 const errorLink = onError(({ graphQLErrors}) => {
-  if (graphQLErrors) {
-    for (const err of graphQLErrors) {
-      switch (err.extensions.code) {
-        case "UNAUTHENTICATED":
-          Cookies.remove('token')
-          window.location.replace('/login')
-      }
-    }
-  }
+  // if (graphQLErrors) {
+  //   for (const err of graphQLErrors) {
+  //     switch (err.extensions.code) {
+  //       case "UNAUTHENTICATED":
+  //         Cookies.remove('token')
+  //         window.location.replace('/login')
+  //     }
+  //   }
+  // }
 });
 
 const offlineLink = new OfflineLink();

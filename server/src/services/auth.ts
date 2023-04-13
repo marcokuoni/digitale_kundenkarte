@@ -1,6 +1,5 @@
 import * as jwt from 'jsonwebtoken'
 import type Jwt from 'jsonwebtoken'
-import crypto from 'crypto'
 import { GraphQLError } from 'graphql'
 import type { IncomingMessage, ServerResponse } from 'http'
 
@@ -11,6 +10,7 @@ import {
   revokeRefreshToken,
 } from '../services/token'
 import User from '../models/user'
+import { iNewUser } from '../resolvers/user'
 
 const jwtKey = process.env.JWT_KEY as Jwt.Secret
 const jwtRefreshKey = process.env.JWT_REFRESH_KEY as Jwt.Secret
@@ -41,19 +41,15 @@ export const verifyTokenAndGetUser = async (
   try {
     userPayload = jwt.verify(jwtAccessToken, jwtKey) as JwtUserPayloadInterface
   } catch (e) {
-    userPayload = await refresh(req, res)
+    const refreshToken = _getCookies(req)[jwtRefreshCookieName]
+    if (refreshToken) {
+      userPayload = await refresh(req, res)
+    }
   }
 
   if (userPayload) {
     const user = await getTokenUser(userPayload.token)
     return user
-  } else {
-    throw new GraphQLError('User is not authenticated', {
-      extensions: {
-        code: 'BAD_REQUEST',
-        http: { status: 400 },
-      },
-    })
   }
 }
 
@@ -61,7 +57,7 @@ export const verifyTokenAndGetUser = async (
 //TODO: no refresh token should be used twice or create an info for the user -> maybe he wants to revoke them all
 //TODO: if ip address of user changes, info for the user -> maybe he wants to revoke them all
 
-export const logout = async (
+export const signOut = async (
   req: IncomingMessage,
   res: ServerResponse<IncomingMessage>
 ) => {
@@ -83,15 +79,16 @@ export const logout = async (
 export const signUp = async (
   req: IncomingMessage,
   res: ServerResponse<IncomingMessage>,
-  password?: string
+  newUser?: iNewUser
 ) => {
-  const count = (await User.count() + 1).toString()
+  const count = ((await User.countDocuments()) + 1).toString()
   const user = await User.create({
     transfercode: '0000'.substring(String(count).length) + count,
-    password, //TODO: HASH PASSWORD
+    ...newUser,
+    password: newUser?.password, //TODO: HASH PASSWORD
   })
 
-  await signIn(req, res, user.transfercode)
+  await signIn(req, res, user.transfercode, newUser?.password)
 }
 
 export const signIn = async (

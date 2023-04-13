@@ -29,6 +29,10 @@ export type Card = {
 export type Mutation = {
   __typename?: 'Mutation';
   addUser: User;
+  refresh: Scalars['Boolean'];
+  signIn: Scalars['Boolean'];
+  signOut: Scalars['Boolean'];
+  signUp: Scalars['Boolean'];
 };
 
 
@@ -36,6 +40,20 @@ export type MutationAddUserArgs = {
   email?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   newsletter: Scalars['Boolean'];
+};
+
+
+export type MutationSignInArgs = {
+  password?: InputMaybe<Scalars['String']>;
+  transferCode: Scalars['String'];
+};
+
+
+export type MutationSignUpArgs = {
+  email?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+  newsletter: Scalars['Boolean'];
+  password?: InputMaybe<Scalars['String']>;
 };
 
 export type Query = {
@@ -75,6 +93,34 @@ export type AddUserMutationVariables = Exact<{
 
 export type AddUserMutation = { __typename?: 'Mutation', addUser: { __typename?: 'User', _id: string, name?: string | null, email?: string | null, newsletter?: boolean | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, stamps: Array<{ __typename?: 'Stamp', creationDate: any } | null> } | null> } };
 
+export type SignUpMutationVariables = Exact<{
+  name?: InputMaybe<Scalars['String']>;
+  email?: InputMaybe<Scalars['String']>;
+  newsletter: Scalars['Boolean'];
+  password?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type SignUpMutation = { __typename?: 'Mutation', signUp: boolean };
+
+export type SignInMutationVariables = Exact<{
+  transferCode: Scalars['String'];
+  password?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type SignInMutation = { __typename?: 'Mutation', signIn: boolean };
+
+export type SignOutMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SignOutMutation = { __typename?: 'Mutation', signOut: boolean };
+
+export type RefreshMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RefreshMutation = { __typename?: 'Mutation', refresh: boolean };
+
 export const UserFragmentFragmentDoc = gql`
     fragment UserFragment on User {
   _id
@@ -105,6 +151,26 @@ export const AddUserDoc = gql`
   }
 }
     ${UserFragmentFragmentDoc}`;
+export const SignUpDoc = gql`
+    mutation signUp($name: String, $email: String, $newsletter: Boolean!, $password: String) {
+  signUp(name: $name, email: $email, newsletter: $newsletter, password: $password)
+}
+    `;
+export const SignInDoc = gql`
+    mutation signIn($transferCode: String!, $password: String) {
+  signIn(transferCode: $transferCode, password: $password)
+}
+    `;
+export const SignOutDoc = gql`
+    mutation signOut {
+  signOut
+}
+    `;
+export const RefreshDoc = gql`
+    mutation refresh {
+  refresh
+}
+    `;
 export const getUsers = (
             options: Omit<
               WatchQueryOptions<GetUsersQueryVariables>, 
@@ -157,6 +223,54 @@ export const addUser = (
           ) => {
             const m = client.mutate<AddUserMutation, AddUserMutationVariables>({
               mutation: AddUserDoc,
+              ...options,
+            });
+            return m;
+          }
+export const signUp = (
+            options: Omit<
+              MutationOptions<any, SignUpMutationVariables>, 
+              "mutation"
+            >
+          ) => {
+            const m = client.mutate<SignUpMutation, SignUpMutationVariables>({
+              mutation: SignUpDoc,
+              ...options,
+            });
+            return m;
+          }
+export const signIn = (
+            options: Omit<
+              MutationOptions<any, SignInMutationVariables>, 
+              "mutation"
+            >
+          ) => {
+            const m = client.mutate<SignInMutation, SignInMutationVariables>({
+              mutation: SignInDoc,
+              ...options,
+            });
+            return m;
+          }
+export const signOut = (
+            options: Omit<
+              MutationOptions<any, SignOutMutationVariables>, 
+              "mutation"
+            >
+          ) => {
+            const m = client.mutate<SignOutMutation, SignOutMutationVariables>({
+              mutation: SignOutDoc,
+              ...options,
+            });
+            return m;
+          }
+export const refresh = (
+            options: Omit<
+              MutationOptions<any, RefreshMutationVariables>, 
+              "mutation"
+            >
+          ) => {
+            const m = client.mutate<RefreshMutation, RefreshMutationVariables>({
+              mutation: RefreshDoc,
               ...options,
             });
             return m;
