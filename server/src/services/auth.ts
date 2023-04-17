@@ -15,6 +15,7 @@ import {
   AUTHORIZATION,
   BEARER,
 } from '../lib/const'
+import { randomTokenString } from '../lib/helpers'
 
 const jwtKey = process.env.JWT_KEY as Jwt.Secret
 const jwtRefreshKey = process.env.JWT_REFRESH_KEY as Jwt.Secret
@@ -203,14 +204,19 @@ const _createTokensAndResponse = async (
   res: Response,
   userPayload: JwtUserPayloadInterface
 ) => {
-  //TODO: Set all jwt standard claims
   const token = jwt.sign(userPayload, jwtKey, {
     algorithm: 'HS256',
     expiresIn: jwtExpiry,
+    issuer: process.env.SERVER_URL || 'https://karte.localhost:5001',
+    audience: process.env.CLIENT_URL || 'https://karte.localhost',
+    jwtid: randomTokenString(),
   })
   const refreshToken = jwt.sign(userPayload, jwtRefreshKey, {
     algorithm: 'HS256',
     expiresIn: jwtRefreshExpiry,
+    issuer: process.env.SERVER_URL || 'https://karte.localhost:5001',
+    audience: process.env.CLIENT_URL || 'https://karte.localhost',
+    jwtid: randomTokenString(),
   })
 
   res

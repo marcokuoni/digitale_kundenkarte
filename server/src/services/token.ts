@@ -1,5 +1,4 @@
-import crypto from 'crypto'
-
+import { randomTokenString } from '../lib/helpers'
 import RefreshToken, { iRefreshToken } from '../models/refreshToken'
 
 const jwtRefreshExpiry = parseInt(process.env.JWT_REFRESH_EXPIRES_IN || '0')
@@ -51,12 +50,8 @@ export const generateRefreshToken = async (
 ): Promise<iRefreshToken> => {
   return await RefreshToken.create({
     user: userId,
-    token: _randomTokenString(),
+    token: randomTokenString(),
     expires: new Date(Date.now() + jwtRefreshExpiry),
     createdByIp: ipAddress,
   })
-}
-
-const _randomTokenString = () => {
-  return crypto.randomBytes(40).toString('hex')
 }

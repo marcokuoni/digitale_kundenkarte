@@ -39,7 +39,7 @@ services:
       context: client
       args:
         - CLIENT_PORT=$CLIENT_PORT
-        - SERVER_URL=$DOMAIN:$SERVER_ENTRY_PORT
+        - SERVER_URL=$CLIENT_URL:$SERVER_ENTRY_PORT
         - SCHEMA_VERSION_KEY=$SCHEMA_VERSION_KEY
         - SCHEMA_VERSION=$SCHEMA_VERSION
         - JWT_COOKIE_NAME=$JWT_COOKIE_NAME
@@ -89,6 +89,7 @@ services:
       - JWT_REFRESH_EXPIRES_IN=$JWT_REFRESH_EXPIRES_IN
       - JWT_REFRESH_COOKIE_NAME=$JWT_REFRESH_COOKIE_NAME
       - CLIENT_URL=$CLIENT_URL
+      - SERVER_URL=$CLIENT_URL:$SERVER_ENTRY_PORT
     restart: always
     volumes:
       - ./server:/usr/src/app
