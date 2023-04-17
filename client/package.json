@@ -41,7 +41,6 @@
     "@apollo/client": "^3.7.10",
     "apollo3-cache-persist": "^0.14.1",
     "graphql": "^16.6.0",
-    "js-cookie": "^3.0.1",
     "sirv-cli": "^2.0.0",
     "svelte-apollo": "^0.5.0",
     "svelte-icons-pack": "^2.1.0",

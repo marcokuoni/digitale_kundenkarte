@@ -22,7 +22,6 @@ const link = ApolloLink.from([
 const client = new ApolloClient({
   link,
   cache,
-  credentials: 'include',
   defaultOptions: {
     watchQuery: {
       errorPolicy: "all",

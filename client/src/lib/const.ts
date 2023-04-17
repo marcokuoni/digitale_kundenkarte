@@ -6,5 +6,5 @@ export enum PATHS {
     STAMP = 'stamp',
 }
 
-export const AUTHORIZATION = 'Authorization'
+export const AUTHORIZATION = 'authorization'
 export const BEARER = 'Bearer'

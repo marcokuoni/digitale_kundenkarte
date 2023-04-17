@@ -19,6 +19,12 @@ query getUsers {
   }
 }
 
+query getCurrentUser {
+  getCurrentUser {
+    ...UserFragment
+  }
+}
+
 mutation addUser(
   $name: String!,
   $email: String,

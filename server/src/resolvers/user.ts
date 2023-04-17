@@ -1,8 +1,8 @@
 import User from '../models/user'
 import { GraphQLScalarType } from 'graphql'
 import { Kind } from 'graphql/language'
-import { signIn, signUp, refresh, signOut } from '../services/auth'
-import type { ServerContext } from '../server'
+import { signIn, signUp, refresh, signOut, checkAccessRights } from '../services/auth'
+import type { ServerContext } from '../server_types'
 
 export interface iNewUser {
   name?: string
@@ -32,6 +32,10 @@ export const usersResolvers = {
     async getUsers() {
       return User.find()
     },
+    async getCurrentUser(root: never, args: never, context: ServerContext) {
+      checkAccessRights(context.user)
+      return context.user
+    }
   },
   Mutation: {
     async addUser(

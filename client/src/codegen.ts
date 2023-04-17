@@ -58,6 +58,7 @@ export type MutationSignUpArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  getCurrentUser: User;
   getUsers: Array<User>;
 };
 
@@ -83,6 +84,11 @@ export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetUsersQuery = { __typename?: 'Query', getUsers: Array<{ __typename?: 'User', _id: string, name?: string | null, email?: string | null, newsletter?: boolean | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, stamps: Array<{ __typename?: 'Stamp', creationDate: any } | null> } | null> }> };
+
+export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', _id: string, name?: string | null, email?: string | null, newsletter?: boolean | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, stamps: Array<{ __typename?: 'Stamp', creationDate: any } | null> } | null> } };
 
 export type AddUserMutationVariables = Exact<{
   name: Scalars['String'];
@@ -140,6 +146,13 @@ export const UserFragmentFragmentDoc = gql`
 export const GetUsersDoc = gql`
     query getUsers {
   getUsers {
+    ...UserFragment
+  }
+}
+    ${UserFragmentFragmentDoc}`;
+export const GetCurrentUserDoc = gql`
+    query getCurrentUser {
+  getCurrentUser {
     ...UserFragment
   }
 }
@@ -213,6 +226,50 @@ export const getUsers = (
                 >
               ) => {
                 return client.query<GetUsersQuery>({query: GetUsersDoc, ...options})
+              }
+            
+export const getCurrentUser = (
+            options: Omit<
+              WatchQueryOptions<GetCurrentUserQueryVariables>, 
+              "query"
+            >
+          ): Readable<
+            ApolloQueryResult<GetCurrentUserQuery> & {
+              query: ObservableQuery<
+                GetCurrentUserQuery,
+                GetCurrentUserQueryVariables
+              >;
+            }
+          > => {
+            const q = client.watchQuery({
+              query: GetCurrentUserDoc,
+              ...options,
+            });
+            var result = readable<
+              ApolloQueryResult<GetCurrentUserQuery> & {
+                query: ObservableQuery<
+                  GetCurrentUserQuery,
+                  GetCurrentUserQueryVariables
+                >;
+              }
+            >(
+              { data: {} as any, loading: true, error: undefined, networkStatus: 1, query: q },
+              (set) => {
+                q.subscribe((v: any) => {
+                  set({ ...v, query: q });
+                });
+              }
+            );
+            return result;
+          }
+        
+              export const AsyncgetCurrentUser = (
+                options: Omit<
+                  QueryOptions<GetCurrentUserQueryVariables>,
+                  "query"
+                >
+              ) => {
+                return client.query<GetCurrentUserQuery>({query: GetCurrentUserDoc, ...options})
               }
             
 export const addUser = (

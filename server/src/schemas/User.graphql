@@ -21,6 +21,7 @@ type User {
 
 type Query {
    getUsers: [User!]!
+   getCurrentUser: User!
 }
 
 type Mutation {

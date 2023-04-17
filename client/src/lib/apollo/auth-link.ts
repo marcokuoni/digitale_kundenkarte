@@ -1,4 +1,3 @@
-import Cookies from 'js-cookie'
 import { ApolloLink } from '@apollo/client'
 
 import { BEARER, AUTHORIZATION } from '../const'
@@ -8,7 +7,7 @@ type Headers = {
 }
 
 export default new ApolloLink((operation, forward) => {
-  const token = Cookies.get('process.env.JWT_COOKIE_NAME')
+  const token = localStorage.getItem('process.env.JWT_COOKIE_NAME')
 
   operation.setContext(({ headers }: { headers: Headers }) => ({
     headers: {
@@ -20,12 +19,12 @@ export default new ApolloLink((operation, forward) => {
   return forward(operation).map((result) => {
     const headers = operation.getContext().response.headers
     let jwtAccessToken = headers.get(AUTHORIZATION)
-
+        
     if (jwtAccessToken && jwtAccessToken.indexOf(`${BEARER} `) >= 0) {
       jwtAccessToken = jwtAccessToken.split(' ')[1]
+      localStorage.setItem('process.env.JWT_COOKIE_NAME', jwtAccessToken)
     }
 
-    Cookies.set('process.env.JWT_COOKIE_NAME', jwtAccessToken)
     return result
   })
 })

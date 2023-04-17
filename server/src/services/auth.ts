@@ -1,7 +1,7 @@
 import * as jwt from 'jsonwebtoken'
 import type Jwt from 'jsonwebtoken'
 import { GraphQLError } from 'graphql'
-import type { IncomingMessage, ServerResponse } from 'http'
+import { CookieOptions, Request, Response } from 'express'
 
 import {
   getTokenUser,
@@ -9,9 +9,12 @@ import {
   refreshRefreshToken,
   revokeRefreshToken,
 } from '../services/token'
-import User from '../models/user'
+import User, { iUser } from '../models/user'
 import { iNewUser } from '../resolvers/user'
-import { AUTHORIZATION, BEARER, SET_COOKIE, COOKIE_DEFAULT_SETTINGS } from '../lib/const'
+import {
+  AUTHORIZATION,
+  BEARER,
+} from '../lib/const'
 
 const jwtKey = process.env.JWT_KEY as Jwt.Secret
 const jwtRefreshKey = process.env.JWT_REFRESH_KEY as Jwt.Secret
@@ -19,26 +22,42 @@ const jwtExpiry = parseInt(process.env.JWT_EXPIRES_IN || '0')
 const jwtRefreshExpiry = parseInt(process.env.JWT_REFRESH_EXPIRES_IN || '0')
 const jwtRefreshCookieName =
   process.env.JWT_REFRESH_COOKIE_NAME || 'refresh_token'
+const cookieOptions: CookieOptions = {
+  httpOnly: true,
+  secure: true,
+  sameSite: 'strict',
+}
 
 export interface JwtUserPayloadInterface {
   token: string
 }
 
-export const verifyTokenAndGetUser = async (
-  req: IncomingMessage,
-  res: ServerResponse<IncomingMessage>
-) => {
+export const checkAccessRights = (user?: iUser, isInGroup = []) => {
+  if (!user) {
+    throw new GraphQLError('User is not authenticated', {
+      extensions: {
+        code: 'UNAUTHENTICATED',
+        http: { status: 401 },
+      },
+    })
+  }
+
+  //TODO: check if user is allowed to do this (e.g. if user is admin) and then throw unauthorized error
+  return true
+}
+
+export const verifyTokenAndGetUser = async (req: Request, res: Response) => {
   let jwtAccessToken = req.headers[AUTHORIZATION] as string
 
   if (jwtAccessToken && jwtAccessToken.indexOf(`${BEARER} `) >= 0) {
     jwtAccessToken = jwtAccessToken.split(' ')[1]
   }
-
   let userPayload: JwtUserPayloadInterface | null = null
   try {
     userPayload = jwt.verify(jwtAccessToken, jwtKey) as JwtUserPayloadInterface
   } catch (e) {
-    const refreshToken = _getCookies(req)[jwtRefreshCookieName]
+    //this is just working cause auth server is same as api server. but client works also without this refresh here, but needs one more request/roundtrip to refresh the access token
+    const refreshToken = req.cookies[jwtRefreshCookieName]
     if (refreshToken) {
       userPayload = await refresh(req, res)
     }
@@ -48,34 +67,37 @@ export const verifyTokenAndGetUser = async (
     const user = await getTokenUser(userPayload.token)
     return user
   }
+  return null
 }
 
 //TODO: API for get all refresh tokens which are not revoked from user with ip and the possability to delete revoke them
 //TODO: no refresh token should be used twice or create an info for the user -> maybe he wants to revoke them all
 //TODO: if ip address of user changes, info for the user -> maybe he wants to revoke them all
 
-export const signOut = async (
-  req: IncomingMessage,
-  res: ServerResponse<IncomingMessage>
-) => {
-  const refreshToken = _getCookies(req)[jwtRefreshCookieName]
+export const signOut = async (req: Request, res: Response) => {
+  const refreshToken = req.cookies[jwtRefreshCookieName]
   if (refreshToken) {
-    const userPayload = jwt.verify(
-      refreshToken,
-      jwtRefreshKey
-    ) as JwtUserPayloadInterface
-    await revokeRefreshToken(
-      userPayload.token,
-      req.socket.remoteAddress || '0.0.0.0'
-    )
+    try {
+      const userPayload = jwt.verify(
+        refreshToken,
+        jwtRefreshKey
+      ) as JwtUserPayloadInterface
+
+      await revokeRefreshToken(
+        userPayload.token,
+        req.socket.remoteAddress || '0.0.0.0'
+      )
+    } catch (e) {
+      //do nothing
+    }
   }
 
   _clearTokensAndResponse(res)
 }
 
 export const signUp = async (
-  req: IncomingMessage,
-  res: ServerResponse<IncomingMessage>,
+  req: Request,
+  res: Response,
   newUser?: iNewUser
 ) => {
   const count = ((await User.countDocuments()) + 1).toString()
@@ -89,8 +111,8 @@ export const signUp = async (
 }
 
 export const signIn = async (
-  req: IncomingMessage,
-  res: ServerResponse<IncomingMessage>,
+  req: Request,
+  res: Response,
   transferCode: string,
   password?: string
 ) => {
@@ -131,11 +153,8 @@ export const signIn = async (
   _createTokensAndResponse(res, userPayload)
 }
 
-export const refresh = async (
-  req: IncomingMessage,
-  res: ServerResponse<IncomingMessage>
-) => {
-  const refreshToken = _getCookies(req)[jwtRefreshCookieName]
+export const refresh = async (req: Request, res: Response) => {
+  const refreshToken = req.cookies[jwtRefreshCookieName]
   if (!refreshToken) {
     throw new GraphQLError('User is not authenticated', {
       extensions: {
@@ -161,6 +180,7 @@ export const refresh = async (
     _createTokensAndResponse(res, newUserPayload)
     return newUserPayload
   } catch (error) {
+    console.error(error);
     throw new GraphQLError('User is not authenticated', {
       extensions: {
         code: 'BAD_REQUEST',
@@ -170,17 +190,17 @@ export const refresh = async (
   }
 }
 
-const _clearTokensAndResponse = (res: ServerResponse<IncomingMessage>) => {
+const _clearTokensAndResponse = (res: Response) => {
   res
-    .setHeader(
-      SET_COOKIE,
-      `${jwtRefreshCookieName}=; Max-Age=0; ${COOKIE_DEFAULT_SETTINGS}`
-    )
     .setHeader(AUTHORIZATION, `${BEARER}`)
+    .cookie(jwtRefreshCookieName, '', {
+      maxAge: 0,
+      ...cookieOptions
+    })
 }
 
 const _createTokensAndResponse = async (
-  res: ServerResponse<IncomingMessage>,
+  res: Response,
   userPayload: JwtUserPayloadInterface
 ) => {
   //TODO: Set all jwt standard claims
@@ -194,25 +214,9 @@ const _createTokensAndResponse = async (
   })
 
   res
-    .setHeader(
-      SET_COOKIE,
-      `${jwtRefreshCookieName}=${refreshToken};${COOKIE_DEFAULT_SETTINGS}expires=${jwtRefreshExpiry}`
-    )
     .setHeader(AUTHORIZATION, `${BEARER} ${token}`)
-}
-
-const _getCookies = function (request: IncomingMessage) {
-  const cookies: {
-    [key: string]: string
-  } = {}
-  request.headers &&
-    request.headers.cookie &&
-    request.headers.cookie.split(';').forEach(function (cookie) {
-      const parts = cookie.match(/(.*?)=(.*)$/)
-      const key = parts && parts[1].trim()
-      if (key) {
-        cookies[parts[1].trim()] = (parts[2] || '').trim()
-      }
+    .cookie(jwtRefreshCookieName, refreshToken, {
+      maxAge: jwtRefreshExpiry * 1000,
+      ...cookieOptions
     })
-  return cookies
 }

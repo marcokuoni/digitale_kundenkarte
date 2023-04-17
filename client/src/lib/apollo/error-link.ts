@@ -2,7 +2,6 @@ import { ApolloClient, ApolloLink, fromPromise } from '@apollo/client'
 import { onError } from '@apollo/client/link/error'
 import { navigate } from 'svelte-routing'
 import gql from 'graphql-tag'
-import Cookies from 'js-cookie'
 
 import { PATHS } from '../const'
 import cache from './cache'
@@ -31,7 +30,6 @@ const link = ApolloLink.from([authLink, httpLink])
 const refreshTokenApiClient = new ApolloClient({
   link,
   cache,
-  credentials: 'include',
 })
 
 const resolvePendingRequests = () => {
@@ -58,7 +56,7 @@ const errorLink = onError(({ graphQLErrors, operation, forward }) => {
                 resolvePendingRequests()
                 setIsRefreshing(false)
 
-                Cookies.remove('process.env.JWT_COOKIE_NAME')
+                localStorage.removeItem('process.env.JWT_COOKIE_NAME')
                 await purge()
                 refreshTokenApiClient.resetStore()
 
