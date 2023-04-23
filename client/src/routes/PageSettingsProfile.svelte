@@ -4,6 +4,8 @@
   import { updateUser } from '../codegen'
   import { currentUser, fetchCurrentUser } from '../lib/currentUserStore'
   import { onMount } from 'svelte'
+  import NavLink from '../components/NavLink.svelte'
+  import { PATHS } from '../lib/const'
 
   onMount(() => {
     fetchCurrentUser()
@@ -104,6 +106,11 @@
     <input type="password" id="password" name="password" value={''} />
     <button type="submit">Update User</button>
   </form>
+
+  <footer>
+  <NavLink to={`${PATHS.SETTINGS}`}>Einstellungen</NavLink>
+  <NavLink to={PATHS.CARD}>Zu meiner Karte</NavLink>
+  </footer>
 </main>
 
 <style>

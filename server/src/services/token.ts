@@ -4,13 +4,7 @@ import RefreshToken, { iRefreshToken } from '../models/refreshToken'
 const jwtRefreshExpiry = parseInt(process.env.JWT_REFRESH_EXPIRES_IN || '0')
 
 export const revokeRefreshToken = async (token: string, ipAddress: string) => {
-  console.log('%ctoken.ts line:8 token', 'color: #007acc;', token)
   const refreshToken = await getRefreshToken(token)
-  console.log(
-    '%ctoken.ts line:10 refreshToken',
-    'color: #007acc;',
-    refreshToken
-  )
   refreshToken.revoked = Date.now()
   refreshToken.revokedByIp = ipAddress
 

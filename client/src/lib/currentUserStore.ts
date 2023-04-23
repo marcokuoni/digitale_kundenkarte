@@ -9,7 +9,7 @@ export const currentUserError = writable<string>('')
 
 export const fetchCurrentUser = () => {
   currentUserLoading.set(true)
-  console.log('%ccurrentUserStore.ts line:12 object', 'color: #007acc;', 11)
+  
   const query = getCurrentUser(
     {
       fetchPolicy: 'cache-first',
