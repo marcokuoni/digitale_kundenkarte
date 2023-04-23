@@ -3,6 +3,7 @@
   import { onMount } from 'svelte'
   import { navigate } from 'svelte-routing'
   import { refresh } from '../codegen'
+  import { PATHS } from '../lib/const'
 
   onMount(() => {
     const refreshQuery = refresh({})
@@ -28,6 +29,6 @@
 
 <h1>Home page</h1>
 <nav>
-  <NavLink to="create-user">Ich möchte eine Karte erstellen</NavLink>
-  <NavLink to="login-user">Ich besitze bereits eine Karte</NavLink>
+  <NavLink to={PATHS.CREATE_USER}>Ich möchte eine Karte erstellen</NavLink>
+  <NavLink to={PATHS.LOGIN_USER}>Ich besitze bereits eine Karte</NavLink>
 </nav>

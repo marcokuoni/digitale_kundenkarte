@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { addUser, getUsers, GetUsersDoc, AddUserDoc } from '../codegen'
+  // import { addUser, getUsers, GetUsersDoc, AddUserDoc } from '../codegen'
   import gql from 'graphql-tag'
 
   $: name = ''
-  $: query = getUsers({})
+  // $: query = getUsers({})
 </script>
 
 <br />
@@ -14,54 +14,54 @@
     <button
       disabled={name.length === 0}
       on:click={() => {
-        addUser({
-          variables: {
-            name,
-          },
-          update: (cache, { data: { addUser } }) => {
-            cache.modify({
-              fields: {
-                getUsers(existingUsers = []) {
-                  const newUserRef = cache.writeFragment({
-                    data: addUser,
-                    fragment: gql`
-                      fragment NewUser on User {
-                        __typename
-                        _id
-                        email
-                        newsletter
-                        cards
-                        createdAt
-                        updatedAt
-                        name
-                      }
-                    `,
-                  })
-                  return existingUsers.concat(newUserRef)
-                },
-              },
-            })
-          },
-          optimisticResponse: {
-            addUser: {
-              __typename: 'User',
-              _id: new Date().getTime(),
-              email: '',
-              newsletter: false,
-              cards: new Array(),
-              createdAt: Date.now(),
-              updatedAt: Date.now(),
-              name,
-            },
-          },
-        })
+        // addUser({
+        //   variables: {
+        //     name,
+        //   },
+        //   update: (cache, { data: { addUser } }) => {
+        //     cache.modify({
+        //       fields: {
+        //         getUsers(existingUsers = []) {
+        //           const newUserRef = cache.writeFragment({
+        //             data: addUser,
+        //             fragment: gql`
+        //               fragment NewUser on User {
+        //                 __typename
+        //                 _id
+        //                 email
+        //                 newsletter
+        //                 cards
+        //                 createdAt
+        //                 updatedAt
+        //                 name
+        //               }
+        //             `,
+        //           })
+        //           return existingUsers.concat(newUserRef)
+        //         },
+        //       },
+        //     })
+        //   },
+        //   optimisticResponse: {
+        //     addUser: {
+        //       __typename: 'User',
+        //       _id: new Date().getTime(),
+        //       email: '',
+        //       newsletter: false,
+        //       cards: new Array(),
+        //       createdAt: Date.now(),
+        //       updatedAt: Date.now(),
+        //       name,
+        //     },
+        //   },
+        // })
         name = ''
       }}>Add</button
     >
   </div>
   <div class="card">
     <h2>List of Codegen Users</h2>
-    {#if $query.loading}
+    <!-- {#if $query.loading}
       <p>...loading users</p>
     {:else}
       {#if $query.data?.getUsers.length === 0}
@@ -71,7 +71,7 @@
         <div>User {i + 1} -&gt; {user.name}</div>
       {/each}
       <button on:click={() => $query.query.refetch({})}>Refresh</button>
-    {/if}
+    {/if} -->
   </div>
 </main>
 

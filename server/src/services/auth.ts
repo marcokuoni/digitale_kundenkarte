@@ -114,10 +114,10 @@ export const signUp = async (
 export const signIn = async (
   req: Request,
   res: Response,
-  transferCode: string,
+  transfercode: string,
   password?: string
 ) => {
-  const user = await User.findOne({ transfercode: transferCode })
+  const user = await User.findOne({ transfercode: transfercode })
   if (password || user.password) {
     //TODO: check user password to give more access rights with hash
     if (password !== user.password) {
@@ -133,7 +133,7 @@ export const signIn = async (
     }
   }
 
-  if (!transferCode || !user) {
+  if (!transfercode || !user) {
     throw new GraphQLError('User is not authenticated', {
       extensions: {
         code: 'UNAUTHENTICATED',

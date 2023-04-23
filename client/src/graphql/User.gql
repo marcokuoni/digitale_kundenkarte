@@ -1,5 +1,6 @@
 fragment UserFragment on User {
   _id
+  transfercode
   name
   email
   newsletter
@@ -25,42 +26,40 @@ query getCurrentUser {
   }
 }
 
-mutation addUser(
-  $name: String!,
-  $email: String,
+mutation updateUser(
+  $_id: ID!
+  $name: String
+  $email: String
   $newsletter: Boolean!
+  $password: String
 ) {
-  addUser(
-    name: $name,
-    email: $email,
+  updateUser(
+    _id: $_id
+    name: $name
+    email: $email
     newsletter: $newsletter
+    password: $password
   ) {
     ...UserFragment
   }
 }
 
 mutation signUp(
-  $name: String, 
-  $email: String, 
-  $newsletter: Boolean!, 
+  $name: String
+  $email: String
+  $newsletter: Boolean!
   $password: String
 ) {
   signUp(
-    name: $name,
-    email: $email,
-    newsletter: $newsletter,
+    name: $name
+    email: $email
+    newsletter: $newsletter
     password: $password
   )
 }
 
-mutation signIn(
-  $transferCode: String!,
-  $password: String
-) {
-  signIn(
-    transferCode: $transferCode,
-    password: $password
-  )
+mutation signIn($transfercode: String!, $password: String) {
+  signIn(transfercode: $transfercode, password: $password)
 }
 
 mutation signOut {

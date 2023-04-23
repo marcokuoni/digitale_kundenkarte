@@ -1,18 +1,20 @@
 <script lang="ts">
-  import { addUser, getUsers } from '../codegen.js'
-  import gql from 'graphql-tag'
   import { getCurrentUser } from '../codegen'
   import Card from '../components/Card.svelte'
   import CardSettings from '../components/CardSettings.svelte'
   import Logout from '../components/Logout.svelte'
+  import { PATHS } from '../lib/const.js'
+  import NavLink from '../components/NavLink.svelte'
+  import { currentUser, fetchCurrentUser, currentUserLoading, currentUserError } from '../lib/currentUserStore'
+  import { onMount } from 'svelte'
 
-  let inputName = ''
-  let inputEmail = ''
-  let inputNewsletter = false
-
-  $: query = getCurrentUser({
-    pollInterval:5000
+  const loading = true
+  
+  onMount(() => {
+    fetchCurrentUser()
   })
+
+  //TODO: save current user in store
 
   let settingsOverlayVisible = false
 
@@ -29,11 +31,11 @@
 </script>
 
 <main>
-  {#if $query.loading}
+  {#if $currentUserLoading}
     <!-- TODO: we need a way to communicate loading and alert states to the user? -->
     <span>Loading...</span>
-  {:else if $query.error}
-    <span>Error: {$query.error.message}</span>
+  {:else if $currentUserError}
+    <span>Error: {$currentUserError}</span>
   {:else}
     <section class="card-section">
       <div class="card-wrapper">
@@ -46,8 +48,8 @@
       <div class="info-wrapper">
         <!-- TODO: Make uppercase by css-->
         <p class="info-label">NAME</p>
-        {#if $query.data?.getCurrentUser.name}
-          <p class="info-text">Hallo {$query.data?.getCurrentUser.name}</p>
+        {#if $currentUser && $currentUser.name}
+          <p class="info-text">Hallo {$currentUser.name}</p>
         {/if}
 
         <div class="info-group">
@@ -67,6 +69,7 @@
 
     <section class="footer-section">
       <div class="footer">
+        <NavLink to={PATHS.SETTINGS}>Einstellungen</NavLink>
         <button on:click={toggleOverlayVisibility}>EINSTELLUNGEN</button>
         <a href="https://thecrownbar.ch">WEBSITE</a>
         <a href="https://instagram.com/thecrownbarrappi">INSTAGRAM</a>

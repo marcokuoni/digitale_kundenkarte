@@ -2,13 +2,13 @@
   import { signIn } from '../codegen'
   import { navigate } from 'svelte-routing'
 
-  let transferCode = ''
+  let transfercode = ''
   let password = ''
 
   async function loginUser() {
     const { data } = await signIn({
       variables: {
-        transferCode,
+        transfercode,
         password,
       },
     })
@@ -22,8 +22,8 @@
 
 <h1>Login User</h1>
 <form on:submit|preventDefault={loginUser}>
-  <label for="transferCode">Transfer Code</label>
-  <input type="text" id="transferCode" bind:value={transferCode} />
+  <label for="transfercode">Transfer Code</label>
+  <input type="text" id="transfercode" bind:value={transfercode} />
   <!-- TODO: Password should only be visible if requested -->
   <label for="password">Password</label>
   <input type="password" id="password" bind:value={password} />

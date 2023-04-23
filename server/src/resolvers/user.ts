@@ -11,6 +11,13 @@ export interface iNewUser {
   password?: string
 }
 
+interface iUpdateUser {
+  name: string
+  email: string
+  newsletter: boolean
+  password?: string
+}
+
 export const usersResolvers = {
   Date: new GraphQLScalarType<Date | null, number>({
     name: 'Date',
@@ -38,36 +45,39 @@ export const usersResolvers = {
     }
   },
   Mutation: {
-    async addUser(
+    async updateUser(
       root: never,
       {
+        _id,
         name,
         email,
         newsletter,
-      }: {
-        name: string
-        email: string
-        newsletter: boolean
-      }
+        password,
+      }: {_id: string} & iUpdateUser
     ) {
-      return await User.create({
+      const values: iUpdateUser = {
         name,
         email,
         newsletter,
-      })
+      }
+      if (password) {
+        values.password = password
+      }
+
+      return await User.findOneAndUpdate({_id}, values, {new: true})
     },
     async signIn(
       root: never,
       {
-        transferCode,
+        transfercode,
         password,
       }: {
-        transferCode: string
+        transfercode: string
         password: string
       },
       context: ServerContext
     ) {
-      await signIn(context.req, context.res, transferCode, password)
+      await signIn(context.req, context.res, transfercode, password)
       return true
     },
     async signUp(root: never, newUser: iNewUser, context: ServerContext) {

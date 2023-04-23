@@ -12,6 +12,9 @@
   import PageHome from './routes/PageHome.svelte'
   import PageLogin from './routes/PageLogin.svelte'
   import { PATHS } from './lib/const'
+  import PageSettings from './routes/PageSettings.svelte'
+  import PageSettingsProfile from './routes/PageSettingsProfile.svelte'
+  import PageSettingsConnected from './routes/PageSettingsConnected.svelte'
 
   export let url = ''
 </script>
@@ -31,6 +34,7 @@
           <PageMutation />
         </Route>
       </div>
+      <!-- //TODO: remove demo routes-->
       <div>
         <Route path={PATHS.HOME}>
           <PageHome />
@@ -50,6 +54,18 @@
 
         <Route path={PATHS.STAMP}>
           <PageStamp />
+        </Route>
+
+        <Route path={PATHS.SETTINGS}>
+          <PageSettings />
+        </Route>
+
+        <Route path={`${PATHS.SETTINGS}/${PATHS.PROFILE}`}>
+          <PageSettingsProfile />
+        </Route>
+
+        <Route path={`${PATHS.SETTINGS}/${PATHS.CONNECTED}`}>
+          <PageSettingsConnected />
         </Route>
       </div>
     </Router>

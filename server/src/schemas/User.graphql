@@ -1,18 +1,19 @@
 scalar Date
 
 type Stamp {
-   creationDate: Date!
+  creationDate: Date!
 }
 
 type Card {
-   creationDate: Date!
-   stamps: [Stamp]!
+  creationDate: Date!
+  stamps: [Stamp]!
 }
 
 type User {
   _id: ID!
+  transfercode: String!
   name: String
-  email: String,
+  email: String
   newsletter: Boolean
   cards: [Card]!
   createdAt: Date!
@@ -20,18 +21,25 @@ type User {
 }
 
 type Query {
-   getUsers: [User!]!
-   getCurrentUser: User!
+  getUsers: [User!]!
+  getCurrentUser: User!
 }
 
 type Mutation {
-   addUser(
-       name: String!,
-       email: String,
-       newsletter: Boolean!
-   ): User!
-   signIn(transferCode: String!, password: String): Boolean!
-   signUp(name: String, email: String, newsletter: Boolean!, password: String): Boolean!
-   refresh: Boolean!
-   signOut: Boolean!
+  updateUser(
+    _id: ID!
+    name: String
+    email: String
+    newsletter: Boolean!
+    password: String
+  ): User!
+  signIn(transfercode: String!, password: String): Boolean!
+  signUp(
+    name: String
+    email: String
+    newsletter: Boolean!
+    password: String
+  ): Boolean!
+  refresh: Boolean!
+  signOut: Boolean!
 }

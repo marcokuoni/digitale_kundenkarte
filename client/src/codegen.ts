@@ -28,28 +28,30 @@ export type Card = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addUser: User;
   refresh: Scalars['Boolean'];
   signIn: Scalars['Boolean'];
   signOut: Scalars['Boolean'];
   signUp: Scalars['Boolean'];
-};
-
-
-export type MutationAddUserArgs = {
-  email?: InputMaybe<Scalars['String']>;
-  name: Scalars['String'];
-  newsletter: Scalars['Boolean'];
+  updateUser: User;
 };
 
 
 export type MutationSignInArgs = {
   password?: InputMaybe<Scalars['String']>;
-  transferCode: Scalars['String'];
+  transfercode: Scalars['String'];
 };
 
 
 export type MutationSignUpArgs = {
+  email?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+  newsletter: Scalars['Boolean'];
+  password?: InputMaybe<Scalars['String']>;
+};
+
+
+export type MutationUpdateUserArgs = {
+  _id: Scalars['ID'];
   email?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   newsletter: Scalars['Boolean'];
@@ -75,29 +77,32 @@ export type User = {
   email?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   newsletter?: Maybe<Scalars['Boolean']>;
+  transfercode: Scalars['String'];
   updatedAt: Scalars['Date'];
 };
 
-export type UserFragmentFragment = { __typename?: 'User', _id: string, name?: string | null, email?: string | null, newsletter?: boolean | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, stamps: Array<{ __typename?: 'Stamp', creationDate: any } | null> } | null> };
+export type UserFragmentFragment = { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, stamps: Array<{ __typename?: 'Stamp', creationDate: any } | null> } | null> };
 
 export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUsersQuery = { __typename?: 'Query', getUsers: Array<{ __typename?: 'User', _id: string, name?: string | null, email?: string | null, newsletter?: boolean | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, stamps: Array<{ __typename?: 'Stamp', creationDate: any } | null> } | null> }> };
+export type GetUsersQuery = { __typename?: 'Query', getUsers: Array<{ __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, stamps: Array<{ __typename?: 'Stamp', creationDate: any } | null> } | null> }> };
 
 export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', _id: string, name?: string | null, email?: string | null, newsletter?: boolean | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, stamps: Array<{ __typename?: 'Stamp', creationDate: any } | null> } | null> } };
+export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, stamps: Array<{ __typename?: 'Stamp', creationDate: any } | null> } | null> } };
 
-export type AddUserMutationVariables = Exact<{
-  name: Scalars['String'];
+export type UpdateUserMutationVariables = Exact<{
+  _id: Scalars['ID'];
+  name?: InputMaybe<Scalars['String']>;
   email?: InputMaybe<Scalars['String']>;
   newsletter: Scalars['Boolean'];
+  password?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type AddUserMutation = { __typename?: 'Mutation', addUser: { __typename?: 'User', _id: string, name?: string | null, email?: string | null, newsletter?: boolean | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, stamps: Array<{ __typename?: 'Stamp', creationDate: any } | null> } | null> } };
+export type UpdateUserMutation = { __typename?: 'Mutation', updateUser: { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, stamps: Array<{ __typename?: 'Stamp', creationDate: any } | null> } | null> } };
 
 export type SignUpMutationVariables = Exact<{
   name?: InputMaybe<Scalars['String']>;
@@ -110,7 +115,7 @@ export type SignUpMutationVariables = Exact<{
 export type SignUpMutation = { __typename?: 'Mutation', signUp: boolean };
 
 export type SignInMutationVariables = Exact<{
-  transferCode: Scalars['String'];
+  transfercode: Scalars['String'];
   password?: InputMaybe<Scalars['String']>;
 }>;
 
@@ -130,6 +135,7 @@ export type RefreshMutation = { __typename?: 'Mutation', refresh: boolean };
 export const UserFragmentFragmentDoc = gql`
     fragment UserFragment on User {
   _id
+  transfercode
   name
   email
   newsletter
@@ -157,9 +163,15 @@ export const GetCurrentUserDoc = gql`
   }
 }
     ${UserFragmentFragmentDoc}`;
-export const AddUserDoc = gql`
-    mutation addUser($name: String!, $email: String, $newsletter: Boolean!) {
-  addUser(name: $name, email: $email, newsletter: $newsletter) {
+export const UpdateUserDoc = gql`
+    mutation updateUser($_id: ID!, $name: String, $email: String, $newsletter: Boolean!, $password: String) {
+  updateUser(
+    _id: $_id
+    name: $name
+    email: $email
+    newsletter: $newsletter
+    password: $password
+  ) {
     ...UserFragment
   }
 }
@@ -170,8 +182,8 @@ export const SignUpDoc = gql`
 }
     `;
 export const SignInDoc = gql`
-    mutation signIn($transferCode: String!, $password: String) {
-  signIn(transferCode: $transferCode, password: $password)
+    mutation signIn($transfercode: String!, $password: String) {
+  signIn(transfercode: $transfercode, password: $password)
 }
     `;
 export const SignOutDoc = gql`
@@ -272,14 +284,14 @@ export const getCurrentUser = (
                 return client.query<GetCurrentUserQuery>({query: GetCurrentUserDoc, ...options})
               }
             
-export const addUser = (
+export const updateUser = (
             options: Omit<
-              MutationOptions<any, AddUserMutationVariables>, 
+              MutationOptions<any, UpdateUserMutationVariables>, 
               "mutation"
             >
           ) => {
-            const m = client.mutate<AddUserMutation, AddUserMutationVariables>({
-              mutation: AddUserDoc,
+            const m = client.mutate<UpdateUserMutation, UpdateUserMutationVariables>({
+              mutation: UpdateUserDoc,
               ...options,
             });
             return m;
