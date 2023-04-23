@@ -48,7 +48,7 @@ const errorLink = onError(({ graphQLErrors, operation, forward }) => {
     for (const err of graphQLErrors) {
       switch (err.extensions.code) {
         case 'BAD_REQUEST':
-          //something bad is going on, most of the time the client has an revoked cookie
+          console.error('probably refresh token failed/revoked')
           localStorage.removeItem('process.env.JWT_COOKIE_NAME')
           purge()
           refreshTokenApiClient.resetStore()

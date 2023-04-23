@@ -6,7 +6,7 @@
   let error = ''
   $: query = getActiveRefreshTokens({
     fetchPolicy: 'network-only',
-    //needed cause fast changing properties here :)
+    //needed cause fast changing properties here :) if refresh token gets exchanged in meantime the _id will already been outdated.
     pollInterval: 100,
   })
 
