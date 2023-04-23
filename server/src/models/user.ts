@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 const Schema = mongoose.Schema
 
 export interface iUser {
+  _id: string
   name?: string
   email?: string
   newsletter?: boolean

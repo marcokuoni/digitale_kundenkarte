@@ -20,9 +20,22 @@ type User {
   updatedAt: Date!
 }
 
+type RefreshToken {
+  _id: ID!
+  user: User!
+  expires: Date!
+  created: Date!
+  createdByIp: String!
+  createdByUserAgent: String!
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+
 type Query {
   getUsers: [User!]!
   getCurrentUser: User!
+  getActiveRefreshTokens: [RefreshToken!]!
 }
 
 type Mutation {
@@ -42,4 +55,5 @@ type Mutation {
   ): Boolean!
   refresh: Boolean!
   signOut: Boolean!
+  revokeRefreshToken(_id: ID!): Boolean!
 }

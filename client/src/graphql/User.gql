@@ -14,6 +14,19 @@ fragment UserFragment on User {
   updatedAt
 }
 
+fragment RefreshTokenFragment on RefreshToken {
+  _id
+  user {
+    _id
+  }
+  expires
+  created
+  createdByIp
+  createdByUserAgent
+  createdAt
+  updatedAt
+}
+
 query getUsers {
   getUsers {
     ...UserFragment
@@ -23,6 +36,12 @@ query getUsers {
 query getCurrentUser {
   getCurrentUser {
     ...UserFragment
+  }
+}
+
+query getActiveRefreshTokens {
+  getActiveRefreshTokens {
+    ...RefreshTokenFragment
   }
 }
 
@@ -68,4 +87,8 @@ mutation signOut {
 
 mutation refresh {
   refresh
+}
+
+mutation revokeRefreshToken($_id: ID!) {
+  revokeRefreshToken(_id: $_id)
 }

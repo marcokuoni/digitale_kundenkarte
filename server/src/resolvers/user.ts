@@ -1,7 +1,15 @@
 import User from '../models/user'
+import RefreshToken from '../models/refreshToken'
 import { GraphQLScalarType } from 'graphql'
 import { Kind } from 'graphql/language'
-import { signIn, signUp, refresh, signOut, checkAccessRights } from '../services/auth'
+import {
+  signIn,
+  signUp,
+  refresh,
+  signOut,
+  checkAccessRights,
+  revokeRefreshTokenManualy,
+} from '../services/auth'
 import type { ServerContext } from '../server_types'
 
 export interface iNewUser {
@@ -42,18 +50,28 @@ export const usersResolvers = {
     async getCurrentUser(root: never, args: never, context: ServerContext) {
       checkAccessRights(context.user)
       return context.user
-    }
+    },
+    //TODO: API for get all refresh tokens which are not revoked from user with ip and the possability to delete revoke them
+    async getActiveRefreshTokens(
+      root: never,
+      args: never,
+      context: ServerContext
+    ) {
+      checkAccessRights(context.user)
+      if (context.user) {
+        //@ts-ignore
+        return RefreshToken.find({
+          user: context.user._id,
+          revoked: { $exists: false },
+        }).exec()
+      }
+      return []
+    },
   },
   Mutation: {
     async updateUser(
       root: never,
-      {
-        _id,
-        name,
-        email,
-        newsletter,
-        password,
-      }: {_id: string} & iUpdateUser
+      { _id, name, email, newsletter, password }: { _id: string } & iUpdateUser
     ) {
       const values: iUpdateUser = {
         name,
@@ -64,7 +82,7 @@ export const usersResolvers = {
         values.password = password
       }
 
-      return await User.findOneAndUpdate({_id}, values, {new: true})
+      return await User.findOneAndUpdate({ _id }, values, { new: true })
     },
     async signIn(
       root: never,
@@ -90,6 +108,14 @@ export const usersResolvers = {
     },
     async signOut(root: never, args: never, context: ServerContext) {
       await signOut(context.req, context.res)
+      return true
+    },
+    async revokeRefreshToken(
+      root: never,
+      { _id }: { _id: string },
+      context: ServerContext
+    ) {
+      await revokeRefreshTokenManualy(context.req, _id)
       return true
     },
   },

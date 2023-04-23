@@ -8,13 +8,11 @@ import {
   generateRefreshToken,
   refreshRefreshToken,
   revokeRefreshToken,
+  revokeRefreshTokenById,
 } from '../services/token'
 import User, { iUser } from '../models/user'
 import { iNewUser } from '../resolvers/user'
-import {
-  AUTHORIZATION,
-  BEARER,
-} from '../lib/const'
+import { AUTHORIZATION, BEARER, UNKNOWN, USER_AGENT } from '../lib/const'
 import { randomTokenString } from '../lib/helpers'
 
 const jwtKey = process.env.JWT_KEY as Jwt.Secret
@@ -71,10 +69,6 @@ export const verifyTokenAndGetUser = async (req: Request, res: Response) => {
   return null
 }
 
-//TODO: API for get all refresh tokens which are not revoked from user with ip and the possability to delete revoke them
-//TODO: no refresh token should be used twice or create an info for the user -> maybe he wants to revoke them all
-//TODO: if ip address of user changes, info for the user -> maybe he wants to revoke them all
-
 export const signOut = async (req: Request, res: Response) => {
   const refreshToken = req.cookies[jwtRefreshCookieName]
   if (refreshToken) {
@@ -86,7 +80,8 @@ export const signOut = async (req: Request, res: Response) => {
 
       await revokeRefreshToken(
         userPayload.token,
-        req.socket.remoteAddress || '0.0.0.0'
+        req.socket.remoteAddress || '0.0.0.0',
+        req.headers[USER_AGENT] || UNKNOWN
       )
     } catch (e) {
       //do nothing
@@ -94,6 +89,14 @@ export const signOut = async (req: Request, res: Response) => {
   }
 
   _clearTokensAndResponse(res)
+}
+
+export const revokeRefreshTokenManualy = async (req: Request, _id: string) => {
+  await revokeRefreshTokenById(
+    _id,
+    req.socket.remoteAddress || '0.0.0.0',
+    req.headers[USER_AGENT] || UNKNOWN
+  )
 }
 
 export const signUp = async (
@@ -144,7 +147,8 @@ export const signIn = async (
 
   const refreshTokenDb = await generateRefreshToken(
     user.id,
-    req.socket.remoteAddress || '0.0.0.0'
+    req.socket.remoteAddress || '0.0.0.0',
+    req.headers[USER_AGENT] || UNKNOWN
   )
 
   const userPayload: JwtUserPayloadInterface = {
@@ -172,7 +176,8 @@ export const refresh = async (req: Request, res: Response) => {
     ) as JwtUserPayloadInterface
     const newRefreshTokenDb = await refreshRefreshToken(
       userPayload.token,
-      req.socket.remoteAddress || '0.0.0.0'
+      req.socket.remoteAddress || '0.0.0.0',
+      req.headers[USER_AGENT] || UNKNOWN
     )
     const newUserPayload: JwtUserPayloadInterface = {
       token: newRefreshTokenDb.token,
@@ -181,7 +186,8 @@ export const refresh = async (req: Request, res: Response) => {
     _createTokensAndResponse(res, newUserPayload)
     return newUserPayload
   } catch (error) {
-    console.error(error);
+    _clearTokensAndResponse(res)
+    console.error(error)
     throw new GraphQLError('User is not authenticated', {
       extensions: {
         code: 'BAD_REQUEST',
@@ -192,12 +198,10 @@ export const refresh = async (req: Request, res: Response) => {
 }
 
 const _clearTokensAndResponse = (res: Response) => {
-  res
-    .setHeader(AUTHORIZATION, `${BEARER}`)
-    .cookie(jwtRefreshCookieName, '', {
-      maxAge: 0,
-      ...cookieOptions
-    })
+  res.setHeader(AUTHORIZATION, `${BEARER}`).cookie(jwtRefreshCookieName, '', {
+    maxAge: 0,
+    ...cookieOptions,
+  })
 }
 
 const _createTokensAndResponse = async (
@@ -223,6 +227,6 @@ const _createTokensAndResponse = async (
     .setHeader(AUTHORIZATION, `${BEARER} ${token}`)
     .cookie(jwtRefreshCookieName, refreshToken, {
       maxAge: jwtRefreshExpiry * 1000,
-      ...cookieOptions
+      ...cookieOptions,
     })
 }

@@ -47,6 +47,13 @@ const errorLink = onError(({ graphQLErrors, operation, forward }) => {
   if (graphQLErrors) {
     for (const err of graphQLErrors) {
       switch (err.extensions.code) {
+        case 'BAD_REQUEST':
+          //something bad is going on, most of the time the client has an revoked cookie
+          localStorage.removeItem('process.env.JWT_COOKIE_NAME')
+          purge()
+          refreshTokenApiClient.resetStore()
+          navigate(`/${PATHS.LOGIN_USER}`)
+          break
         case 'UNAUTHENTICATED':
           if (!isRefreshing) {
             setIsRefreshing(true)

@@ -29,10 +29,16 @@ export type Card = {
 export type Mutation = {
   __typename?: 'Mutation';
   refresh: Scalars['Boolean'];
+  revokeRefreshToken: Scalars['Boolean'];
   signIn: Scalars['Boolean'];
   signOut: Scalars['Boolean'];
   signUp: Scalars['Boolean'];
   updateUser: User;
+};
+
+
+export type MutationRevokeRefreshTokenArgs = {
+  _id: Scalars['ID'];
 };
 
 
@@ -60,8 +66,21 @@ export type MutationUpdateUserArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  getActiveRefreshTokens: Array<RefreshToken>;
   getCurrentUser: User;
   getUsers: Array<User>;
+};
+
+export type RefreshToken = {
+  __typename?: 'RefreshToken';
+  _id: Scalars['ID'];
+  created: Scalars['Date'];
+  createdAt: Scalars['Date'];
+  createdByIp: Scalars['String'];
+  createdByUserAgent: Scalars['String'];
+  expires: Scalars['Date'];
+  updatedAt: Scalars['Date'];
+  user: User;
 };
 
 export type Stamp = {
@@ -83,6 +102,8 @@ export type User = {
 
 export type UserFragmentFragment = { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, stamps: Array<{ __typename?: 'Stamp', creationDate: any } | null> } | null> };
 
+export type RefreshTokenFragmentFragment = { __typename?: 'RefreshToken', _id: string, expires: any, created: any, createdByIp: string, createdByUserAgent: string, createdAt: any, updatedAt: any, user: { __typename?: 'User', _id: string } };
+
 export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -92,6 +113,11 @@ export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, stamps: Array<{ __typename?: 'Stamp', creationDate: any } | null> } | null> } };
+
+export type GetActiveRefreshTokensQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetActiveRefreshTokensQuery = { __typename?: 'Query', getActiveRefreshTokens: Array<{ __typename?: 'RefreshToken', _id: string, expires: any, created: any, createdByIp: string, createdByUserAgent: string, createdAt: any, updatedAt: any, user: { __typename?: 'User', _id: string } }> };
 
 export type UpdateUserMutationVariables = Exact<{
   _id: Scalars['ID'];
@@ -132,6 +158,13 @@ export type RefreshMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type RefreshMutation = { __typename?: 'Mutation', refresh: boolean };
 
+export type RevokeRefreshTokenMutationVariables = Exact<{
+  _id: Scalars['ID'];
+}>;
+
+
+export type RevokeRefreshTokenMutation = { __typename?: 'Mutation', revokeRefreshToken: boolean };
+
 export const UserFragmentFragmentDoc = gql`
     fragment UserFragment on User {
   _id
@@ -145,6 +178,20 @@ export const UserFragmentFragmentDoc = gql`
       creationDate
     }
   }
+  createdAt
+  updatedAt
+}
+    `;
+export const RefreshTokenFragmentFragmentDoc = gql`
+    fragment RefreshTokenFragment on RefreshToken {
+  _id
+  user {
+    _id
+  }
+  expires
+  created
+  createdByIp
+  createdByUserAgent
   createdAt
   updatedAt
 }
@@ -163,6 +210,13 @@ export const GetCurrentUserDoc = gql`
   }
 }
     ${UserFragmentFragmentDoc}`;
+export const GetActiveRefreshTokensDoc = gql`
+    query getActiveRefreshTokens {
+  getActiveRefreshTokens {
+    ...RefreshTokenFragment
+  }
+}
+    ${RefreshTokenFragmentFragmentDoc}`;
 export const UpdateUserDoc = gql`
     mutation updateUser($_id: ID!, $name: String, $email: String, $newsletter: Boolean!, $password: String) {
   updateUser(
@@ -194,6 +248,11 @@ export const SignOutDoc = gql`
 export const RefreshDoc = gql`
     mutation refresh {
   refresh
+}
+    `;
+export const RevokeRefreshTokenDoc = gql`
+    mutation revokeRefreshToken($_id: ID!) {
+  revokeRefreshToken(_id: $_id)
 }
     `;
 export const getUsers = (
@@ -284,6 +343,50 @@ export const getCurrentUser = (
                 return client.query<GetCurrentUserQuery>({query: GetCurrentUserDoc, ...options})
               }
             
+export const getActiveRefreshTokens = (
+            options: Omit<
+              WatchQueryOptions<GetActiveRefreshTokensQueryVariables>, 
+              "query"
+            >
+          ): Readable<
+            ApolloQueryResult<GetActiveRefreshTokensQuery> & {
+              query: ObservableQuery<
+                GetActiveRefreshTokensQuery,
+                GetActiveRefreshTokensQueryVariables
+              >;
+            }
+          > => {
+            const q = client.watchQuery({
+              query: GetActiveRefreshTokensDoc,
+              ...options,
+            });
+            var result = readable<
+              ApolloQueryResult<GetActiveRefreshTokensQuery> & {
+                query: ObservableQuery<
+                  GetActiveRefreshTokensQuery,
+                  GetActiveRefreshTokensQueryVariables
+                >;
+              }
+            >(
+              { data: {} as any, loading: true, error: undefined, networkStatus: 1, query: q },
+              (set) => {
+                q.subscribe((v: any) => {
+                  set({ ...v, query: q });
+                });
+              }
+            );
+            return result;
+          }
+        
+              export const AsyncgetActiveRefreshTokens = (
+                options: Omit<
+                  QueryOptions<GetActiveRefreshTokensQueryVariables>,
+                  "query"
+                >
+              ) => {
+                return client.query<GetActiveRefreshTokensQuery>({query: GetActiveRefreshTokensDoc, ...options})
+              }
+            
 export const updateUser = (
             options: Omit<
               MutationOptions<any, UpdateUserMutationVariables>, 
@@ -340,6 +443,18 @@ export const refresh = (
           ) => {
             const m = client.mutate<RefreshMutation, RefreshMutationVariables>({
               mutation: RefreshDoc,
+              ...options,
+            });
+            return m;
+          }
+export const revokeRefreshToken = (
+            options: Omit<
+              MutationOptions<any, RevokeRefreshTokenMutationVariables>, 
+              "mutation"
+            >
+          ) => {
+            const m = client.mutate<RevokeRefreshTokenMutation, RevokeRefreshTokenMutationVariables>({
+              mutation: RevokeRefreshTokenDoc,
               ...options,
             });
             return m;
