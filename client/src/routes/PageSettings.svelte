@@ -5,7 +5,7 @@
 
 <main>
   <h1>Einstellungen</h1>
-  <NavLink to={`${PATHS.SETTINGS}/${PATHS.PROFILE}`}>Profile</NavLink>
+  <NavLink to={`${PATHS.SETTINGS}/${PATHS.PROFILE}`}>Profil</NavLink>
   <NavLink to={`${PATHS.SETTINGS}/${PATHS.CONNECTED}`}>Verbundene Geräte</NavLink>
   <NavLink to={PATHS.CARD}>Zu meiner Karte</NavLink>
 </main>
