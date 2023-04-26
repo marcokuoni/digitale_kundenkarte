@@ -1,4 +1,3 @@
-import { spawn } from 'child_process'
 import replace from '@rollup/plugin-replace'
 import svelte from 'rollup-plugin-svelte'
 import commonjs from '@rollup/plugin-commonjs'
@@ -9,29 +8,9 @@ import css from 'rollup-plugin-css-only'
 import sveltePreprocess from 'svelte-preprocess'
 import typescript from '@rollup/plugin-typescript'
 import { generateSW } from 'rollup-plugin-workbox'
+import serve from 'rollup-plugin-serve';
 
 const production = !process.env.ROLLUP_WATCH
-
-function serve() {
-  let server
-
-  function toExit() {
-    if (server) server.kill(0)
-  }
-
-  return {
-    writeBundle() {
-      if (server) return
-      server = spawn('npm', ['run', 'start', '--', '--dev'], {
-        stdio: ['ignore', 'inherit', 'inherit'],
-        shell: true,
-      })
-
-      process.on('SIGTERM', toExit)
-      process.on('exit', toExit)
-    },
-  }
-}
 
 export default {
   input: 'src/main.ts',
@@ -79,7 +58,7 @@ export default {
 
     // In dev mode, call `npm run start` once
     // the bundle has been generated
-    !production && serve(),
+    // !production && serve(),
 
     // Watch the `public` directory and refresh the
     // browser on changes when not in production
@@ -114,6 +93,18 @@ export default {
         '🐘', size,
       )
     }),
+    serve({
+      contentBase: 'public',
+      historyApiFallback: true,
+      headers: {
+        'Access-Control-Allow-Origin': 'null',  //Muss sein wegen server redirects    
+        'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+        'Access-Control-Allow-Headers': 'authorization, Content-Type',
+        'Access-Control-Allow-Credentials': 'true',
+      },
+      host: '0.0.0.0',
+      port: 3001,
+    })
   ],
   watch: {
     clearScreen: false,

@@ -68,17 +68,19 @@ mutation signUp(
   $email: String
   $newsletter: Boolean!
   $password: String
+  $successRedirect: String!
 ) {
   signUp(
     name: $name
     email: $email
     newsletter: $newsletter
     password: $password
+    successRedirect: $successRedirect
   )
 }
 
-mutation signIn($transfercode: String!, $password: String) {
-  signIn(transfercode: $transfercode, password: $password)
+mutation signIn($transfercode: String!, $password: String, $successRedirect: String!) {
+  signIn(transfercode: $transfercode, password: $password, successRedirect: $successRedirect)
 }
 
 mutation signOut {

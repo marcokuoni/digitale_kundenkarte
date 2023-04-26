@@ -68,7 +68,7 @@ const errorLink = onError(({ graphQLErrors, operation, forward }) => {
                 refreshTokenApiClient.resetStore()
 
                 //TODO: i dont think navigate will work, we need here a stronger tool like - window.location.replace(`/${PATHS.LOGIN_USER}`) ;)
-                navigate(`/${PATHS.LOGIN_USER}`)
+                navigate(`/`)
 
                 return forward(operation)
               })

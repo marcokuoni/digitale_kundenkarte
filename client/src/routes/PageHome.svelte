@@ -5,20 +5,15 @@
   import { refresh } from '../codegen'
   import { PATHS } from '../lib/const'
 
-  onMount(() => {
-    const refreshQuery = refresh({})
-    refreshQuery.subscribe((data) => {
-      if (data.error) {
-        console.log('error', data.error)
+  onMount(async () => {
+    try {
+      const data = await refresh({})
+      if (data.data.refresh) {
+        navigate('/card')
       }
-      if (data.loading) {
-        console.log('loading...')
-      } else {
-        if (data.data.refresh) {
-          navigate('/card')
-        }
-      }
-    })
+    } catch (e) {
+      console.error(e.message)
+    }
   })
 </script>
 

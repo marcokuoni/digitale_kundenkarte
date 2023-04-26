@@ -31,8 +31,8 @@ const client = new ApolloClient({
     },
     mutate: {
       errorPolicy: "all"
-    }
-  }
+    },
+  },
 })
 
 export default client

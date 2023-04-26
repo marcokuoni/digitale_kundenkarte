@@ -1,21 +1,29 @@
 <script>
   import { signIn } from '../codegen'
+  import { PATHS } from '../lib/const'
   import { navigate } from 'svelte-routing'
 
   let transfercode = ''
   let password = ''
 
   async function loginUser() {
-    const { data } = await signIn({
-      variables: {
-        transfercode,
-        password,
-      },
-    })
-    if (data && data.signIn) {
-      navigate('/card')
-    } else {
-      alert('Error')
+    try {
+      const { data } = await signIn({
+        variables: {
+          transfercode,
+          password,
+          successRedirect: `/${PATHS.CARD}`,
+        },
+      })
+      if (data && data.signIn) {
+        console.error(
+          'This should not happen otherwise the browser will cache the input data'
+        )
+      } else {
+        alert('Error')
+      }
+    } catch (e) {
+      console.error(e)
     }
   }
 </script>

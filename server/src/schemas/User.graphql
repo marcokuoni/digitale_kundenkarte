@@ -16,6 +16,7 @@ type User {
   email: String
   newsletter: Boolean
   cards: [Card]!
+  groups: [String]!
   createdAt: Date!
   updatedAt: Date!
 }
@@ -46,12 +47,13 @@ type Mutation {
     newsletter: Boolean!
     password: String
   ): User!
-  signIn(transfercode: String!, password: String): Boolean!
+  signIn(transfercode: String!, password: String, successRedirect: String!): Boolean!
   signUp(
     name: String
     email: String
     newsletter: Boolean!
     password: String
+    successRedirect: String!
   ): Boolean!
   refresh: Boolean!
   signOut: Boolean!

@@ -102,21 +102,36 @@ export const revokeRefreshTokenManualy = async (req: Request, _id: string) => {
 export const signUp = async (
   req: Request,
   res: Response,
+  successRedirect: string,
   newUser?: iNewUser
 ) => {
-  const count = ((await User.countDocuments()) + 1).toString()
+  //TODO: Hash Password  
+  const count = await User.countDocuments()
+  let groups: string[] = []
+  if (count === 0) {
+    groups = ['admin']
+  }
+
+
+  let transfercode = _generateTransfercode();
+  while (await _isTransfercodeExisting(transfercode)) {
+    transfercode = _generateTransfercode();
+  }
+
   const user = await User.create({
-    transfercode: '0000'.substring(String(count).length) + count,
+    transfercode: _formatTransfercode(transfercode),
     ...newUser,
     password: newUser?.password, //TODO: HASH PASSWORD
+    groups,
   })
 
-  await signIn(req, res, user.transfercode, newUser?.password)
+  await signIn(req, res, successRedirect, user.transfercode, newUser?.password)
 }
 
 export const signIn = async (
   req: Request,
   res: Response,
+  successRedirect: string,
   transfercode: string,
   password?: string
 ) => {
@@ -156,6 +171,11 @@ export const signIn = async (
   }
 
   _createTokensAndResponse(res, userPayload)
+
+  if (user) {
+    //We do a redirect after login so the client does not cache the login page datas
+    res.redirect(302, process.env.CLIENT_URL + successRedirect)
+  }
 }
 
 export const refresh = async (req: Request, res: Response) => {
@@ -229,4 +249,17 @@ const _createTokensAndResponse = async (
       maxAge: jwtRefreshExpiry * 1000,
       ...cookieOptions,
     })
+}
+
+const _isTransfercodeExisting = async (transfercode: number) => {
+  const user = await User.findOne({ transfercode: _formatTransfercode(transfercode) });
+  return user !== null;
+}
+
+const _generateTransfercode = () => {
+  return Math.floor(Math.random() * 999999); // Generates a random number between 0 and 999999
+}
+
+const _formatTransfercode = (transfercode: number) => {
+  return '000000'.substring(String(transfercode).length) + transfercode;
 }

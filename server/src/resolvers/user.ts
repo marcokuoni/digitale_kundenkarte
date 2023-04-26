@@ -89,17 +89,21 @@ export const usersResolvers = {
       {
         transfercode,
         password,
+        successRedirect,
       }: {
         transfercode: string
         password: string
+        successRedirect: string
       },
       context: ServerContext
     ) {
-      await signIn(context.req, context.res, transfercode, password)
+      await signIn(context.req, context.res, successRedirect, transfercode, password)
       return true
     },
-    async signUp(root: never, newUser: iNewUser, context: ServerContext) {
-      await signUp(context.req, context.res, newUser)
+    async signUp(root: never, newUser: iNewUser & {successRedirect?: string}, context: ServerContext) {
+      const successRedirect = newUser.successRedirect
+      delete newUser.successRedirect
+      await signUp(context.req, context.res, successRedirect || '/', newUser)
       return true
     },
     async refresh(root: never, args: never, context: ServerContext) {

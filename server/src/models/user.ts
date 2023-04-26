@@ -15,6 +15,7 @@ export interface iUser {
       creationDate: Date
     }[]
   }[]
+  groups: string[]
   createdAt?: Date
   updatedAt?: Date
 }
@@ -64,6 +65,11 @@ const UserSchema = new Schema<iUser>(
         ],
       },
     ],
+    groups: {
+        type: [String],
+        default: [],
+        required: true,
+      }
   },
   {
     timestamps: {

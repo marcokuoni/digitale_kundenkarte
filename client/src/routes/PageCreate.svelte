@@ -15,10 +15,11 @@
         email,
         newsletter,
         password,
+        successRedirect: `/${PATHS.CARD}`,
       },
     })
     if (data && data.signUp) {
-      navigate(`/${PATHS.CARD}`)
+      console.error('This should not happen otherwise the browser will cache the input data')
     } else {
       alert('Error')
     }

@@ -44,6 +44,7 @@ export type MutationRevokeRefreshTokenArgs = {
 
 export type MutationSignInArgs = {
   password?: InputMaybe<Scalars['String']>;
+  successRedirect: Scalars['String'];
   transfercode: Scalars['String'];
 };
 
@@ -53,6 +54,7 @@ export type MutationSignUpArgs = {
   name?: InputMaybe<Scalars['String']>;
   newsletter: Scalars['Boolean'];
   password?: InputMaybe<Scalars['String']>;
+  successRedirect: Scalars['String'];
 };
 
 
@@ -135,6 +137,7 @@ export type SignUpMutationVariables = Exact<{
   email?: InputMaybe<Scalars['String']>;
   newsletter: Scalars['Boolean'];
   password?: InputMaybe<Scalars['String']>;
+  successRedirect: Scalars['String'];
 }>;
 
 
@@ -143,6 +146,7 @@ export type SignUpMutation = { __typename?: 'Mutation', signUp: boolean };
 export type SignInMutationVariables = Exact<{
   transfercode: Scalars['String'];
   password?: InputMaybe<Scalars['String']>;
+  successRedirect: Scalars['String'];
 }>;
 
 
@@ -231,13 +235,23 @@ export const UpdateUserDoc = gql`
 }
     ${UserFragmentFragmentDoc}`;
 export const SignUpDoc = gql`
-    mutation signUp($name: String, $email: String, $newsletter: Boolean!, $password: String) {
-  signUp(name: $name, email: $email, newsletter: $newsletter, password: $password)
+    mutation signUp($name: String, $email: String, $newsletter: Boolean!, $password: String, $successRedirect: String!) {
+  signUp(
+    name: $name
+    email: $email
+    newsletter: $newsletter
+    password: $password
+    successRedirect: $successRedirect
+  )
 }
     `;
 export const SignInDoc = gql`
-    mutation signIn($transfercode: String!, $password: String) {
-  signIn(transfercode: $transfercode, password: $password)
+    mutation signIn($transfercode: String!, $password: String, $successRedirect: String!) {
+  signIn(
+    transfercode: $transfercode
+    password: $password
+    successRedirect: $successRedirect
+  )
 }
     `;
 export const SignOutDoc = gql`
