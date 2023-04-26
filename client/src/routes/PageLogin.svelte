@@ -1,7 +1,7 @@
 <script>
   import { signIn } from '../codegen'
   import { PATHS } from '../lib/const'
-  import { navigate } from 'svelte-routing'
+  import NavLink from '../components/NavLink.svelte'
 
   let transfercode = ''
   let password = ''
@@ -37,3 +37,5 @@
   <input type="password" id="password" bind:value={password} />
   <button type="submit">Login User</button>
 </form>
+
+<NavLink to={PATHS.CREATE_USER}>Ich möchte eine Karte erstellen</NavLink>
