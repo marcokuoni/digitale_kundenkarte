@@ -90,6 +90,7 @@ services:
       - JWT_REFRESH_COOKIE_NAME=$JWT_REFRESH_COOKIE_NAME
       - CLIENT_URL=$CLIENT_URL
       - SERVER_URL=$CLIENT_URL:$SERVER_ENTRY_PORT
+      - PASSWORD_SALT_ROUNDS=$PASSWORD_SALT_ROUNDS
     restart: always
     volumes:
       - ./server:/usr/src/app

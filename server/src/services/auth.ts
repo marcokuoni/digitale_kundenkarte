@@ -2,6 +2,7 @@ import * as jwt from 'jsonwebtoken'
 import type Jwt from 'jsonwebtoken'
 import { GraphQLError } from 'graphql'
 import { CookieOptions, Request, Response } from 'express'
+import bcrypt from 'bcrypt'
 
 import {
   getTokenUser,
@@ -26,12 +27,13 @@ const cookieOptions: CookieOptions = {
   secure: true,
   sameSite: 'strict',
 }
+const saltRounds = parseInt(process.env.SALT_ROUNDS || '10')
 
 export interface JwtUserPayloadInterface {
   token: string
 }
 
-export const checkAccessRights = (user?: iUser, isInGroup = []) => {
+export const checkAccessRights = (user?: iUser, requiredGroups = []) => {
   if (!user) {
     throw new GraphQLError('User is not authenticated', {
       extensions: {
@@ -41,8 +43,7 @@ export const checkAccessRights = (user?: iUser, isInGroup = []) => {
     })
   }
 
-  //TODO: check if user is allowed to do this (e.g. if user is admin) and then throw unauthorized error
-  return true
+  return requiredGroups.length > 0 ? requiredGroups.every((group) => user.groups.includes(group)) : true
 }
 
 export const verifyTokenAndGetUser = async (req: Request, res: Response) => {
@@ -105,27 +106,34 @@ export const signUp = async (
   successRedirect: string,
   newUser?: iNewUser
 ) => {
-  //TODO: Hash Password  
+  let password = newUser?.password
   const count = await User.countDocuments()
   let groups: string[] = []
   if (count === 0) {
     groups = ['admin']
+    if(!password) {
+      password = randomTokenString()
+    }
+  }
+  
+  let hash: string | null = null
+  if (password) {
+    hash = await bcrypt.hash(password, saltRounds)
   }
 
-
-  let transfercode = _generateTransfercode();
+  let transfercode = _generateTransfercode()
   while (await _isTransfercodeExisting(transfercode)) {
-    transfercode = _generateTransfercode();
+    transfercode = _generateTransfercode()
   }
 
   const user = await User.create({
     transfercode: _formatTransfercode(transfercode),
     ...newUser,
-    password: newUser?.password, //TODO: HASH PASSWORD
+    password: hash, 
     groups,
   })
 
-  await signIn(req, res, successRedirect, user.transfercode, newUser?.password)
+  await signIn(req, res, successRedirect, user.transfercode, password)
 }
 
 export const signIn = async (
@@ -137,8 +145,8 @@ export const signIn = async (
 ) => {
   const user = await User.findOne({ transfercode: transfercode })
   if (password || user.password) {
-    //TODO: check user password to give more access rights with hash
-    if (password !== user.password) {
+    const isMatch = password ? await bcrypt.compare(password, user.password) : false
+    if (!isMatch) {
       throw new GraphQLError(
         'User is not authenticated, more access function not done now',
         {
@@ -252,14 +260,16 @@ const _createTokensAndResponse = async (
 }
 
 const _isTransfercodeExisting = async (transfercode: number) => {
-  const user = await User.findOne({ transfercode: _formatTransfercode(transfercode) });
-  return user !== null;
+  const user = await User.findOne({
+    transfercode: _formatTransfercode(transfercode),
+  })
+  return user !== null
 }
 
 const _generateTransfercode = () => {
-  return Math.floor(Math.random() * 999999); // Generates a random number between 0 and 999999
+  return Math.floor(Math.random() * 999999) // Generates a random number between 0 and 999999
 }
 
 const _formatTransfercode = (transfercode: number) => {
-  return '000000'.substring(String(transfercode).length) + transfercode;
+  return '000000'.substring(String(transfercode).length) + transfercode
 }
