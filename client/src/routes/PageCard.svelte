@@ -5,7 +5,7 @@
   import Logout from '../components/Logout.svelte'
   import { PATHS } from '../lib/const.js'
   import NavLink from '../components/NavLink.svelte'
-  import { currentUser, fetchCurrentUser, currentUserLoading, currentUserError } from '../lib/currentUserStore'
+  import { currentUser, fetchCurrentUser, currentUserLoading, currentUserError } from '../stores/currentUser'
   import { onMount } from 'svelte'
 
   const loading = true

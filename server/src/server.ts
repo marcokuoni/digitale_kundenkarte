@@ -16,6 +16,7 @@ import { loadGraphQlSchema } from './loader'
 import { verifyTokenAndGetUser } from './services/auth'
 import { ACCESS_CONTROL_EXPOSE_HEADERS, AUTHORIZATION } from './lib/const'
 import type { KarteContext } from './server_types'
+import trackRequestCountIpBlock from './services/trackRequestCountIpBlock'
 
 export const startupServer = async function () {
   const { resolvers, typeDefs } = await loadGraphQlSchema()
@@ -51,6 +52,7 @@ export const startupServer = async function () {
     expressMiddleware(server, {
       context: async ({ req, res }) => {
         const user = await verifyTokenAndGetUser(req, res)
+        await trackRequestCountIpBlock(req.socket.remoteAddress || '0.0.0.0', !!user)
 
         res.setHeader(ACCESS_CONTROL_EXPOSE_HEADERS, AUTHORIZATION)
 

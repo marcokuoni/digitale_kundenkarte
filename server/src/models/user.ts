@@ -15,9 +15,9 @@ export interface iUser {
       creationDate: Date
     }[]
   }[]
-  groups: string[]
-  createdAt?: Date
-  updatedAt?: Date
+  userRoles: string[]
+  createdAt: Date
+  updatedAt: Date
 }
 
 const UserSchema = new Schema<iUser>(
@@ -65,7 +65,7 @@ const UserSchema = new Schema<iUser>(
         ],
       },
     ],
-    groups: {
+    userRoles: {
         type: [String],
         default: [],
         required: true,

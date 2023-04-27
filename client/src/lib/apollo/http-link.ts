@@ -3,8 +3,7 @@ import { HttpLink } from '@apollo/client'
 const customFetch = (uri, options) => {
   return fetch(uri, options).then((response) => {
     if (response.redirected) {
-        console.log('%chttp-link.ts line:6 ', 'color: #007acc;', 'redirect');
-        window.location.href = response.url;
+      window.location.href = response.url
     }
     return response
   })

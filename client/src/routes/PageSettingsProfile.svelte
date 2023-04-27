@@ -2,7 +2,7 @@
   import gql from 'graphql-tag'
 
   import { updateUser } from '../codegen'
-  import { currentUser, fetchCurrentUser } from '../lib/currentUserStore'
+  import { currentUser, fetchCurrentUser } from '../stores/currentUser'
   import { onMount } from 'svelte'
   import NavLink from '../components/NavLink.svelte'
   import { PATHS } from '../lib/const'

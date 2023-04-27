@@ -7,6 +7,11 @@ export enum PATHS {
     SETTINGS = 'settings',
     PROFILE = 'profile',
     CONNECTED = 'connected',
+    IP_BLOCKS = 'ip-blocks',
+}
+
+export enum UserRoles {
+    ADMIN = 'admin',
 }
 
 export const AUTHORIZATION = 'authorization'

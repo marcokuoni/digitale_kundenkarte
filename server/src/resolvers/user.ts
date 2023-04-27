@@ -5,12 +5,13 @@ import { Kind } from 'graphql/language'
 import {
   signIn,
   signUp,
-  refresh,
   signOut,
   checkAccessRights,
   revokeRefreshTokenManualy,
 } from '../services/auth'
 import type { ServerContext } from '../server_types'
+import ipBlock from '../models/ipBlock'
+import { UserRoles } from '../lib/const'
 
 export interface iNewUser {
   name?: string
@@ -67,6 +68,10 @@ export const usersResolvers = {
       }
       return []
     },
+    async getIpBlocks(root: never, args: never, context: ServerContext) {
+      checkAccessRights(context.user, [UserRoles.ADMIN])
+      return ipBlock.find()
+    },
   },
   Mutation: {
     async updateUser(
@@ -97,17 +102,28 @@ export const usersResolvers = {
       },
       context: ServerContext
     ) {
-      await signIn(context.req, context.res, successRedirect, transfercode, password)
+      await signIn(
+        context.req,
+        context.res,
+        successRedirect,
+        transfercode,
+        password
+      )
       return true
     },
-    async signUp(root: never, newUser: iNewUser & {successRedirect?: string}, context: ServerContext) {
+    async signUp(
+      root: never,
+      newUser: iNewUser & { successRedirect?: string },
+      context: ServerContext
+    ) {
       const successRedirect = newUser.successRedirect
       delete newUser.successRedirect
       await signUp(context.req, context.res, successRedirect || '/', newUser)
       return true
     },
-    async refresh(root: never, args: never, context: ServerContext) {
-      await refresh(context.req, context.res)
+    async refresh() {
+      // await refresh(context.req, context.res)
+      // refresh gets already called in the context middleware (verifyTokenAndGetUser)
       return true
     },
     async signOut(root: never, args: never, context: ServerContext) {
@@ -120,6 +136,24 @@ export const usersResolvers = {
       context: ServerContext
     ) {
       await revokeRefreshTokenManualy(context.req, _id)
+      return true
+    },
+    async deleteIpBlock(
+      root: never,
+      { _id }: { _id: string },
+      context: ServerContext
+    ) {
+      checkAccessRights(context.user, [UserRoles.ADMIN])
+      await ipBlock.deleteOne({ _id })
+      return true
+    },
+    async addIpBlock(
+      root: never,
+      { ip, blockedUntil }: { ip: string; blockedUntil: Date },
+      context: ServerContext
+    ) {
+      checkAccessRights(context.user, [UserRoles.ADMIN])
+      await ipBlock.create({ ip, blockedUntil })
       return true
     },
   },

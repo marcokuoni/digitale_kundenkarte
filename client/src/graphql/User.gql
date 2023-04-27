@@ -10,6 +10,7 @@ fragment UserFragment on User {
       creationDate
     }
   }
+  userRoles
   createdAt
   updatedAt
 }
@@ -23,6 +24,16 @@ fragment RefreshTokenFragment on RefreshToken {
   created
   createdByIp
   createdByUserAgent
+  createdAt
+  updatedAt
+}
+
+
+
+fragment IpBlockFrament on IpBlock {
+  _id
+  ip
+  blockedUntil
   createdAt
   updatedAt
 }
@@ -42,6 +53,12 @@ query getCurrentUser {
 query getActiveRefreshTokens {
   getActiveRefreshTokens {
     ...RefreshTokenFragment
+  }
+}
+
+query getIpBlocks {
+  getIpBlocks {
+    ...IpBlockFrament
   }
 }
 
@@ -93,4 +110,12 @@ mutation refresh {
 
 mutation revokeRefreshToken($_id: ID!) {
   revokeRefreshToken(_id: $_id)
+}
+
+mutation deleteIpBlock($_id: ID!) {
+  deleteIpBlock(_id: $_id)
+}
+
+mutation addIpBlock($ip: String!, $blockedUntil: Date!) {
+  addIpBlock(ip: $ip, blockedUntil: $blockedUntil)
 }

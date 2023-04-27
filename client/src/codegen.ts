@@ -26,14 +26,36 @@ export type Card = {
   stamps: Array<Maybe<Stamp>>;
 };
 
+export type IpBlock = {
+  __typename?: 'IpBlock';
+  _id: Scalars['ID'];
+  blockedUntil: Scalars['Date'];
+  createdAt: Scalars['Date'];
+  ip: Scalars['String'];
+  updatedAt: Scalars['Date'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  addIpBlock: Scalars['Boolean'];
+  deleteIpBlock: Scalars['Boolean'];
   refresh: Scalars['Boolean'];
   revokeRefreshToken: Scalars['Boolean'];
   signIn: Scalars['Boolean'];
   signOut: Scalars['Boolean'];
   signUp: Scalars['Boolean'];
   updateUser: User;
+};
+
+
+export type MutationAddIpBlockArgs = {
+  blockedUntil: Scalars['Date'];
+  ip: Scalars['String'];
+};
+
+
+export type MutationDeleteIpBlockArgs = {
+  _id: Scalars['ID'];
 };
 
 
@@ -68,9 +90,10 @@ export type MutationUpdateUserArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  getActiveRefreshTokens: Array<RefreshToken>;
+  getActiveRefreshTokens: Array<Maybe<RefreshToken>>;
   getCurrentUser: User;
-  getUsers: Array<User>;
+  getIpBlocks: Array<Maybe<IpBlock>>;
+  getUsers: Array<Maybe<User>>;
 };
 
 export type RefreshToken = {
@@ -100,26 +123,34 @@ export type User = {
   newsletter?: Maybe<Scalars['Boolean']>;
   transfercode: Scalars['String'];
   updatedAt: Scalars['Date'];
+  userRoles: Array<Maybe<Scalars['String']>>;
 };
 
-export type UserFragmentFragment = { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, stamps: Array<{ __typename?: 'Stamp', creationDate: any } | null> } | null> };
+export type UserFragmentFragment = { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, userRoles: Array<string | null>, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, stamps: Array<{ __typename?: 'Stamp', creationDate: any } | null> } | null> };
 
 export type RefreshTokenFragmentFragment = { __typename?: 'RefreshToken', _id: string, expires: any, created: any, createdByIp: string, createdByUserAgent: string, createdAt: any, updatedAt: any, user: { __typename?: 'User', _id: string } };
+
+export type IpBlockFramentFragment = { __typename?: 'IpBlock', _id: string, ip: string, blockedUntil: any, createdAt: any, updatedAt: any };
 
 export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUsersQuery = { __typename?: 'Query', getUsers: Array<{ __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, stamps: Array<{ __typename?: 'Stamp', creationDate: any } | null> } | null> }> };
+export type GetUsersQuery = { __typename?: 'Query', getUsers: Array<{ __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, userRoles: Array<string | null>, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, stamps: Array<{ __typename?: 'Stamp', creationDate: any } | null> } | null> } | null> };
 
 export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, stamps: Array<{ __typename?: 'Stamp', creationDate: any } | null> } | null> } };
+export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, userRoles: Array<string | null>, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, stamps: Array<{ __typename?: 'Stamp', creationDate: any } | null> } | null> } };
 
 export type GetActiveRefreshTokensQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetActiveRefreshTokensQuery = { __typename?: 'Query', getActiveRefreshTokens: Array<{ __typename?: 'RefreshToken', _id: string, expires: any, created: any, createdByIp: string, createdByUserAgent: string, createdAt: any, updatedAt: any, user: { __typename?: 'User', _id: string } }> };
+export type GetActiveRefreshTokensQuery = { __typename?: 'Query', getActiveRefreshTokens: Array<{ __typename?: 'RefreshToken', _id: string, expires: any, created: any, createdByIp: string, createdByUserAgent: string, createdAt: any, updatedAt: any, user: { __typename?: 'User', _id: string } } | null> };
+
+export type GetIpBlocksQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetIpBlocksQuery = { __typename?: 'Query', getIpBlocks: Array<{ __typename?: 'IpBlock', _id: string, ip: string, blockedUntil: any, createdAt: any, updatedAt: any } | null> };
 
 export type UpdateUserMutationVariables = Exact<{
   _id: Scalars['ID'];
@@ -130,7 +161,7 @@ export type UpdateUserMutationVariables = Exact<{
 }>;
 
 
-export type UpdateUserMutation = { __typename?: 'Mutation', updateUser: { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, stamps: Array<{ __typename?: 'Stamp', creationDate: any } | null> } | null> } };
+export type UpdateUserMutation = { __typename?: 'Mutation', updateUser: { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, userRoles: Array<string | null>, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, stamps: Array<{ __typename?: 'Stamp', creationDate: any } | null> } | null> } };
 
 export type SignUpMutationVariables = Exact<{
   name?: InputMaybe<Scalars['String']>;
@@ -169,6 +200,21 @@ export type RevokeRefreshTokenMutationVariables = Exact<{
 
 export type RevokeRefreshTokenMutation = { __typename?: 'Mutation', revokeRefreshToken: boolean };
 
+export type DeleteIpBlockMutationVariables = Exact<{
+  _id: Scalars['ID'];
+}>;
+
+
+export type DeleteIpBlockMutation = { __typename?: 'Mutation', deleteIpBlock: boolean };
+
+export type AddIpBlockMutationVariables = Exact<{
+  ip: Scalars['String'];
+  blockedUntil: Scalars['Date'];
+}>;
+
+
+export type AddIpBlockMutation = { __typename?: 'Mutation', addIpBlock: boolean };
+
 export const UserFragmentFragmentDoc = gql`
     fragment UserFragment on User {
   _id
@@ -182,6 +228,7 @@ export const UserFragmentFragmentDoc = gql`
       creationDate
     }
   }
+  userRoles
   createdAt
   updatedAt
 }
@@ -196,6 +243,15 @@ export const RefreshTokenFragmentFragmentDoc = gql`
   created
   createdByIp
   createdByUserAgent
+  createdAt
+  updatedAt
+}
+    `;
+export const IpBlockFramentFragmentDoc = gql`
+    fragment IpBlockFrament on IpBlock {
+  _id
+  ip
+  blockedUntil
   createdAt
   updatedAt
 }
@@ -221,6 +277,13 @@ export const GetActiveRefreshTokensDoc = gql`
   }
 }
     ${RefreshTokenFragmentFragmentDoc}`;
+export const GetIpBlocksDoc = gql`
+    query getIpBlocks {
+  getIpBlocks {
+    ...IpBlockFrament
+  }
+}
+    ${IpBlockFramentFragmentDoc}`;
 export const UpdateUserDoc = gql`
     mutation updateUser($_id: ID!, $name: String, $email: String, $newsletter: Boolean!, $password: String) {
   updateUser(
@@ -267,6 +330,16 @@ export const RefreshDoc = gql`
 export const RevokeRefreshTokenDoc = gql`
     mutation revokeRefreshToken($_id: ID!) {
   revokeRefreshToken(_id: $_id)
+}
+    `;
+export const DeleteIpBlockDoc = gql`
+    mutation deleteIpBlock($_id: ID!) {
+  deleteIpBlock(_id: $_id)
+}
+    `;
+export const AddIpBlockDoc = gql`
+    mutation addIpBlock($ip: String!, $blockedUntil: Date!) {
+  addIpBlock(ip: $ip, blockedUntil: $blockedUntil)
 }
     `;
 export const getUsers = (
@@ -401,6 +474,50 @@ export const getActiveRefreshTokens = (
                 return client.query<GetActiveRefreshTokensQuery>({query: GetActiveRefreshTokensDoc, ...options})
               }
             
+export const getIpBlocks = (
+            options: Omit<
+              WatchQueryOptions<GetIpBlocksQueryVariables>, 
+              "query"
+            >
+          ): Readable<
+            ApolloQueryResult<GetIpBlocksQuery> & {
+              query: ObservableQuery<
+                GetIpBlocksQuery,
+                GetIpBlocksQueryVariables
+              >;
+            }
+          > => {
+            const q = client.watchQuery({
+              query: GetIpBlocksDoc,
+              ...options,
+            });
+            var result = readable<
+              ApolloQueryResult<GetIpBlocksQuery> & {
+                query: ObservableQuery<
+                  GetIpBlocksQuery,
+                  GetIpBlocksQueryVariables
+                >;
+              }
+            >(
+              { data: {} as any, loading: true, error: undefined, networkStatus: 1, query: q },
+              (set) => {
+                q.subscribe((v: any) => {
+                  set({ ...v, query: q });
+                });
+              }
+            );
+            return result;
+          }
+        
+              export const AsyncgetIpBlocks = (
+                options: Omit<
+                  QueryOptions<GetIpBlocksQueryVariables>,
+                  "query"
+                >
+              ) => {
+                return client.query<GetIpBlocksQuery>({query: GetIpBlocksDoc, ...options})
+              }
+            
 export const updateUser = (
             options: Omit<
               MutationOptions<any, UpdateUserMutationVariables>, 
@@ -469,6 +586,30 @@ export const revokeRefreshToken = (
           ) => {
             const m = client.mutate<RevokeRefreshTokenMutation, RevokeRefreshTokenMutationVariables>({
               mutation: RevokeRefreshTokenDoc,
+              ...options,
+            });
+            return m;
+          }
+export const deleteIpBlock = (
+            options: Omit<
+              MutationOptions<any, DeleteIpBlockMutationVariables>, 
+              "mutation"
+            >
+          ) => {
+            const m = client.mutate<DeleteIpBlockMutation, DeleteIpBlockMutationVariables>({
+              mutation: DeleteIpBlockDoc,
+              ...options,
+            });
+            return m;
+          }
+export const addIpBlock = (
+            options: Omit<
+              MutationOptions<any, AddIpBlockMutationVariables>, 
+              "mutation"
+            >
+          ) => {
+            const m = client.mutate<AddIpBlockMutation, AddIpBlockMutationVariables>({
+              mutation: AddIpBlockDoc,
               ...options,
             });
             return m;

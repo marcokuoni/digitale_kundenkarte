@@ -13,7 +13,13 @@ import {
 } from '../services/token'
 import User, { iUser } from '../models/user'
 import { iNewUser } from '../resolvers/user'
-import { AUTHORIZATION, BEARER, UNKNOWN, USER_AGENT } from '../lib/const'
+import {
+  AUTHORIZATION,
+  BEARER,
+  UNKNOWN,
+  USER_AGENT,
+  UserRoles,
+} from '../lib/const'
 import { randomTokenString } from '../lib/helpers'
 
 const jwtKey = process.env.JWT_KEY as Jwt.Secret
@@ -33,7 +39,10 @@ export interface JwtUserPayloadInterface {
   token: string
 }
 
-export const checkAccessRights = (user?: iUser, requiredGroups = []) => {
+export const checkAccessRights = (
+  user?: iUser,
+  requiredGroups: string[] = []
+) => {
   if (!user) {
     throw new GraphQLError('User is not authenticated', {
       extensions: {
@@ -43,7 +52,9 @@ export const checkAccessRights = (user?: iUser, requiredGroups = []) => {
     })
   }
 
-  return requiredGroups.length > 0 ? requiredGroups.every((group) => user.groups.includes(group)) : true
+  return requiredGroups.length > 0
+    ? requiredGroups.every((userRole) => user.userRoles.includes(userRole))
+    : true
 }
 
 export const verifyTokenAndGetUser = async (req: Request, res: Response) => {
@@ -108,14 +119,14 @@ export const signUp = async (
 ) => {
   let password = newUser?.password
   const count = await User.countDocuments()
-  let groups: string[] = []
+  let userRoles: string[] = []
   if (count === 0) {
-    groups = ['admin']
-    if(!password) {
+    userRoles = [UserRoles.ADMIN]
+    if (!password) {
       password = randomTokenString()
     }
   }
-  
+
   let hash: string | null = null
   if (password) {
     hash = await bcrypt.hash(password, saltRounds)
@@ -129,8 +140,8 @@ export const signUp = async (
   const user = await User.create({
     transfercode: _formatTransfercode(transfercode),
     ...newUser,
-    password: hash, 
-    groups,
+    password: hash,
+    userRoles,
   })
 
   await signIn(req, res, successRedirect, user.transfercode, password)
@@ -145,7 +156,9 @@ export const signIn = async (
 ) => {
   const user = await User.findOne({ transfercode: transfercode })
   if (password || user.password) {
-    const isMatch = password ? await bcrypt.compare(password, user.password) : false
+    const isMatch = password
+      ? await bcrypt.compare(password, user.password)
+      : false
     if (!isMatch) {
       throw new GraphQLError(
         'User is not authenticated, more access function not done now',
@@ -202,6 +215,7 @@ export const refresh = async (req: Request, res: Response) => {
       refreshToken,
       jwtRefreshKey
     ) as JwtUserPayloadInterface
+
     const newRefreshTokenDb = await refreshRefreshToken(
       userPayload.token,
       req.socket.remoteAddress || '0.0.0.0',
@@ -232,7 +246,7 @@ const _clearTokensAndResponse = (res: Response) => {
   })
 }
 
-const _createTokensAndResponse = async (
+const _createTokensAndResponse = (
   res: Response,
   userPayload: JwtUserPayloadInterface
 ) => {

@@ -16,7 +16,7 @@ type User {
   email: String
   newsletter: Boolean
   cards: [Card]!
-  groups: [String]!
+  userRoles: [String]!
   createdAt: Date!
   updatedAt: Date!
 }
@@ -32,11 +32,21 @@ type RefreshToken {
   updatedAt: Date!
 }
 
+type IpBlock {
+  _id: ID!
+  ip: String!
+  blockedUntil: Date!
+  createdAt: Date!
+  updatedAt: Date!
+
+}
+
 
 type Query {
-  getUsers: [User!]!
+  getUsers: [User]!
   getCurrentUser: User!
-  getActiveRefreshTokens: [RefreshToken!]!
+  getActiveRefreshTokens: [RefreshToken]!
+  getIpBlocks: [IpBlock]!
 }
 
 type Mutation {
@@ -58,4 +68,6 @@ type Mutation {
   refresh: Boolean!
   signOut: Boolean!
   revokeRefreshToken(_id: ID!): Boolean!
+  deleteIpBlock(_id: ID!): Boolean!
+  addIpBlock(ip: String!, blockedUntil: Date!): Boolean!
 }
