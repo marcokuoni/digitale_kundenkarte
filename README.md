@@ -182,3 +182,4 @@ https://stackoverflow.com/questions/6470378/hashing-a-session-fingerprint-really
 * Passwort Option nur durch freischaltung
 * Admin kann Gruppen an Benutzer vergeben
 * Beim Hinzufügen eines Stempfels Fehlermeldung wenn der Benutzer nicht angemeldet ist
+* Zeige alle Karten inklusive ob eingelöst oder nicht
