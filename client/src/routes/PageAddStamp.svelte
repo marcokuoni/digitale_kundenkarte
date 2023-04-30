@@ -2,6 +2,7 @@
   import { PATHS } from '../lib/const'
   import { onMount } from 'svelte'
   import { addStamp } from '../codegen'
+  import { navigateToWithoutHistory } from '../lib/navigate'
 
   export let urlToken: string = '';
   onMount(async () => {
@@ -16,14 +17,8 @@
     } else {
       console.error('Error')
     }
-    _navigateToCardWithoutHistory()
+    navigateToWithoutHistory(PATHS.CARD)
   })
-
-  const _navigateToCardWithoutHistory = () => {
-    window.history.replaceState({}, document.title, `/${PATHS.CARD}`)
-    // dont use navigate(PATHS.CARD) because it will not cause a reload
-    window.location.href = `/${PATHS.CARD}`
-  }
 </script>
 
 <h1>Stamp Page</h1>

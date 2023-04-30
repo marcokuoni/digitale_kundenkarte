@@ -1,31 +1,47 @@
 <script lang="ts">
-  import { getCurrentUser } from '../codegen'
   import Card from '../components/Card.svelte'
   import CardSettings from '../components/CardSettings.svelte'
   import Logout from '../components/Logout.svelte'
   import { PATHS } from '../lib/const.js'
   import NavLink from '../components/NavLink.svelte'
-  import { currentUser, fetchCurrentUser, currentUserLoading, currentUserError } from '../stores/currentUser'
+  import {
+    currentUser,
+    fetchCurrentUser,
+    currentUserLoading,
+    currentUserError,
+  } from '../stores/currentUser'
   import { onMount } from 'svelte'
-  
+  import HonourQrCode from '../components/HonourQrCode.svelte'
+  import { formatRelativeTimeS } from '../lib/formater'
+
   onMount(() => {
     fetchCurrentUser()
   })
-
-  //TODO: save current user in store
-
   let settingsOverlayVisible = false
+  const stampsLength = parseInt('process.env.STAMPS_LENGTH' || '8')
 
   function toggleOverlayVisibility() {
     settingsOverlayVisible = !settingsOverlayVisible
   }
 
-  const stampsPlaceholder = [
-    new Date('2023-03-02T18:00:00.000Z'),
-    new Date('2023-03-09T18:00:00.000Z'),
-    new Date('2023-03-16T18:00:00.000Z'),
-    new Date('2023-03-23T18:00:00.000Z'),
-  ]
+  $: stampCount = ($currentUser && $currentUser.cards[0].stamps.length) || 0
+  $: stamps = ($currentUser && $currentUser.cards[0].stamps) || []
+  $: hasAFullCard =
+    ($currentUser &&
+      $currentUser.cards.filter(
+        (card) => !card.honouredAt && card.stamps.length === stampsLength
+      ).length > 0) ||
+    false
+  $: timeSpanToLastStamp =
+    $currentUser && $currentUser.cards[0].stamps.length > 0
+      ? (new Date(
+          $currentUser.cards[0].stamps[
+            $currentUser.cards[0].stamps.length - 1
+          ].creationDate
+        ).getTime() -
+          new Date().getTime()) /
+        1000
+      : 0
 </script>
 
 <main>
@@ -37,7 +53,7 @@
   {:else}
     <section class="card-section">
       <div class="card-wrapper">
-        <Card stamps={stampsPlaceholder} />
+        <Card {stamps} />
       </div>
       <button class="all-cards-button">ALLE KARTEN</button>
     </section>
@@ -54,12 +70,16 @@
           <div>
             <p class="info-label">STEMPEL</p>
             <p class="info-text">
-              {$currentUser && $currentUser.cards[0].stamps.length}<span class="stamps-secondary-text">/ 8</span>
+              {stampCount}<span class="stamps-secondary-text">/ 8</span>
             </p>
           </div>
           <div>
             <p class="info-label">LETZTER</p>
-            <p class="info-text">vor 12 Tagen</p>
+            {#if timeSpanToLastStamp !== 0}
+              <p class="info-text">
+                {formatRelativeTimeS(timeSpanToLastStamp)}
+              </p>
+            {/if}
           </div>
         </div>
       </div>
@@ -72,6 +92,9 @@
         <a href="https://thecrownbar.ch">WEBSITE</a>
         <a href="https://instagram.com/thecrownbarrappi">INSTAGRAM</a>
         <Logout />
+        {#if hasAFullCard}
+          <HonourQrCode transfercode={$currentUser.transfercode} />
+        {/if}
       </div>
     </section>
 

@@ -6,6 +6,7 @@ fragment UserFragment on User {
   newsletter
   cards {
     creationDate
+    honouredAt
     stamps {
       creationDate
     }
@@ -131,6 +132,11 @@ mutation generateUrlToken($validUntil: Date!, $blockForMinutes: Int!) {
     ...UrlTokenFragment
   }
 }
+
 mutation addStamp($urlToken:String!) {
   addStamp(urlToken:$urlToken)
+}
+
+mutation honourCardFrom($transfercode: String!) {
+  honourCardFrom(transfercode: $transfercode)
 }

@@ -5,6 +5,7 @@ const Schema = mongoose.Schema
 export interface iCard {
   creationDate: Date
   blockedUntil: Date
+  honouredAt?: Date
   stamps: {
     creationDate: Date
   }[]
@@ -61,6 +62,11 @@ const UserSchema = new Schema<iUser>(
           type: Date,
           default: Date.now,
           required: true,
+        },
+        honouredAt: {
+          type: Date,
+          default: null,
+          required: false,
         },
         stamps: [
           {

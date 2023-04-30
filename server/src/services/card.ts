@@ -2,7 +2,7 @@ import { GraphQLError } from 'graphql'
 import User, { iCard, iUser } from '../models/user'
 import { iUrlTokenPayload } from './urlToken'
 
-const stampLength = parseInt(process.env.STAMP_LENGTH || '8')
+const stampsLength = parseInt(process.env.STAMPS_LENGTH || '8')
 
 export const addStamp = async (
   urlTokenPayload: iUrlTokenPayload,
@@ -52,7 +52,7 @@ export const addStamp = async (
     card.blockedUntil = blockedUntil
   }
 
-  if (card && card.stamps.length >= stampLength) {
+  if (card && card.stamps.length >= stampsLength) {
     const newCard = _createNewCard(blockedUntil)
     newCard.stamps.push({
       creationDate: new Date(),
@@ -65,6 +65,23 @@ export const addStamp = async (
   }
 
   await userDb.save()
+}
+
+export const honourCardFrom = async (transfercode: string) => {
+  let success = false
+  const userDb = await User.findOne({ transfercode })
+  if (userDb && userDb.cards && userDb.cards.length > 0) {
+    const validCards = userDb.cards.filter(
+      (card: iCard) => !card.honouredAt && card.stamps.length === stampsLength
+    )
+    if (validCards && validCards.length > 0) {
+      validCards[0].honouredAt = new Date()
+      await userDb.save()
+      success = true
+    }
+  }
+
+  return success
 }
 
 const _createNewCard = (blockedUntil: Date) => {

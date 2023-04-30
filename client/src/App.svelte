@@ -18,6 +18,7 @@
   import PageSettingsQrCode from './routes/settings/PageSettingsQrCode.svelte'
   import { PATHS, UserRoles } from './lib/const'
   import SecuredRoute from './components/SecuredRoute.svelte'
+  import PageHonourCard from './routes/PageHonourCard.svelte'
 
   export let url = ''
 </script>
@@ -56,7 +57,7 @@
         </Route>
 
         <Route path={`${PATHS.ADD_STAMP}/:urlToken`} let:params>
-          <PageAddStamp urlToken="{params.urlToken}"/>
+          <PageAddStamp urlToken={params.urlToken}/>
         </Route>
 
         <Route path={PATHS.SETTINGS}>
@@ -77,6 +78,10 @@
 
         <SecuredRoute path={`${PATHS.SETTINGS}/${PATHS.QR_CODE}`} requiredRoles={[UserRoles.EMPLOYEE]}>
           <PageSettingsQrCode />
+        </SecuredRoute>
+
+        <SecuredRoute path={`${PATHS.HONOUR_CARD}/:transfercode`}  let:params requiredRoles={[UserRoles.EMPLOYEE]}>
+          <PageHonourCard transfercode={params.transfercode}/>
         </SecuredRoute>
       </div>
     </Router>

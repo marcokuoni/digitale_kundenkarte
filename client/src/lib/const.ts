@@ -9,6 +9,7 @@ export enum PATHS {
     IP_BLOCKS = 'ip-blocks',
     QR_CODE = 'qr-code',
     ADD_STAMP = 'add-stamp',
+    HONOUR_CARD = 'honour-card',
 }
 
 export enum UserRoles {

@@ -1,31 +1,28 @@
 <script lang="ts">
   import Stamp from './Stamp.svelte'
+  const stampsLength = parseInt('process.env.STAMPS_LENGTH' || '8')
 
-  export let stamps: [Date]
-  const stampStatuses = []
-
-  // transform the stamps props to a boolean list of their statuses
-  for (let i = 0; i < 8; i++) {
-    stampStatuses.push(typeof stamps[i] === 'object')
-  }
+  export let stamps: {
+    creationDate: Date
+  }[]
 </script>
 
 <div class="card">
   <!--<p class="subtitle">THE CROWN BAR</p>-->
   <h1 class="title">Ehrenkarte</h1>
-    <div class="stamp-wrapper">
-      {#each stampStatuses as stampStatus}
-        <Stamp status={stampStatus} />
-      {/each}
-      <div class="surprise-wrapper">
-        <img
-          src="/images/surprise-arrow.svg"
-          class="surprise-arrow"
-          alt="an arrow pointing left"
-        />
-        <p>Ehrenhafte<br />Überraschung</p>
-      </div>
+  <div class="stamp-wrapper">
+    {#each Array(stampsLength) as _, i}
+      <Stamp status={!!stamps[i]} />
+    {/each}
+    <div class="surprise-wrapper">
+      <img
+        src="/images/surprise-arrow.svg"
+        class="surprise-arrow"
+        alt="an arrow pointing left"
+      />
+      <p>Ehrenhafte<br />Überraschung</p>
     </div>
+  </div>
 </div>
 
 <style>

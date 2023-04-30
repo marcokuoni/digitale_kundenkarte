@@ -6,6 +6,7 @@ type Stamp {
 
 type Card {
   creationDate: Date!
+  honouredAt: Date
   stamps: [Stamp]!
 }
 
@@ -78,4 +79,5 @@ type Mutation {
   addIpBlock(ip: String!, blockedUntil: Date!): Boolean!
   generateUrlToken(validUntil: Date!, blockForMinutes: Int!): UrlToken!
   addStamp(urlToken:String!): Boolean! 
+  honourCardFrom(transfercode:String!): Boolean!
 }

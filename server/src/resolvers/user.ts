@@ -13,7 +13,7 @@ import type { ServerContext } from '../server_types'
 import ipBlock from '../models/ipBlock'
 import { UserRoles } from '../lib/const'
 import { generateUrlToken, getPaylodFromUrlToken } from '../services/urlToken'
-import { addStamp } from '../services/card'
+import { addStamp, honourCardFrom } from '../services/card'
 
 export interface iNewUser {
   name?: string
@@ -181,5 +181,13 @@ export const usersResolvers = {
       }
       return true
     },
+    async honourCardFrom(
+      root: never,
+      { transfercode }: { transfercode: string },
+      context: ServerContext
+    ) {
+      checkAccessRights(context.user, [UserRoles.EMPLOYEE])
+      return await honourCardFrom(transfercode)
+    }
   },
 }

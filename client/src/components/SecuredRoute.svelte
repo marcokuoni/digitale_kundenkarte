@@ -17,13 +17,13 @@
   export let requiredRoles: string[] = []
 </script>
 
-<Route {path}
-  >{#if $currentUserLoading}
+<Route {path} let:params>
+  {#if $currentUserLoading}
     <!-- TODO: we need a way to communicate loading and alert states to the user? -->
     <span>Loading...</span>
   {:else if $currentUserError}
     <span>Error: {$currentUserError}</span>
   {:else if checkAccessRights($currentUser, requiredRoles)}
-    <slot />
+    <slot {params} />
   {/if}
 </Route>

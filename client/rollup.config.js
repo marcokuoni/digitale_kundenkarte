@@ -30,6 +30,7 @@ export default {
       'process.env.JWT_COOKIE_NAME': process.env.JWT_COOKIE_NAME,
       'process.env.DEFAULT_URL_TOKEN_BLOCK_FOR_MINUTES': process.env.DEFAULT_URL_TOKEN_BLOCK_FOR_MINUTES,
       'process.env.DEFAULT_URL_TOKEN_VALID_FOR_MINUTES': process.env.DEFAULT_URL_TOKEN_VALID_FOR_MINUTES,
+      'process.env.STAMPS_LENGTH': process.env.STAMPS_LENGTH,      
     }),
     svelte({
       preprocess: sveltePreprocess({ sourceMap: !production }),
