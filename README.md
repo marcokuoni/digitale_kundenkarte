@@ -172,3 +172,13 @@ https://stackoverflow.com/questions/6470378/hashing-a-session-fingerprint-really
         custom roles and information: 200 bytes more
 
     This is a total of 315 bytes. The JWT header is normally between 36 and 50 bytes and finally the signature is between 43 and 64 bytes. So this gives us a maximum of 429 bytes which would take about 10% of cookie space. ^
+
+
+# TODO
+* Passwort vergessen
+* Hinweis per Mails über eventuelle falsche Refresh Tokens
+* Fehlermeldung bei falschem Passwort/Transfercode
+* Fehlermeldung wenn IP geblockt ist
+* Passwort Option nur durch freischaltung
+* Admin kann Gruppen an Benutzer vergeben
+* Beim Hinzufügen eines Stempfels Fehlermeldung wenn der Benutzer nicht angemeldet ist

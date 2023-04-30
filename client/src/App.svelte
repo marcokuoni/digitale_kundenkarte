@@ -4,31 +4,21 @@
   import PageQueries from './routes/PageQueries.svelte'
   import PageMutation from './routes/PageMutation.svelte'
   import Online from './components/Online.svelte'
-  import { onMount } from 'svelte'
 
   // Our routes from /src/routes/
   import PageCard from './routes/PageCard.svelte'
-  import PageCreate from './routes/PageCreate.svelte'
-  import PageStamp from './routes/PageStamp.svelte'
+  import PageCreateUser from './routes/PageCreateUser.svelte'
+  import PageAddStamp from './routes/PageAddStamp.svelte'
   import PageHome from './routes/PageHome.svelte'
   import PageLogin from './routes/PageLogin.svelte'
   import PageSettings from './routes/PageSettings.svelte'
-  import PageSettingsProfile from './routes/PageSettingsProfile.svelte'
-  import PageSettingsConnected from './routes/PageSettingsConnected.svelte'
-  import PageSettingsIpBlocks from './routes/PageSettingsIpBlocks.svelte'
+  import PageSettingsProfile from './routes/settings/PageSettingsProfile.svelte'
+  import PageSettingsConnected from './routes/settings/PageSettingsConnected.svelte'
+  import PageSettingsIpBlocks from './routes/settings/PageSettingsIpBlocks.svelte'
+  import PageSettingsQrCode from './routes/settings/PageSettingsQrCode.svelte'
   import { PATHS, UserRoles } from './lib/const'
-  import { checkAccessRights } from './services/auth'
-  import {
-    currentUser,
-    fetchCurrentUser,
-    currentUserLoading,
-    currentUserError,
-  } from './stores/currentUser'
+  import SecuredRoute from './components/SecuredRoute.svelte'
 
-  onMount(() => {
-    fetchCurrentUser()
-  })
-  
   export let url = ''
 </script>
 
@@ -58,15 +48,15 @@
         </Route>
 
         <Route path={PATHS.CREATE_USER}>
-          <PageCreate />
+          <PageCreateUser />
         </Route>
 
         <Route path={PATHS.LOGIN_USER}>
           <PageLogin />
         </Route>
 
-        <Route path={PATHS.STAMP}>
-          <PageStamp />
+        <Route path={`${PATHS.ADD_STAMP}/:urlToken`} let:params>
+          <PageAddStamp urlToken="{params.urlToken}"/>
         </Route>
 
         <Route path={PATHS.SETTINGS}>
@@ -81,17 +71,13 @@
           <PageSettingsConnected />
         </Route>
 
-        <!--TODO: This leads to breaking refreshes -->
-        {#if $currentUserLoading}
-          <!-- TODO: we need a way to communicate loading and alert states to the user? -->
-          <span>Loading...</span>
-        {:else if $currentUserError}
-          <span>Error: {$currentUserError}</span>
-        {:else if checkAccessRights($currentUser, [UserRoles.ADMIN])}
-          <Route path={`${PATHS.SETTINGS}/${PATHS.IP_BLOCKS}`}>
-            <PageSettingsIpBlocks />
-          </Route>
-        {/if}
+        <SecuredRoute path={`${PATHS.SETTINGS}/${PATHS.IP_BLOCKS}`} requiredRoles={[UserRoles.ADMIN]}>
+          <PageSettingsIpBlocks />
+        </SecuredRoute>
+
+        <SecuredRoute path={`${PATHS.SETTINGS}/${PATHS.QR_CODE}`} requiredRoles={[UserRoles.EMPLOYEE]}>
+          <PageSettingsQrCode />
+        </SecuredRoute>
       </div>
     </Router>
   </section>

@@ -12,6 +12,8 @@ import {
 import type { ServerContext } from '../server_types'
 import ipBlock from '../models/ipBlock'
 import { UserRoles } from '../lib/const'
+import { generateUrlToken, getPaylodFromUrlToken } from '../services/urlToken'
+import { addStamp } from '../services/card'
 
 export interface iNewUser {
   name?: string
@@ -154,6 +156,29 @@ export const usersResolvers = {
     ) {
       checkAccessRights(context.user, [UserRoles.ADMIN])
       await ipBlock.create({ ip, blockedUntil })
+      return true
+    },
+    generateUrlToken(
+      root: never,
+      {
+        validUntil,
+        blockForMinutes,
+      }: { validUntil: Date; blockForMinutes: number },
+      context: ServerContext
+    ) {
+      checkAccessRights(context.user, [UserRoles.EMPLOYEE])
+      return generateUrlToken(validUntil, blockForMinutes)
+    },
+    async addStamp(
+      root: never,
+      { urlToken }: { urlToken: string },
+      context: ServerContext
+    ) {
+      checkAccessRights(context.user)
+      if (context.user) {
+        const payload = getPaylodFromUrlToken(urlToken)
+        await addStamp(payload, context.user)
+      }
       return true
     },
   },

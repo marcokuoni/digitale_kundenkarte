@@ -8,20 +8,25 @@
   let password = ''
   let newsletter = false
 
-  async function createUser() {
-    const { data } = await signUp({
-      variables: {
-        name,
-        email,
-        newsletter,
-        password,
-        successRedirect: `/${PATHS.CARD}`,
-      },
-    })
-    if (data && data.signUp) {
-      console.error('This should not happen otherwise the browser will cache the input data')
-    } else {
-      alert('Error')
+  async function createUser(event: SubmitEvent) {
+    const forms = event.target as HTMLFormElement
+    if (forms.checkValidity()) {
+      const { data } = await signUp({
+        variables: {
+          name,
+          email,
+          newsletter,
+          password,
+          successRedirect: `/${PATHS.CARD}`,
+        },
+      })
+      if (data && data.signUp) {
+        console.error(
+          'This should not happen otherwise the browser will cache the input data'
+        )
+      } else {
+        alert('Error')
+      }
     }
   }
 </script>
@@ -40,7 +45,7 @@
       bind:checked={newsletter}
     /> Wants Newsletter</label
   >
-  <!-- TODO: Password should only be visible if requested -->
+  <!-- TODO: Password should only be visible if requested if visible also required -->
   <label for="password">Password</label>
   <input type="password" id="password" bind:value={password} />
   <button type="submit">Create User</button>

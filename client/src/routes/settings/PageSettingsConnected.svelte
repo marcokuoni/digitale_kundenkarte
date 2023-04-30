@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { getActiveRefreshTokens, revokeRefreshToken } from '../codegen'
+  import { getActiveRefreshTokens, revokeRefreshToken } from '../../codegen'
   import { Wave } from 'svelte-loading-spinners'
+  import SettingsPage from '../../components/SettingsPage.svelte'
 
   let loading = false
   let error = ''
@@ -28,8 +29,7 @@
   }
 </script>
 
-<main>
-  <h1>Verbundene Geräte</h1>
+<SettingsPage title="Verbundene Geräte">
   {#if loading}
     <Wave size="100" color="#FF3E00" unit="px" />
   {/if}
@@ -46,10 +46,10 @@
         <th>Funktionen</th>
       </tr>
       <tr>
-        <th colspan="3"></th>
+        <th colspan="3" />
         <th>IP</th>
         <th>Agent</th>
-        <th></th>
+        <th />
       </tr>
     </thead>
     <tbody>
@@ -71,7 +71,7 @@
       {/each}
     </tbody>
   </table>
-</main>
+</SettingsPage>
 
 <style>
 </style>

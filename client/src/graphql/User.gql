@@ -38,6 +38,12 @@ fragment IpBlockFrament on IpBlock {
   updatedAt
 }
 
+fragment UrlTokenFragment on UrlToken {
+  token
+  validUntil
+  blockForMinutes
+}
+
 query getUsers {
   getUsers {
     ...UserFragment
@@ -118,4 +124,13 @@ mutation deleteIpBlock($_id: ID!) {
 
 mutation addIpBlock($ip: String!, $blockedUntil: Date!) {
   addIpBlock(ip: $ip, blockedUntil: $blockedUntil)
+}
+
+mutation generateUrlToken($validUntil: Date!, $blockForMinutes: Int!) {
+  generateUrlToken(validUntil: $validUntil, blockForMinutes: $blockForMinutes) {
+    ...UrlTokenFragment
+  }
+}
+mutation addStamp($urlToken:String!) {
+  addStamp(urlToken:$urlToken)
 }

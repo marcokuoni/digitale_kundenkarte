@@ -5,4 +5,5 @@ export const USER_AGENT = 'user-agent'
 export const UNKNOWN = 'unknown'
 export enum UserRoles {
     ADMIN = 'admin',
+    EMPLOYEE = 'employee',
 }

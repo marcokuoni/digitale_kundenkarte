@@ -38,7 +38,9 @@ export type IpBlock = {
 export type Mutation = {
   __typename?: 'Mutation';
   addIpBlock: Scalars['Boolean'];
+  addStamp: Scalars['Boolean'];
   deleteIpBlock: Scalars['Boolean'];
+  generateUrlToken: UrlToken;
   refresh: Scalars['Boolean'];
   revokeRefreshToken: Scalars['Boolean'];
   signIn: Scalars['Boolean'];
@@ -54,8 +56,19 @@ export type MutationAddIpBlockArgs = {
 };
 
 
+export type MutationAddStampArgs = {
+  urlToken: Scalars['String'];
+};
+
+
 export type MutationDeleteIpBlockArgs = {
   _id: Scalars['ID'];
+};
+
+
+export type MutationGenerateUrlTokenArgs = {
+  blockForMinutes: Scalars['Int'];
+  validUntil: Scalars['Date'];
 };
 
 
@@ -113,6 +126,13 @@ export type Stamp = {
   creationDate: Scalars['Date'];
 };
 
+export type UrlToken = {
+  __typename?: 'UrlToken';
+  blockForMinutes: Scalars['Int'];
+  token: Scalars['String'];
+  validUntil: Scalars['Date'];
+};
+
 export type User = {
   __typename?: 'User';
   _id: Scalars['ID'];
@@ -131,6 +151,8 @@ export type UserFragmentFragment = { __typename?: 'User', _id: string, transferc
 export type RefreshTokenFragmentFragment = { __typename?: 'RefreshToken', _id: string, expires: any, created: any, createdByIp: string, createdByUserAgent: string, createdAt: any, updatedAt: any, user: { __typename?: 'User', _id: string } };
 
 export type IpBlockFramentFragment = { __typename?: 'IpBlock', _id: string, ip: string, blockedUntil: any, createdAt: any, updatedAt: any };
+
+export type UrlTokenFragmentFragment = { __typename?: 'UrlToken', token: string, validUntil: any, blockForMinutes: number };
 
 export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -215,6 +237,21 @@ export type AddIpBlockMutationVariables = Exact<{
 
 export type AddIpBlockMutation = { __typename?: 'Mutation', addIpBlock: boolean };
 
+export type GenerateUrlTokenMutationVariables = Exact<{
+  validUntil: Scalars['Date'];
+  blockForMinutes: Scalars['Int'];
+}>;
+
+
+export type GenerateUrlTokenMutation = { __typename?: 'Mutation', generateUrlToken: { __typename?: 'UrlToken', token: string, validUntil: any, blockForMinutes: number } };
+
+export type AddStampMutationVariables = Exact<{
+  urlToken: Scalars['String'];
+}>;
+
+
+export type AddStampMutation = { __typename?: 'Mutation', addStamp: boolean };
+
 export const UserFragmentFragmentDoc = gql`
     fragment UserFragment on User {
   _id
@@ -254,6 +291,13 @@ export const IpBlockFramentFragmentDoc = gql`
   blockedUntil
   createdAt
   updatedAt
+}
+    `;
+export const UrlTokenFragmentFragmentDoc = gql`
+    fragment UrlTokenFragment on UrlToken {
+  token
+  validUntil
+  blockForMinutes
 }
     `;
 export const GetUsersDoc = gql`
@@ -340,6 +384,18 @@ export const DeleteIpBlockDoc = gql`
 export const AddIpBlockDoc = gql`
     mutation addIpBlock($ip: String!, $blockedUntil: Date!) {
   addIpBlock(ip: $ip, blockedUntil: $blockedUntil)
+}
+    `;
+export const GenerateUrlTokenDoc = gql`
+    mutation generateUrlToken($validUntil: Date!, $blockForMinutes: Int!) {
+  generateUrlToken(validUntil: $validUntil, blockForMinutes: $blockForMinutes) {
+    ...UrlTokenFragment
+  }
+}
+    ${UrlTokenFragmentFragmentDoc}`;
+export const AddStampDoc = gql`
+    mutation addStamp($urlToken: String!) {
+  addStamp(urlToken: $urlToken)
 }
     `;
 export const getUsers = (
@@ -610,6 +666,30 @@ export const addIpBlock = (
           ) => {
             const m = client.mutate<AddIpBlockMutation, AddIpBlockMutationVariables>({
               mutation: AddIpBlockDoc,
+              ...options,
+            });
+            return m;
+          }
+export const generateUrlToken = (
+            options: Omit<
+              MutationOptions<any, GenerateUrlTokenMutationVariables>, 
+              "mutation"
+            >
+          ) => {
+            const m = client.mutate<GenerateUrlTokenMutation, GenerateUrlTokenMutationVariables>({
+              mutation: GenerateUrlTokenDoc,
+              ...options,
+            });
+            return m;
+          }
+export const addStamp = (
+            options: Omit<
+              MutationOptions<any, AddStampMutationVariables>, 
+              "mutation"
+            >
+          ) => {
+            const m = client.mutate<AddStampMutation, AddStampMutationVariables>({
+              mutation: AddStampDoc,
               ...options,
             });
             return m;

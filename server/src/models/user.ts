@@ -2,6 +2,14 @@ import mongoose from 'mongoose'
 
 const Schema = mongoose.Schema
 
+export interface iCard {
+  creationDate: Date
+  blockedUntil: Date
+  stamps: {
+    creationDate: Date
+  }[]
+}
+
 export interface iUser {
   _id: string
   name?: string
@@ -9,12 +17,7 @@ export interface iUser {
   newsletter?: boolean
   transfercode: string
   password?: string
-  cards?: {
-    creationDate: Date
-    stamps: {
-      creationDate: Date
-    }[]
-  }[]
+  cards?: iCard[]
   userRoles: string[]
   createdAt: Date
   updatedAt: Date
@@ -50,6 +53,11 @@ const UserSchema = new Schema<iUser>(
     cards: [
       {
         creationDate: {
+          type: Date,
+          default: Date.now,
+          required: true,
+        },
+        blockedUntil: {
           type: Date,
           default: Date.now,
           required: true,

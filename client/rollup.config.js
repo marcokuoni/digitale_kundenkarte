@@ -28,6 +28,8 @@ export default {
       'process.env.SCHEMA_VERSION': process.env.SCHEMA_VERSION,
       'process.env.SCHEMA_VERSION_KEY': process.env.SCHEMA_VERSION_KEY,
       'process.env.JWT_COOKIE_NAME': process.env.JWT_COOKIE_NAME,
+      'process.env.DEFAULT_URL_TOKEN_BLOCK_FOR_MINUTES': process.env.DEFAULT_URL_TOKEN_BLOCK_FOR_MINUTES,
+      'process.env.DEFAULT_URL_TOKEN_VALID_FOR_MINUTES': process.env.DEFAULT_URL_TOKEN_VALID_FOR_MINUTES,
     }),
     svelte({
       preprocess: sveltePreprocess({ sourceMap: !production }),

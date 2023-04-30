@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { getIpBlocks, addIpBlock, deleteIpBlock } from '../codegen'
+  import SettingsPage from '../../components/SettingsPage.svelte'
+  import { getIpBlocks, addIpBlock, deleteIpBlock } from '../../codegen'
   import { Wave } from 'svelte-loading-spinners'
 
   let ip = ''
@@ -44,8 +45,7 @@
   }
 </script>
 
-<main>
-  <h1>Geblockte IPs</h1>
+<SettingsPage title="Geblockte IPs">
   <form on:submit|preventDefault={addIpBlockSubmit}>
     <label for="ip">IP</label>
     <input
@@ -56,7 +56,9 @@
     />
     <label for="blockedUntil">Blockieren bis</label>
     <input type="datetime-local" id="blockedUntil" bind:value={blockedUntil} />
-    <button type="submit" disabled={ip === '' || blockedUntil === ''}>Block IP</button>
+    <button type="submit" disabled={ip === '' || blockedUntil === ''}
+      >Block IP</button
+    >
   </form>
   {#if loading}
     <Wave size="100" color="#FF3E00" unit="px" />
@@ -92,7 +94,7 @@
       {/each}
     </tbody>
   </table>
-</main>
+</SettingsPage>
 
 <style>
 </style>
