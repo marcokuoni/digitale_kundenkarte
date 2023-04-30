@@ -40,18 +40,20 @@ export const addStamp = async (
     userDb.cards = []
   }
 
+  const blockedUntil = new Date(
+    Date.now() + 1000 * 60 * urlTokenPayload.blockForMinutes
+  )
+
   if (!card) {
-    card = _createNewCard(
-      new Date(Date.now() + 1000 * 60 * urlTokenPayload.blockForMinutes)
-    )
+    card = _createNewCard(blockedUntil)
     userDb.cards = [card]
     card = userDb.cards[0]
+  } else {
+    card.blockedUntil = blockedUntil
   }
 
   if (card && card.stamps.length >= stampLength) {
-    const newCard = _createNewCard(
-      new Date(Date.now() + 1000 * 60 * urlTokenPayload.blockForMinutes)
-    )
+    const newCard = _createNewCard(blockedUntil)
     newCard.stamps.push({
       creationDate: new Date(),
     })

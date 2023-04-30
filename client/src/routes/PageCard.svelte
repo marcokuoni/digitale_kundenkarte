@@ -7,8 +7,6 @@
   import NavLink from '../components/NavLink.svelte'
   import { currentUser, fetchCurrentUser, currentUserLoading, currentUserError } from '../stores/currentUser'
   import { onMount } from 'svelte'
-
-  const loading = true
   
   onMount(() => {
     fetchCurrentUser()
@@ -56,7 +54,7 @@
           <div>
             <p class="info-label">STEMPEL</p>
             <p class="info-text">
-              4<span class="stamps-secondary-text">/ 8</span>
+              {$currentUser && $currentUser.cards[0].stamps.length}<span class="stamps-secondary-text">/ 8</span>
             </p>
           </div>
           <div>
