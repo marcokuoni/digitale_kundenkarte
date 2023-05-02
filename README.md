@@ -188,3 +188,4 @@ https://stackoverflow.com/questions/6470378/hashing-a-session-fingerprint-really
 * Admin kann Mitarbeiter Links ubenennen - Profil erstellen, anmelden
 * Mitarbeiter Navigation besteht aus: Karte einlösen, QR Code erstellen, Einstellungen, Übersicht über alle Benutzer
 * Admin Navigation besteht aus: Benutzer Gruppen Einstellung für Benutzer mit PW, Einstellungen, Link zum erstellen/anmelden eines Benutzers mit PW, Blacklist
+* Stempfel ohne Internet: OptimisticResponse und cache schreiben, testen - evt als provisorisch markieren (internet muss vorhanden sein bis wann? anzeigen)
