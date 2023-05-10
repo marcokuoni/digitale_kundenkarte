@@ -80,5 +80,5 @@ type Mutation {
   addIpBlock(ip: String!, blockedUntil: Date!): Boolean!
   generateUrlToken(validUntil: Date!, blockForMinutes: Int!): UrlToken!
   addStamp(urlToken:String!): User! 
-  honourCardFrom(transfercode:String!): User!
+  honourCardFrom(transfercode:String!): Boolean!
 }

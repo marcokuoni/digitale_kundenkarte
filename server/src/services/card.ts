@@ -74,6 +74,7 @@ export const addStamp = async (
 }
 
 export const honourCardFrom = async (transfercode: string) => {
+  let success = false
   const userDb = await User.findOne({ transfercode })
   if (userDb && userDb.cards && userDb.cards.length > 0) {
     const validCards = userDb.cards.filter(
@@ -82,10 +83,11 @@ export const honourCardFrom = async (transfercode: string) => {
     if (validCards && validCards.length > 0) {
       validCards[0].honouredAt = new Date()
       await userDb.save()
+      success = true
     }
   }
 
-  return userDb
+  return success
 }
 
 const _createNewCard = (blockedUntil: Date) => {

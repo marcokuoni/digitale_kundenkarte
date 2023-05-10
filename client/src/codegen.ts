@@ -42,7 +42,7 @@ export type Mutation = {
   addStamp: User;
   deleteIpBlock: Scalars['Boolean'];
   generateUrlToken: UrlToken;
-  honourCardFrom: User;
+  honourCardFrom: Scalars['Boolean'];
   refresh: Scalars['Boolean'];
   revokeRefreshToken: Scalars['Boolean'];
   signIn: Scalars['Boolean'];
@@ -265,7 +265,7 @@ export type HonourCardFromMutationVariables = Exact<{
 }>;
 
 
-export type HonourCardFromMutation = { __typename?: 'Mutation', honourCardFrom: { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, userRoles: Array<string | null>, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> } };
+export type HonourCardFromMutation = { __typename?: 'Mutation', honourCardFrom: boolean };
 
 export const UserFragmentFragmentDoc = gql`
     fragment UserFragment on User {
@@ -419,11 +419,9 @@ export const AddStampDoc = gql`
     ${UserFragmentFragmentDoc}`;
 export const HonourCardFromDoc = gql`
     mutation honourCardFrom($transfercode: String!) {
-  honourCardFrom(transfercode: $transfercode) {
-    ...UserFragment
-  }
+  honourCardFrom(transfercode: $transfercode)
 }
-    ${UserFragmentFragmentDoc}`;
+    `;
 export const getUsers = (
             options: Omit<
               WatchQueryOptions<GetUsersQueryVariables>, 

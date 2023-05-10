@@ -141,7 +141,5 @@ mutation addStamp($urlToken:String!) {
 }
 
 mutation honourCardFrom($transfercode: String!) {
-  honourCardFrom(transfercode: $transfercode) {
-    ...UserFragment
-  }
+  honourCardFrom(transfercode: $transfercode)
 }
