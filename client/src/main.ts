@@ -14,8 +14,8 @@ import initPersistor from './lib/apollo/persistor'
 
         //TODO: Make this nice looking
         const updateAccepted = await new Promise((resolve) => {
-          resolve(true)
-          // resolve(confirm('soll die App ein Update erfahren?'))
+          // resolve(true)
+          resolve(confirm('soll die App ein Update erfahren?'))
         })
 
         if (updateAccepted) {
@@ -28,7 +28,7 @@ import initPersistor from './lib/apollo/persistor'
       })
 
       //NOTE deactivate local storage cache
-      // wb.register()
+      wb.register()
       // /NOTE deactivate local storage cache
     })
   }

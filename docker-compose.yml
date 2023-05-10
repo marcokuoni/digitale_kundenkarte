@@ -12,7 +12,6 @@ services:
       - --experimental.http3=true
       - --providers.docker=true
       - --providers.file.directory=/etc/traefik/dynamic
-      - --entrypoints.server.address=:$SERVER_ENTRY_PORT
       - --entrypoints.client.address=:$CLIENT_ENTRY_PORT
       - --entrypoints.client_live_reload.address=:$CLIENT_LIVE_RELOAD_PORT
       - --entrypoints.client_secure.address=:$CLIENT_SECURE_ENTRY_PORT
@@ -22,7 +21,6 @@ services:
       # Logging levels are DEBUG, PANIC, FATAL, ERROR, WARN, and INFO.
       - --log.level=debug
     ports:
-      - $SERVER_ENTRY_PORT:$SERVER_ENTRY_PORT
       - $CLIENT_LIVE_RELOAD_PORT:$CLIENT_LIVE_RELOAD_PORT
       - "$CLIENT_SECURE_ENTRY_PORT:$CLIENT_SECURE_ENTRY_PORT/tcp"
       - "$CLIENT_SECURE_ENTRY_PORT:$CLIENT_SECURE_ENTRY_PORT/udp"
@@ -40,13 +38,16 @@ services:
       args:
         - CLIENT_PORT=$CLIENT_PORT
     environment:
-      - SERVER_URL=$CLIENT_URL:$SERVER_ENTRY_PORT
+      - SERVER_URL=$CLIENT_URL
       - SCHEMA_VERSION_KEY=$SCHEMA_VERSION_KEY
       - SCHEMA_VERSION=$SCHEMA_VERSION
       - JWT_COOKIE_NAME=$JWT_COOKIE_NAME
       - DEFAULT_URL_TOKEN_BLOCK_FOR_MINUTES=$DEFAULT_URL_TOKEN_BLOCK_FOR_MINUTES
       - DEFAULT_URL_TOKEN_VALID_FOR_MINUTES=$DEFAULT_URL_TOKEN_VALID_FOR_MINUTES
       - STAMPS_LENGTH=$STAMPS_LENGTH
+      - CLIENT_PING_INTERVAL=$CLIENT_PING_INTERVAL
+      - SERVER_REQUEST_COUNT_CHECK_INTERVAL=$SERVER_REQUEST_COUNT_CHECK_INTERVAL
+      - CHECK_FOR_HOW_MANY_CYCLES=$CHECK_FOR_HOW_MANY_CYCLES
     restart: always
     volumes:
       - ./client:/usr/src/app
@@ -93,7 +94,7 @@ services:
       - JWT_REFRESH_EXPIRES_IN=$JWT_REFRESH_EXPIRES_IN
       - JWT_REFRESH_COOKIE_NAME=$JWT_REFRESH_COOKIE_NAME
       - CLIENT_URL=$CLIENT_URL
-      - SERVER_URL=$CLIENT_URL:$SERVER_ENTRY_PORT
+      - SERVER_URL=$CLIENT_URL
       - PASSWORD_SALT_ROUNDS=$PASSWORD_SALT_ROUNDS
       - JWT_URL_TOKEN_KEY=$JWT_URL_TOKEN_KEY
       - STAMPS_LENGTH=$STAMPS_LENGTH
@@ -102,9 +103,9 @@ services:
       - ./server:/usr/src/app
     labels:
       - traefik.enable=true
-      - traefik.http.routers.server_route.entrypoints=server
+      - traefik.http.routers.server_route.entrypoints=client_secure
       - traefik.http.routers.server_route.tls=true
-      - traefik.http.routers.server_route.rule=Host(`$DOMAIN`)
+      - traefik.http.routers.server_route.rule=(Host(`$DOMAIN`) && Path(`/graphql`))
       - traefik.http.routers.server_route.service=server_service
       - traefik.http.services.server_service.loadbalancer.server.port=$SERVER_PORT
       - traefik.http.services.server_service.loadbalancer.healthcheck.path=/graphql?query=%7B__typename%7D

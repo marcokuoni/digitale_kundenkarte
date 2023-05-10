@@ -4,19 +4,10 @@
   import Logout from '../components/Logout.svelte'
   import { PATHS } from '../lib/const.js'
   import NavLink from '../components/NavLink.svelte'
-  import {
-    currentUser,
-    fetchCurrentUser,
-    currentUserLoading,
-    currentUserError,
-  } from '../stores/currentUser'
-  import { onMount } from 'svelte'
+  import currentUser from '../stores/currentUser'
   import HonourQrCode from '../components/HonourQrCode.svelte'
   import { formatRelativeTimeS } from '../lib/formater'
 
-  onMount(() => {
-    fetchCurrentUser()
-  })
   let settingsOverlayVisible = false
   const stampsLength = parseInt('process.env.STAMPS_LENGTH' || '8')
 
@@ -24,8 +15,8 @@
     settingsOverlayVisible = !settingsOverlayVisible
   }
 
-  $: stampCount = ($currentUser && $currentUser.cards[0].stamps.length) || 0
-  $: stamps = ($currentUser && $currentUser.cards[0].stamps) || []
+  $: stampCount = ($currentUser && $currentUser.cards[0] && $currentUser.cards[0].stamps.length) || 0
+  $: stamps = ($currentUser && $currentUser.cards[0] && $currentUser.cards[0].stamps) || []
   $: hasAFullCard =
     ($currentUser &&
       $currentUser.cards.filter(
@@ -33,7 +24,7 @@
       ).length > 0) ||
     false
   $: timeSpanToLastStamp =
-    $currentUser && $currentUser.cards[0].stamps.length > 0
+    $currentUser && $currentUser.cards[0] && $currentUser.cards[0].stamps.length > 0
       ? (new Date(
           $currentUser.cards[0].stamps[
             $currentUser.cards[0].stamps.length - 1
@@ -45,11 +36,9 @@
 </script>
 
 <main>
-  {#if $currentUserLoading}
+  {#if !$currentUser}
     <!-- TODO: we need a way to communicate loading and alert states to the user? -->
     <span>Loading...</span>
-  {:else if $currentUserError}
-    <span>Error: {$currentUserError}</span>
   {:else}
     <section class="card-section">
       <div class="card-wrapper">

@@ -1,66 +1,79 @@
 import { writable } from 'svelte/store'
 import type { Exact, GetCurrentUserQuery, User } from '../codegen'
-import { getCurrentUser } from '../codegen'
+import { AsyncgetCurrentUser, getCurrentUser } from '../codegen'
 import type { ApolloQueryResult, ObservableQuery } from '@apollo/client'
 
-// create a writable store with an initial value of null
-export const currentUser = writable<User>(null)
-export const currentUserLoading = writable<boolean>(false)
-export const currentUserError = writable<string>('')
+const clientPingIntervall = parseInt(
+  'process.env.CLIENT_PING_INTERVAL' || '5000'
+)
+console.log(
+  '%ccurrentUser.ts line:7 clientPingIntervall',
+  'color: #007acc;',
+  clientPingIntervall
+)
+function currentUser() {
+  const { subscribe, set } = writable<User>(null)
+  let timer = null
 
-export const fetchCurrentUser = async () => {
-  const token = localStorage.getItem('process.env.JWT_COOKIE_NAME')
-  if (token) {
-    currentUserLoading.set(true)
+  const fetchCurrentUser = async () => {
     try {
-      const query = getCurrentUser({
+      const { data } = await AsyncgetCurrentUser({
         fetchPolicy: 'cache-first',
       })
 
-      query.subscribe((data) => {
-        _checkUserData(data)
-      })
+      _checkUserData(data)
+      _loadUserInfinity()
     } catch (e) {
-      console.error(e)
-      currentUserError.set(e)
-      currentUserLoading.set(false)
+      //ignore error
+      // after login no token is set yet, so we need to fetch the user data
     }
-  } else {
-    // after login no token is set yet, so we need to fetch the user data
+  }
+
+  const _loadUserInfinity = () => {
     try {
-      const query = await getCurrentUser({
-        fetchPolicy: 'network-only',
-      })
-      await query.subscribe((data) => {
-        _checkUserData(data)
-      })
+      const reloadUser = () => {
+        if (timer) {
+          clearTimeout(timer)
+        }
+        timer = setTimeout(async () => {
+          try {
+            const token = localStorage.getItem('process.env.JWT_COOKIE_NAME')
+            if (token) {
+              const { data } = await AsyncgetCurrentUser({
+                fetchPolicy: 'network-only',
+                errorPolicy: 'ignore',
+              })
+              _checkUserData(data)
+            } else {
+              clearTimeout(timer)
+            }
+          } catch (e) {
+            //ignore error
+            // after login no token is set yet, so we need to fetch the user data
+          }
+          reloadUser()
+        }, clientPingIntervall)
+      }
+      if (!timer) {
+        reloadUser()
+      }
     } catch (e) {
       console.error(e.message)
     }
   }
+
+  const _checkUserData = (data: GetCurrentUserQuery) => {
+    if (data?.getCurrentUser) {
+      set(data.getCurrentUser as User)
+    }
+  }
+
+  return {
+    subscribe,
+    fetchCurrentUser,
+    reset: () => set(null),
+    set,
+  }
 }
 
-const _checkUserData = (
-  data: ApolloQueryResult<GetCurrentUserQuery> & {
-    query: ObservableQuery<
-      GetCurrentUserQuery,
-      Exact<{
-        [key: string]: never
-      }>
-    >
-  }
-) => {
-  if (data.error) {
-    console.log('error', data.error)
-    currentUserError.set(data.error.message)
-    currentUserLoading.set(false)
-  }
-  if (data.loading) {
-    console.log('loading...')
-  } else {
-    if (data.data.getCurrentUser) {
-      currentUser.set(data.data.getCurrentUser)
-    }
-    currentUserLoading.set(false)
-  }
-}
+export default currentUser()

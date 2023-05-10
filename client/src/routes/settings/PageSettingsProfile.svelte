@@ -2,15 +2,10 @@
   import gql from 'graphql-tag'
 
   import { updateUser } from '../../codegen'
-  import { currentUser, fetchCurrentUser } from '../../stores/currentUser'
-  import { onMount } from 'svelte'
+  import currentUser from '../../stores/currentUser'
   import NavLink from '../../components/NavLink.svelte'
   import { PATHS } from '../../lib/const'
   import SettingsPage from '../../components/SettingsPage.svelte'
-
-  onMount(() => {
-    fetchCurrentUser()
-  })
 
   async function submitUpdateUser(event: SubmitEvent) {
     const forms = event.target as HTMLFormElement
@@ -33,36 +28,20 @@
           newsletter,
           password,
         },
-        update: (cache, { data: { updateUser } }) => {
-          cache.writeFragment({
-            id: `User:${_id}`,
-            fragment: gql`
-              fragment UpdateUser on User {
-                name
-                email
-                newsletter
-              }
-            `,
-            data: updateUser,
-          })
-        },
         optimisticResponse: {
           updateUser: {
-            __typename: 'User',
+            ...$currentUser,
             _id,
             name,
             email,
             newsletter,
-            cards: new Array(),
-            transfercode: $currentUser.transfercode,
-            createdAt: $currentUser.createdAt,
             updatedAt: Date.now(),
           },
         },
       })
 
       if (data && data.updateUser) {
-        fetchCurrentUser()
+        currentUser.set(data.updateUser)
         console.log('User updated')
       } else {
         console.error('Error')
@@ -72,48 +51,52 @@
 </script>
 
 <SettingsPage title="Benutzerkonto">
-  <h2>Dein Transfercode: {$currentUser && $currentUser.transfercode}</h2>
-  <form on:submit|preventDefault={submitUpdateUser}>
-    <input
-      type="hidden"
-      id="_id"
-      name="_id"
-      value={$currentUser && $currentUser._id}
-    />
-    <label for="name">Name</label>
-    <input
-      type="text"
-      id="name"
-      name="name"
-      value={$currentUser && $currentUser.name}
-    />
-    <label for="email">Email</label>
-    <input
-      type="email"
-      id="email"
-      name="email"
-      value={$currentUser && $currentUser.email}
-    />
-    <label for="newsletter"
-      ><input
-        type="checkbox"
-        id="newsletter"
-        name="newsletter"
-        value="true"
-        checked={$currentUser && $currentUser.newsletter}
-      /> Wants Newsletter</label
-    >
-    <!-- TODO: Password should only be visible if requested -->
-    <label for="password">Password</label>
-    <input
-      type="password"
-      id="password"
-      name="password"
-      value={''}
-      required={$currentUser.userRoles.length > 0}
-    />
-    <button type="submit">Update User</button>
-  </form>
+  {#if !$currentUser}
+    <h2>Kein Benutzer gefunden</h2>
+  {:else}
+    <h2>Dein Transfercode: {$currentUser && $currentUser.transfercode}</h2>
+    <form on:submit|preventDefault={submitUpdateUser}>
+      <input
+        type="hidden"
+        id="_id"
+        name="_id"
+        value={$currentUser && $currentUser._id}
+      />
+      <label for="name">Name</label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        value={$currentUser && $currentUser.name}
+      />
+      <label for="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        value={$currentUser && $currentUser.email}
+      />
+      <label for="newsletter"
+        ><input
+          type="checkbox"
+          id="newsletter"
+          name="newsletter"
+          value="true"
+          checked={$currentUser && $currentUser.newsletter}
+        /> Wants Newsletter</label
+      >
+      <!-- TODO: Password should only be visible if requested -->
+      <label for="password">Password</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        value={''}
+        required={$currentUser?.userRoles && $currentUser.userRoles.length > 0}
+      />
+      <button type="submit">Update User</button>
+    </form>
+  {/if}
 
   <footer>
     <NavLink to={`${PATHS.SETTINGS}`}>Einstellungen</NavLink>

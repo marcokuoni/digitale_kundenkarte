@@ -2,6 +2,7 @@ scalar Date
 
 type Stamp {
   creationDate: Date!
+  validUntilDate: Date
 }
 
 type Card {
@@ -78,6 +79,6 @@ type Mutation {
   deleteIpBlock(_id: ID!): Boolean!
   addIpBlock(ip: String!, blockedUntil: Date!): Boolean!
   generateUrlToken(validUntil: Date!, blockForMinutes: Int!): UrlToken!
-  addStamp(urlToken:String!): Boolean! 
-  honourCardFrom(transfercode:String!): Boolean!
+  addStamp(urlToken:String!): User! 
+  honourCardFrom(transfercode:String!): User!
 }

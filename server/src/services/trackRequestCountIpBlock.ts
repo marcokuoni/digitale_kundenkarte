@@ -3,8 +3,8 @@ import { GraphQLError } from 'graphql'
 import IpBlock from '../models/ipBlock'
 
 const requestCountMap = new Map() // Map to store request counts per IP address
-const timeWindowMs = parseInt(process.env.TIME_WINDOW || '5000')
-const maxRequests = parseInt(process.env.MAX_REQUESTS || '10')
+const timeWindowMs = parseInt(process.env.TIME_WINDOW || '300000')
+const maxRequests = parseInt(process.env.MAX_REQUESTS || '6000')
 const blockingDuration = parseInt(process.env.BLOCKING_DURATION || '300000')
 
 const trackRequestCountIpBlock = async (

@@ -31,6 +31,9 @@ export default {
       'process.env.DEFAULT_URL_TOKEN_BLOCK_FOR_MINUTES': process.env.DEFAULT_URL_TOKEN_BLOCK_FOR_MINUTES,
       'process.env.DEFAULT_URL_TOKEN_VALID_FOR_MINUTES': process.env.DEFAULT_URL_TOKEN_VALID_FOR_MINUTES,
       'process.env.STAMPS_LENGTH': process.env.STAMPS_LENGTH,      
+      'process.env.CLIENT_PING_INTERVAL': process.env.CLIENT_PING_INTERVAL,      
+      'process.env.SERVER_REQUEST_COUNT_CHECK_INTERVAL': process.env.SERVER_REQUEST_COUNT_CHECK_INTERVAL,      
+      'process.env.CHECK_FOR_HOW_MANY_CYCLES': process.env.CHECK_FOR_HOW_MANY_CYCLES,      
     }),
     svelte({
       preprocess: sveltePreprocess({ sourceMap: !production }),
@@ -65,7 +68,7 @@ export default {
 
     // Watch the `public` directory and refresh the
     // browser on changes when not in production
-    !production && livereload('public'),
+    // !production && livereload('public'),
 
     // If we're building for production (npm run build
     // instead of npm run dev), minify

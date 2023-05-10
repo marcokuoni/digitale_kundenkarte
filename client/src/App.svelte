@@ -19,8 +19,14 @@
   import { PATHS, UserRoles } from './lib/const'
   import SecuredRoute from './components/SecuredRoute.svelte'
   import PageHonourCard from './routes/PageHonourCard.svelte'
+  import currentUser from './stores/currentUser'
+  import { onMount } from 'svelte'
 
   export let url = ''
+
+  onMount(() => {
+    currentUser.fetchCurrentUser()
+  })
 </script>
 
 <main>

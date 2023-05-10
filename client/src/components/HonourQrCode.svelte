@@ -2,6 +2,7 @@
   import { PATHS } from '../lib/const'
   import Modal, { getModal } from './Modal.svelte'
 
+  const HONOUR = 'honour'
   export let transfercode = ''
   let createStampUrl = `${window.location.origin}/${PATHS.HONOUR_CARD}/${transfercode}`
   let createQRCodeUrl =
@@ -9,8 +10,8 @@
     createStampUrl
 </script>
 
-<button type="button" on:click={() => getModal().open()}> Karte einlösen </button>
-<Modal>
+<button type="button" on:click={() => getModal(HONOUR).open()}> Karte einlösen </button>
+<Modal id={HONOUR}>
     <a href={createStampUrl} target="_blank" rel="noopener noreferrer"
       >{createStampUrl}</a
     >

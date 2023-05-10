@@ -189,3 +189,9 @@ https://stackoverflow.com/questions/6470378/hashing-a-session-fingerprint-really
 * Mitarbeiter Navigation besteht aus: Karte einlösen, QR Code erstellen, Einstellungen, Übersicht über alle Benutzer
 * Admin Navigation besteht aus: Benutzer Gruppen Einstellung für Benutzer mit PW, Einstellungen, Link zum erstellen/anmelden eines Benutzers mit PW, Blacklist
 * Stempfel ohne Internet: OptimisticResponse und cache schreiben, testen - evt als provisorisch markieren (internet muss vorhanden sein bis wann? anzeigen)
+
+https://svelte.dev/tutorial/derived-stores
+
+//PRoblem ist, brauchen einen reload und nicht im background
+https://github.com/aerogear/offix/tree/14a83414b4fcaa3e8f0facad3a15455fa18c6050
+https://codeburst.io/highly-functional-offline-applications-using-apollo-client-12885bd5f335

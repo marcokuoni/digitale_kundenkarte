@@ -54,21 +54,26 @@ export const addStamp = async (
 
   if (card && card.stamps.length >= stampsLength) {
     const newCard = _createNewCard(blockedUntil)
-    newCard.stamps.push({
-      creationDate: new Date(),
-    })
-    userDb.cards.push(newCard)
+    newCard.stamps = [
+      {
+        creationDate: new Date(),
+      },
+    ]
+    userDb.cards = [newCard, ...userDb.cards]
   } else {
-    card.stamps.push({
-      creationDate: new Date(),
-    })
+    card.stamps = [
+      {
+        creationDate: new Date(),
+      },
+      ...card.stamps,
+    ]
   }
 
   await userDb.save()
+  return userDb
 }
 
 export const honourCardFrom = async (transfercode: string) => {
-  let success = false
   const userDb = await User.findOne({ transfercode })
   if (userDb && userDb.cards && userDb.cards.length > 0) {
     const validCards = userDb.cards.filter(
@@ -77,11 +82,10 @@ export const honourCardFrom = async (transfercode: string) => {
     if (validCards && validCards.length > 0) {
       validCards[0].honouredAt = new Date()
       await userDb.save()
-      success = true
     }
   }
 
-  return success
+  return userDb
 }
 
 const _createNewCard = (blockedUntil: Date) => {

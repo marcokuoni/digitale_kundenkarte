@@ -177,9 +177,9 @@ export const usersResolvers = {
       checkAccessRights(context.user)
       if (context.user) {
         const payload = getPaylodFromUrlToken(urlToken)
-        await addStamp(payload, context.user)
+        return await addStamp(payload, context.user)
       }
-      return true
+      return false
     },
     async honourCardFrom(
       root: never,

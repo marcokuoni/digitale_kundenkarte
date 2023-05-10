@@ -1,20 +1,26 @@
 <script lang="ts">
   import NavLink from '../components/NavLink.svelte'
-  import { onMount } from 'svelte'
+  import { onDestroy, onMount } from 'svelte'
   import { navigate } from 'svelte-routing'
   import { refresh } from '../codegen'
   import { PATHS } from '../lib/const'
+  import currentUser from '../stores/currentUser'
 
   onMount(async () => {
     try {
-      const data = await refresh({})
-      if (data.data.refresh) {
-        navigate('/card')
-      }
+      await refresh({})
     } catch (e) {
       console.error(e.message)
     }
   })
+
+  const unsubscribe = currentUser.subscribe((currentUser) => {
+    if (currentUser && (!currentUser.userRoles || currentUser.userRoles.length === 0)) {
+      navigate('/card')
+    }
+  })
+
+  onDestroy(unsubscribe)
 </script>
 
 <nav>

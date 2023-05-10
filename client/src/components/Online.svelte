@@ -5,9 +5,10 @@
   import { onMount } from 'svelte'
   import Modal, { getModal } from './Modal.svelte'
 
-  const clientPingIntervall = 5000 //TODO: Go in Settings
-  const serverRequestCountCheckIntervall = 1000 //TODO: Go in Settings
-  const checkForHowManyCycles = 600 //TODO: Go in Settings
+  const clientPingIntervall = parseInt('process.env.CLIENT_PING_INTERVAL' || '5000')
+  const serverRequestCountCheckIntervall = parseInt('process.env.SERVER_REQUEST_COUNT_CHECK_INTERVAL' || '1000')
+  const checkForHowManyCycles = parseInt('process.env.CHECK_FOR_HOW_MANY_CYCLES' || '600')
+  
   let checkCounter = 0
   let clientOffline = window.navigator.onLine
   let serverOffline = false

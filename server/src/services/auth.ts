@@ -257,14 +257,14 @@ const _createTokensAndResponse = (
   const token = jwt.sign(userPayload, jwtKey, {
     algorithm: 'HS256',
     expiresIn: jwtExpiry,
-    issuer: process.env.SERVER_URL || 'https://karte.localhost:5001',
+    issuer: process.env.SERVER_URL || 'https://karte.localhost',
     audience: process.env.CLIENT_URL || 'https://karte.localhost',
     jwtid: randomTokenString(),
   })
   const refreshToken = jwt.sign(userPayload, jwtRefreshKey, {
     algorithm: 'HS256',
     expiresIn: jwtRefreshExpiry,
-    issuer: process.env.SERVER_URL || 'https://karte.localhost:5001',
+    issuer: process.env.SERVER_URL || 'https://karte.localhost',
     audience: process.env.CLIENT_URL || 'https://karte.localhost',
     jwtid: randomTokenString(),
   })

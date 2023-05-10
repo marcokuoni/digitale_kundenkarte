@@ -8,6 +8,7 @@ export interface iCard {
   honouredAt?: Date
   stamps: {
     creationDate: Date
+    validUntilDate?: Date
   }[]
 }
 
@@ -43,12 +44,10 @@ const UserSchema = new Schema<iUser>(
     },
     transfercode: {
       type: String,
-      default: false,
       required: true,
     },
     password: {
       type: String,
-      default: false,
       required: false,
     },
     cards: [
@@ -74,6 +73,10 @@ const UserSchema = new Schema<iUser>(
               type: Date,
               default: Date.now,
               required: true,
+            },
+            validUntilDate: {
+              type: Date,
+              required: false,
             },
           },
         ],
