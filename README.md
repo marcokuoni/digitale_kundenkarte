@@ -188,10 +188,15 @@ https://stackoverflow.com/questions/6470378/hashing-a-session-fingerprint-really
 * Admin kann Mitarbeiter Links ubenennen - Profil erstellen, anmelden
 * Mitarbeiter Navigation besteht aus: Karte einlösen, QR Code erstellen, Einstellungen, Übersicht über alle Benutzer
 * Admin Navigation besteht aus: Benutzer Gruppen Einstellung für Benutzer mit PW, Einstellungen, Link zum erstellen/anmelden eines Benutzers mit PW, Blacklist
-* Stempfel ohne Internet: OptimisticResponse und cache schreiben, testen - evt als provisorisch markieren (internet muss vorhanden sein bis wann? anzeigen)
 
 https://svelte.dev/tutorial/derived-stores
 
 //PRoblem ist, brauchen einen reload und nicht im background
 https://github.com/aerogear/offix/tree/14a83414b4fcaa3e8f0facad3a15455fa18c6050
 https://codeburst.io/highly-functional-offline-applications-using-apollo-client-12885bd5f335
+
+
+
+
+
+WICHTIG: Letzter Stempfel muss transferiert sein, damit Karte eingelöst werden kann. Das heisst erst beim 9ten Besuch. Employee muss Internet haben, um QR zu erzeugen, was er auch vorgängig machen könnte. Aber vor allem um Karten einzulösen. die Überprüfung, ob noch Karte offen sind muss auf dem Server passieren.
