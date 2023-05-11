@@ -178,8 +178,10 @@ https://stackoverflow.com/questions/6470378/hashing-a-session-fingerprint-really
 * Passwort vergessen
 * Hinweis per Mails über eventuelle falsche Refresh Tokens
 * Fehlermeldung bei falschem Passwort/Transfercode
+* Redirect to login when loggedout and delete all client datas
 * Fehlermeldung wenn IP geblockt ist
 * Zeige alle Karten inklusive ob eingelöst oder nicht
+* 404 page, forbidden page (i think not possible with the current router)
 
 https://svelte.dev/tutorial/derived-stores
 
@@ -191,4 +193,4 @@ https://codeburst.io/highly-functional-offline-applications-using-apollo-client-
 
 
 
-WICHTIG: Letzter Stempfel muss transferiert sein, damit Karte eingelöst werden kann. Das heisst erst beim 9ten Besuch. Employee muss Internet haben, um QR zu erzeugen, was er auch vorgängig machen könnte. Aber vor allem um Karten einzulösen. die Überprüfung, ob noch Karte offen sind muss auf dem Server passieren.
+WICHTIG: Letzter Stempfel muss transferiert sein, damit Karte eingelöst werden kann. Das heisst erst beim 9ten Besuch im Lokal. Mitarbeiter Konto muss Internet haben, um QR zu erzeugen, was er auch vorgängig machen könnte. Aber vor allem um Karten einzulösen. die Überprüfung, ob noch Karte offen sind muss auf dem Server passieren.
