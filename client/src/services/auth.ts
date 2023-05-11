@@ -1,5 +1,5 @@
 import type { User } from '../codegen'
-import { UserRoles } from '../lib/const'
+import { USER_ROLES } from '../lib/const'
 
 export const checkAccessRights = (
   user?: User,
@@ -9,7 +9,7 @@ export const checkAccessRights = (
     return false
   }
 
-  if (user.userRoles.includes(UserRoles.ADMIN)) {
+  if (user.userRoles.includes(USER_ROLES.ADMIN)) {
     return true
   }
 

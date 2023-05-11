@@ -21,4 +21,4 @@
   }
 </script>
 
-<button type="button" on:click={logout}>Logout</button>
+<button type="button" on:click={logout}>Abmelden</button>

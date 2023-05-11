@@ -1,22 +1,36 @@
 <script lang="ts">
   import Card from '../components/Card.svelte'
-  import CardSettings from '../components/CardSettings.svelte'
   import Logout from '../components/Logout.svelte'
   import { PATHS } from '../lib/const.js'
   import NavLink from '../components/NavLink.svelte'
   import currentUser from '../stores/currentUser'
   import HonourQrCode from '../components/HonourQrCode.svelte'
   import { formatRelativeTimeS } from '../lib/formater'
+  import { onDestroy } from 'svelte'
+  import { navigate } from 'svelte-routing'
 
-  let settingsOverlayVisible = false
   const stampsLength = parseInt('process.env.STAMPS_LENGTH' || '8')
 
-  function toggleOverlayVisibility() {
-    settingsOverlayVisible = !settingsOverlayVisible
-  }
+  const unsubscribe = currentUser.subscribe((currentUser) => {
+    if (
+      currentUser &&
+      currentUser.userRoles &&
+      currentUser.userRoles.length > 0
+    ) {
+      navigate(`/${PATHS.HOME}`)
+    }
+  })
 
-  $: stampCount = ($currentUser && $currentUser.cards[0] && $currentUser.cards[0].stamps.length) || 0
-  $: stamps = ($currentUser && $currentUser.cards[0] && $currentUser.cards[0].stamps) || []
+  onDestroy(unsubscribe)
+
+  $: stampCount =
+    ($currentUser &&
+      $currentUser.cards[0] &&
+      $currentUser.cards[0].stamps.length) ||
+    0
+  $: stamps =
+    ($currentUser && $currentUser.cards[0] && $currentUser.cards[0].stamps) ||
+    []
   $: hasAFullCard =
     ($currentUser &&
       $currentUser.cards.filter(
@@ -24,7 +38,9 @@
       ).length > 0) ||
     false
   $: timeSpanToLastStamp =
-    $currentUser && $currentUser.cards[0] && $currentUser.cards[0].stamps.length > 0
+    $currentUser &&
+    $currentUser.cards[0] &&
+    $currentUser.cards[0].stamps.length > 0
       ? (new Date(
           $currentUser.cards[0].stamps[
             $currentUser.cards[0].stamps.length - 1
@@ -77,7 +93,6 @@
     <section class="footer-section">
       <div class="footer">
         <NavLink to={PATHS.SETTINGS}>Einstellungen</NavLink>
-        <button on:click={toggleOverlayVisibility}>EINSTELLUNGEN</button>
         <a href="https://thecrownbar.ch">WEBSITE</a>
         <a href="https://instagram.com/thecrownbarrappi">INSTAGRAM</a>
         <Logout />
@@ -86,34 +101,6 @@
         {/if}
       </div>
     </section>
-
-    <CardSettings
-      visible={settingsOverlayVisible}
-      on:toggleOverlay={toggleOverlayVisibility}
-    />
-
-    <!--     
-    {#if $getUsersQuery.loading}
-        <p>loading...</p>
-    {:else}
-        {#if $getUsersQuery.data?.getUsers.length === 0}
-            <p>No User (Add some!)</p>
-        {/if}
-        {#each $getUsersQuery.data?.getUsers || [] as user, i}
-            <div>User {i + 1} -&gt; {user.name}</div>
-        {/each}
-        <button on:click={() => $getUsersQuery.query.refetch({})}>Refresh</button>
-    {/if}
-    -->
-
-    <!--<button on:click={logUsers}>Log users</button>-->
-    <!--
-    <p>Add user:</p>
-    <input type="text" placeholder="username" bind:value={inputName}/>
-    <input type="email" placeholder="email" bind:value={inputEmail}/>
-    <input type="checkbox" name="newsletter" bind:checked={inputNewsletter}/>
-    <button on:click={handleUserClick} disabled={inputName.length === 0}>Add User</button>
-    -->
   {/if}
 </main>
 

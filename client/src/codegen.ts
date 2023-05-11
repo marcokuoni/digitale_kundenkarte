@@ -49,6 +49,7 @@ export type Mutation = {
   signOut: Scalars['Boolean'];
   signUp: Scalars['Boolean'];
   updateUser: User;
+  updateUserRoles: User;
 };
 
 
@@ -108,12 +109,18 @@ export type MutationUpdateUserArgs = {
   password?: InputMaybe<Scalars['String']>;
 };
 
+
+export type MutationUpdateUserRolesArgs = {
+  _id: Scalars['ID'];
+  userRoles: Array<InputMaybe<Scalars['String']>>;
+};
+
 export type Query = {
   __typename?: 'Query';
   getActiveRefreshTokens: Array<Maybe<RefreshToken>>;
   getCurrentUser: User;
   getIpBlocks: Array<Maybe<IpBlock>>;
-  getUsers: Array<Maybe<User>>;
+  getUsersWithPassword: Array<Maybe<User>>;
 };
 
 export type RefreshToken = {
@@ -162,10 +169,10 @@ export type IpBlockFramentFragment = { __typename?: 'IpBlock', _id: string, ip: 
 
 export type UrlTokenFragmentFragment = { __typename?: 'UrlToken', token: string, validUntil: any, blockForMinutes: number };
 
-export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetUsersWithPasswordQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUsersQuery = { __typename?: 'Query', getUsers: Array<{ __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, userRoles: Array<string | null>, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> } | null> };
+export type GetUsersWithPasswordQuery = { __typename?: 'Query', getUsersWithPassword: Array<{ __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, userRoles: Array<string | null>, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> } | null> };
 
 export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -267,6 +274,14 @@ export type HonourCardFromMutationVariables = Exact<{
 
 export type HonourCardFromMutation = { __typename?: 'Mutation', honourCardFrom: boolean };
 
+export type UpdateUserRolesMutationVariables = Exact<{
+  _id: Scalars['ID'];
+  userRoles: Array<InputMaybe<Scalars['String']>> | InputMaybe<Scalars['String']>;
+}>;
+
+
+export type UpdateUserRolesMutation = { __typename?: 'Mutation', updateUserRoles: { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, userRoles: Array<string | null>, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> } };
+
 export const UserFragmentFragmentDoc = gql`
     fragment UserFragment on User {
   _id
@@ -317,9 +332,9 @@ export const UrlTokenFragmentFragmentDoc = gql`
   blockForMinutes
 }
     `;
-export const GetUsersDoc = gql`
-    query getUsers {
-  getUsers {
+export const GetUsersWithPasswordDoc = gql`
+    query getUsersWithPassword {
+  getUsersWithPassword {
     ...UserFragment
   }
 }
@@ -422,28 +437,35 @@ export const HonourCardFromDoc = gql`
   honourCardFrom(transfercode: $transfercode)
 }
     `;
-export const getUsers = (
+export const UpdateUserRolesDoc = gql`
+    mutation updateUserRoles($_id: ID!, $userRoles: [String]!) {
+  updateUserRoles(_id: $_id, userRoles: $userRoles) {
+    ...UserFragment
+  }
+}
+    ${UserFragmentFragmentDoc}`;
+export const getUsersWithPassword = (
             options: Omit<
-              WatchQueryOptions<GetUsersQueryVariables>, 
+              WatchQueryOptions<GetUsersWithPasswordQueryVariables>, 
               "query"
             >
           ): Readable<
-            ApolloQueryResult<GetUsersQuery> & {
+            ApolloQueryResult<GetUsersWithPasswordQuery> & {
               query: ObservableQuery<
-                GetUsersQuery,
-                GetUsersQueryVariables
+                GetUsersWithPasswordQuery,
+                GetUsersWithPasswordQueryVariables
               >;
             }
           > => {
             const q = client.watchQuery({
-              query: GetUsersDoc,
+              query: GetUsersWithPasswordDoc,
               ...options,
             });
             var result = readable<
-              ApolloQueryResult<GetUsersQuery> & {
+              ApolloQueryResult<GetUsersWithPasswordQuery> & {
                 query: ObservableQuery<
-                  GetUsersQuery,
-                  GetUsersQueryVariables
+                  GetUsersWithPasswordQuery,
+                  GetUsersWithPasswordQueryVariables
                 >;
               }
             >(
@@ -457,13 +479,13 @@ export const getUsers = (
             return result;
           }
         
-              export const AsyncgetUsers = (
+              export const AsyncgetUsersWithPassword = (
                 options: Omit<
-                  QueryOptions<GetUsersQueryVariables>,
+                  QueryOptions<GetUsersWithPasswordQueryVariables>,
                   "query"
                 >
               ) => {
-                return client.query<GetUsersQuery>({query: GetUsersDoc, ...options})
+                return client.query<GetUsersWithPasswordQuery>({query: GetUsersWithPasswordDoc, ...options})
               }
             
 export const getCurrentUser = (
@@ -726,6 +748,18 @@ export const honourCardFrom = (
           ) => {
             const m = client.mutate<HonourCardFromMutation, HonourCardFromMutationVariables>({
               mutation: HonourCardFromDoc,
+              ...options,
+            });
+            return m;
+          }
+export const updateUserRoles = (
+            options: Omit<
+              MutationOptions<any, UpdateUserRolesMutationVariables>, 
+              "mutation"
+            >
+          ) => {
+            const m = client.mutate<UpdateUserRolesMutation, UpdateUserRolesMutationVariables>({
+              mutation: UpdateUserRolesDoc,
               ...options,
             });
             return m;

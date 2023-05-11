@@ -2,6 +2,10 @@
   import { signUp } from '../codegen'
   import { PATHS } from '../lib/const'
   import NavLink from '../components/NavLink.svelte'
+  import currentUser from '../stores/currentUser'
+  import Logout from '../components/Logout.svelte'
+
+  export let withPassword: string = ''
 
   let name = ''
   let email = ''
@@ -31,11 +35,11 @@
   }
 </script>
 
-<h1>Create User</h1>
+<h1>Benutzer erstellen</h1>
 <form on:submit|preventDefault={createUser}>
   <label for="name">Name</label>
   <input type="text" id="name" bind:value={name} />
-  <label for="email">Email</label>
+  <label for="email">E-Mail</label>
   <input type="email" id="email" bind:value={email} />
   <label for="newsletter"
     ><input
@@ -43,11 +47,24 @@
       id="newsletter"
       value="true"
       bind:checked={newsletter}
-    /> Wants Newsletter</label
+    /> Will Newsletter</label
   >
-  <!-- TODO: Password should only be visible if requested if visible also required -->
-  <label for="password">Password</label>
-  <input type="password" id="password" bind:value={password} />
-  <button type="submit">Create User</button>
+  {#if withPassword !== ''}
+    <label for="password">Passwort</label>
+    <input type="password" id="password" bind:value={password} />
+  {/if}
+  <button type="submit">Benutzer erstellen</button>
 </form>
-<NavLink to={PATHS.LOGIN_USER}>Ich besitze bereits eine Karte</NavLink>
+
+{#if withPassword !== ''}
+  <NavLink to={`${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}>Anmelden</NavLink>
+  <Logout />
+  <NavLink to={`/${PATHS.HOME}`}>Startseite</NavLink>
+{:else}
+  {#if $currentUser}
+    <Logout />
+  {:else}
+    <NavLink to={PATHS.LOGIN_USER}>Ich besitze bereits eine Karte</NavLink>
+  {/if}
+  <NavLink to={PATHS.CARD}>Zu meiner Karte</NavLink>
+{/if}

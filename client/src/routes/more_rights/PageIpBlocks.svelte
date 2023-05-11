@@ -1,5 +1,5 @@
 <script lang="ts">
-  import SettingsPage from '../../components/SettingsPage.svelte'
+  import MoreRightPage from '../../components/MoreRightPage.svelte'
   import { getIpBlocks, addIpBlock, deleteIpBlock } from '../../codegen'
   import { Wave } from 'svelte-loading-spinners'
 
@@ -45,7 +45,7 @@
   }
 </script>
 
-<SettingsPage title="Geblockte IPs">
+<MoreRightPage title="Geblockte IPs">
   <form on:submit|preventDefault={addIpBlockSubmit}>
     <label for="ip">IP</label>
     <input
@@ -94,7 +94,7 @@
       {/each}
     </tbody>
   </table>
-</SettingsPage>
+</MoreRightPage>
 
 <style>
 </style>

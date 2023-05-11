@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { honourCardFrom } from '../codegen'
+  import { honourCardFrom } from '../../codegen'
+  import MoreRightPage from '../../components/MoreRightPage.svelte'
 
   export let transfercode: string = ''
   let successfully: boolean | null = null
@@ -15,28 +16,29 @@
     successfully = false
 
     if (data) {
-        successfully = !!data.honourCardFrom
+      successfully = !!data.honourCardFrom
     } else {
       console.error('Error')
     }
   }
   onMount(async () => {
-    if(transfercode !== '') {
+    if (transfercode !== '') {
       await honourCard()
     }
   })
 </script>
 
-<h1>Karte Einlösen</h1>
-<form on:submit|preventDefault={honourCard}>
+<MoreRightPage title="Karte Einlösen">
+  <form on:submit|preventDefault={honourCard}>
     <label for="transfercode">Transfer Code</label>
     <input type="text" id="transfercode" bind:value={transfercode} />
     <button type="submit">Einlösen</button>
-</form>
-<p>
-  {#if successfully === true}
-    <span>Eine Karte wurde erfolgreich eingelöst</span>
-  {:else if successfully === false}
-    <span>Keine Karte konnte eingelöst werden</span>
-  {/if}
-</p>
+  </form>
+  <p>
+    {#if successfully === true}
+      <span>Eine Karte wurde erfolgreich eingelöst</span>
+    {:else if successfully === false}
+      <span>Keine Karte konnte eingelöst werden</span>
+    {/if}
+  </p>
+</MoreRightPage>

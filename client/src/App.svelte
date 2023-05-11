@@ -1,8 +1,6 @@
 <script lang="ts">
   import { Router, Route } from 'svelte-routing'
 
-  import PageQueries from './routes/PageQueries.svelte'
-  import PageMutation from './routes/PageMutation.svelte'
   import Online from './components/Online.svelte'
 
   // Our routes from /src/routes/
@@ -11,14 +9,15 @@
   import PageAddStamp from './routes/PageAddStamp.svelte'
   import PageHome from './routes/PageHome.svelte'
   import PageLogin from './routes/PageLogin.svelte'
-  import PageSettings from './routes/PageSettings.svelte'
+  import PageSettings from './routes/settings/PageSettings.svelte'
   import PageSettingsProfile from './routes/settings/PageSettingsProfile.svelte'
   import PageSettingsConnected from './routes/settings/PageSettingsConnected.svelte'
-  import PageSettingsIpBlocks from './routes/settings/PageSettingsIpBlocks.svelte'
-  import PageSettingsQrCode from './routes/settings/PageSettingsQrCode.svelte'
-  import { PATHS, UserRoles } from './lib/const'
+  import PageIpBlocks from './routes/more_rights/PageIpBlocks.svelte'
+  import PageQrCode from './routes/more_rights/PageQrCode.svelte'
+  import PageUserRoles from './routes/more_rights/PageUserRoles.svelte'
+  import { PATHS, USER_ROLES } from './lib/const'
   import SecuredRoute from './components/SecuredRoute.svelte'
-  import PageHonourCard from './routes/PageHonourCard.svelte'
+  import PageHonourCard from './routes/more_rights/PageHonourCard.svelte'
   import currentUser from './stores/currentUser'
   import { onMount } from 'svelte'
 
@@ -35,35 +34,33 @@
   </header>
   <section>
     <Router {url}>
-      <!-- TODO: remove demo routes-->
       <div>
-        <Route path="query">
-          <PageQueries />
-        </Route>
-        <Route path="mutation">
-          <PageMutation />
-        </Route>
-      </div>
-      <!-- //TODO: remove demo routes-->
-      <div>
-        <Route path={PATHS.HOME}>
-          <PageHome />
-        </Route>
-
         <Route path={PATHS.CARD}>
           <PageCard />
         </Route>
 
-        <Route path={PATHS.CREATE_USER}>
+        <Route path={PATHS.HOME}>
+          <PageHome />
+        </Route>
+
+        <Route path={`${PATHS.CREATE_USER}`}>
           <PageCreateUser />
         </Route>
 
-        <Route path={PATHS.LOGIN_USER}>
+        <Route path={`${PATHS.CREATE_USER}/:withPassword`} let:params>
+          <PageCreateUser withPassword={params.withPassword} />
+        </Route>
+
+        <Route path={`${PATHS.LOGIN_USER}`} >
           <PageLogin />
         </Route>
 
+        <Route path={`${PATHS.LOGIN_USER}/:withPassword`} let:params>
+          <PageLogin withPassword={params.withPassword} />
+        </Route>
+
         <Route path={`${PATHS.ADD_STAMP}/:urlToken`} let:params>
-          <PageAddStamp urlToken={params.urlToken}/>
+          <PageAddStamp urlToken={params.urlToken} />
         </Route>
 
         <Route path={PATHS.SETTINGS}>
@@ -78,16 +75,40 @@
           <PageSettingsConnected />
         </Route>
 
-        <SecuredRoute path={`${PATHS.SETTINGS}/${PATHS.IP_BLOCKS}`} requiredRoles={[UserRoles.ADMIN]}>
-          <PageSettingsIpBlocks />
+        <SecuredRoute
+          path={PATHS.IP_BLOCKS}
+          requiredRoles={[USER_ROLES.ADMIN]}
+        >
+          <PageIpBlocks />
         </SecuredRoute>
 
-        <SecuredRoute path={`${PATHS.SETTINGS}/${PATHS.QR_CODE}`} requiredRoles={[UserRoles.EMPLOYEE]}>
-          <PageSettingsQrCode />
+        <SecuredRoute
+          path={PATHS.USER_ROLES}
+          requiredRoles={[USER_ROLES.ADMIN]}
+        >
+          <PageUserRoles />
         </SecuredRoute>
 
-        <SecuredRoute path={`${PATHS.HONOUR_CARD}/:transfercode`}  let:params requiredRoles={[UserRoles.EMPLOYEE]}>
-          <PageHonourCard transfercode={params.transfercode}/>
+        <SecuredRoute
+          path={PATHS.QR_CODE}
+          requiredRoles={[USER_ROLES.EMPLOYEE]}
+        >
+          <PageQrCode />
+        </SecuredRoute>
+
+        <SecuredRoute
+          path={PATHS.HONOUR_CARD}
+          requiredRoles={[USER_ROLES.EMPLOYEE]}
+        >
+          <PageHonourCard />
+        </SecuredRoute>
+
+        <SecuredRoute
+          path={`${PATHS.HONOUR_CARD}/:transfercode`}
+          let:params
+          requiredRoles={[USER_ROLES.EMPLOYEE]}
+        >
+          <PageHonourCard transfercode={params.transfercode} />
         </SecuredRoute>
       </div>
     </Router>

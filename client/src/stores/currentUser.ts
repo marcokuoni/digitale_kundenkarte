@@ -6,11 +6,7 @@ import type { ApolloQueryResult, ObservableQuery } from '@apollo/client'
 const clientPingIntervall = parseInt(
   'process.env.CLIENT_PING_INTERVAL' || '5000'
 )
-console.log(
-  '%ccurrentUser.ts line:7 clientPingIntervall',
-  'color: #007acc;',
-  clientPingIntervall
-)
+
 function currentUser() {
   const { subscribe, set } = writable<User>(null)
   let timer = null

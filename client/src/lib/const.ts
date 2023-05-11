@@ -10,9 +10,11 @@ export enum PATHS {
     QR_CODE = 'qr-code',
     ADD_STAMP = 'add-stamp',
     HONOUR_CARD = 'honour-card',
+    WITH_PASSWORD = 'with-password',
+    USER_ROLES = 'user-roles',
 }
 
-export enum UserRoles {
+export enum USER_ROLES {
     ADMIN = 'admin',
     EMPLOYEE = 'employee',
 }

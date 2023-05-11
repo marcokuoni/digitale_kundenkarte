@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { generateUrlToken } from '../../codegen'
-  import SettingsPage from '../../components/SettingsPage.svelte'
+  import MoreRightPage from '../../components/MoreRightPage.svelte'
   import { PATHS } from '../../lib/const'
 
   let currentDate = new Date()
@@ -74,7 +74,7 @@
   })
 </script>
 
-<SettingsPage title="QR Code">
+<MoreRightPage title="QR Code">
   {#if token === '' || validUntil <= currentDate}
     <p>Der QR Code ist abgelaufen. Bitte generiere einen neuen.</p>
   {:else}
@@ -122,4 +122,4 @@
     />
     <button type="submit">QR Code generieren</button>
   </form>
-</SettingsPage>
+</MoreRightPage>

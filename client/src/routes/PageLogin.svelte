@@ -1,7 +1,9 @@
-<script>
+<script lang="ts">
   import { signIn } from '../codegen'
   import { PATHS } from '../lib/const'
   import NavLink from '../components/NavLink.svelte'
+
+  export let withPassword: string = ''
 
   let transfercode = ''
   let password = ''
@@ -28,14 +30,23 @@
   }
 </script>
 
-<h1>Login User</h1>
+<h1>Anmelden</h1>
 <form on:submit|preventDefault={loginUser}>
   <label for="transfercode">Transfer Code</label>
   <input type="text" id="transfercode" bind:value={transfercode} />
-  <!-- TODO: Password should only be visible if requested -->
-  <label for="password">Password</label>
-  <input type="password" id="password" bind:value={password} />
-  <button type="submit">Login User</button>
+  {#if withPassword !== ''}
+    <label for="password">Passwort</label>
+    <input type="password" id="password" bind:value={password} />
+  {/if}
+  <button type="submit">Anmelden</button>
 </form>
 
-<NavLink to={PATHS.CREATE_USER}>Ich möchte eine Karte erstellen</NavLink>
+{#if withPassword !== ''}
+  <NavLink to={`${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}
+    >Benutzer erstellen</NavLink
+  >
+  <NavLink to={`/${PATHS.HOME}`}>Startseite</NavLink>
+{:else}
+  <NavLink to={PATHS.CREATE_USER}>Ich möchte eine Karte erstellen</NavLink>
+  <NavLink to={PATHS.CARD}>Zu meiner Karte</NavLink>
+{/if}

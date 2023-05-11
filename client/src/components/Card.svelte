@@ -4,7 +4,7 @@
 
   export let stamps: {
     creationDate: Date
-    validUntilDate?: Date
+    validUntilDate?: number
   }[]
 
   $: lastVaildUntilDate = stamps

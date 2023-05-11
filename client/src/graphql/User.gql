@@ -30,8 +30,6 @@ fragment RefreshTokenFragment on RefreshToken {
   updatedAt
 }
 
-
-
 fragment IpBlockFrament on IpBlock {
   _id
   ip
@@ -46,8 +44,8 @@ fragment UrlTokenFragment on UrlToken {
   blockForMinutes
 }
 
-query getUsers {
-  getUsers {
+query getUsersWithPassword {
+  getUsersWithPassword {
     ...UserFragment
   }
 }
@@ -104,8 +102,16 @@ mutation signUp(
   )
 }
 
-mutation signIn($transfercode: String!, $password: String, $successRedirect: String!) {
-  signIn(transfercode: $transfercode, password: $password, successRedirect: $successRedirect)
+mutation signIn(
+  $transfercode: String!
+  $password: String
+  $successRedirect: String!
+) {
+  signIn(
+    transfercode: $transfercode
+    password: $password
+    successRedirect: $successRedirect
+  )
 }
 
 mutation signOut {
@@ -134,12 +140,18 @@ mutation generateUrlToken($validUntil: Date!, $blockForMinutes: Int!) {
   }
 }
 
-mutation addStamp($urlToken:String!) {
-  addStamp(urlToken:$urlToken) {
+mutation addStamp($urlToken: String!) {
+  addStamp(urlToken: $urlToken) {
     ...UserFragment
   }
 }
 
 mutation honourCardFrom($transfercode: String!) {
   honourCardFrom(transfercode: $transfercode)
+}
+
+mutation updateUserRoles($_id: ID!, $userRoles: [String]!) {
+  updateUserRoles(_id: $_id, userRoles: $userRoles) {
+    ...UserFragment
+  }
 }

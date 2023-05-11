@@ -179,15 +179,7 @@ https://stackoverflow.com/questions/6470378/hashing-a-session-fingerprint-really
 * Hinweis per Mails über eventuelle falsche Refresh Tokens
 * Fehlermeldung bei falschem Passwort/Transfercode
 * Fehlermeldung wenn IP geblockt ist
-* Passwort Option nur durch freischaltung
-* Admin kann Gruppen an Benutzer vergeben
-* Beim Hinzufügen eines Stempfels Fehlermeldung wenn der Benutzer nicht angemeldet ist
 * Zeige alle Karten inklusive ob eingelöst oder nicht
----
-* Admin und Mitarbeiter haben Menü auf Startseite nach anmelden. Können keine Karte haben.
-* Admin kann Mitarbeiter Links ubenennen - Profil erstellen, anmelden
-* Mitarbeiter Navigation besteht aus: Karte einlösen, QR Code erstellen, Einstellungen, Übersicht über alle Benutzer
-* Admin Navigation besteht aus: Benutzer Gruppen Einstellung für Benutzer mit PW, Einstellungen, Link zum erstellen/anmelden eines Benutzers mit PW, Blacklist
 
 https://svelte.dev/tutorial/derived-stores
 

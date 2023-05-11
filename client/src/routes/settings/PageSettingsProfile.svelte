@@ -1,19 +1,17 @@
 <script lang="ts">
-  import gql from 'graphql-tag'
-
   import { updateUser } from '../../codegen'
   import currentUser from '../../stores/currentUser'
-  import NavLink from '../../components/NavLink.svelte'
-  import { PATHS } from '../../lib/const'
   import SettingsPage from '../../components/SettingsPage.svelte'
+  import { Wave } from 'svelte-loading-spinners'
+
+  let loading = false
 
   async function submitUpdateUser(event: SubmitEvent) {
+    loading = true
     const forms = event.target as HTMLFormElement
     if (forms.checkValidity()) {
-      // create a new FormData object from the form inputs
       const formData = new FormData(forms)
 
-      // get the form data values
       const _id = formData.get('_id')?.toString()
       const name = formData.get('name')?.toString()
       const email = formData.get('email')?.toString()
@@ -47,10 +45,14 @@
         console.error('Error')
       }
     }
+    loading = false
   }
 </script>
 
 <SettingsPage title="Benutzerkonto">
+  {#if loading}
+    <Wave size="100" color="#FF3E00" unit="px" />
+  {/if}
   {#if !$currentUser}
     <h2>Kein Benutzer gefunden</h2>
   {:else}
@@ -69,7 +71,7 @@
         name="name"
         value={$currentUser && $currentUser.name}
       />
-      <label for="email">Email</label>
+      <label for="email">E-Mail</label>
       <input
         type="email"
         id="email"
@@ -83,26 +85,20 @@
           name="newsletter"
           value="true"
           checked={$currentUser && $currentUser.newsletter}
-        /> Wants Newsletter</label
+        /> Will Newsletter</label
       >
-      <!-- TODO: Password should only be visible if requested -->
-      <label for="password">Password</label>
-      <input
-        type="password"
-        id="password"
-        name="password"
-        value={''}
-        required={$currentUser?.userRoles && $currentUser.userRoles.length > 0}
-      />
-      <button type="submit">Update User</button>
+      {#if $currentUser?.userRoles && $currentUser.userRoles.length > 0}
+        <label for="password">Passwort</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          value={''}
+          required={$currentUser?.userRoles &&
+            $currentUser.userRoles.length > 0}
+        />
+      {/if}
+      <button type="submit">Benutzer aktuallisieren</button>
     </form>
   {/if}
-
-  <footer>
-    <NavLink to={`${PATHS.SETTINGS}`}>Einstellungen</NavLink>
-    <NavLink to={PATHS.CARD}>Zu meiner Karte</NavLink>
-  </footer>
 </SettingsPage>
-
-<style>
-</style>

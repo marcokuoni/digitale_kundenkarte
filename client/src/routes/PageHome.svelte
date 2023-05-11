@@ -3,8 +3,13 @@
   import { onDestroy, onMount } from 'svelte'
   import { navigate } from 'svelte-routing'
   import { refresh } from '../codegen'
-  import { PATHS } from '../lib/const'
+  import { PATHS, USER_ROLES } from '../lib/const'
   import currentUser from '../stores/currentUser'
+  import SecuredNavLink from '../components/SecuredNavLink.svelte'
+  import Logout from '../components/Logout.svelte'
+  import { checkAccessRights } from '../services/auth'
+
+  let hasMoreRights = false
 
   onMount(async () => {
     try {
@@ -15,21 +20,62 @@
   })
 
   const unsubscribe = currentUser.subscribe((currentUser) => {
-    if (currentUser && (!currentUser.userRoles || currentUser.userRoles.length === 0)) {
+    if (
+      currentUser &&
+      (!currentUser.userRoles || currentUser.userRoles.length === 0)
+    ) {
       navigate('/card')
+    } else if (
+      currentUser &&
+      currentUser.userRoles &&
+      currentUser.userRoles.length > 0
+    ) {
+      hasMoreRights = true
     }
   })
 
   onDestroy(unsubscribe)
 </script>
 
+<h1>Startseite</h1>
 <nav>
-  <NavLink to="query">Query</NavLink>
-  <NavLink to="mutation">Mutation</NavLink>
-</nav>
-
-<h1>Home page</h1>
-<nav>
-  <NavLink to={PATHS.CREATE_USER}>Ich möchte eine Karte erstellen</NavLink>
-  <NavLink to={PATHS.LOGIN_USER}>Ich besitze bereits eine Karte</NavLink>
+  {#if hasMoreRights}
+    <SecuredNavLink to={PATHS.QR_CODE} requiredRoles={[USER_ROLES.EMPLOYEE]}
+      >QR Code generieren</SecuredNavLink
+    >
+    <SecuredNavLink to={PATHS.HONOUR_CARD} requiredRoles={[USER_ROLES.EMPLOYEE]}
+      >Karte einlösen</SecuredNavLink
+    >
+    <SecuredNavLink to={PATHS.IP_BLOCKS} requiredRoles={[USER_ROLES.ADMIN]}
+      >Blockierte IPs</SecuredNavLink
+    >
+    <SecuredNavLink to={PATHS.USER_ROLES} requiredRoles={[USER_ROLES.ADMIN]}
+      >Benutzergruppen verwalten</SecuredNavLink
+    >
+    <NavLink to={`${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}
+      >Benutzer anlegen mit Passwort</NavLink
+    >
+    {#if $currentUser}
+      <Logout />
+      {#if checkAccessRights($currentUser, [USER_ROLES.ADMIN])}
+        <NavLink to={`${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}
+          >Anmelden mit Passwort</NavLink
+        >
+      {/if}
+    {:else}
+      <NavLink to={`${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}
+        >Anmelden mit Passwort</NavLink
+      >
+    {/if}
+    <NavLink to={PATHS.SETTINGS}>Einstellungen</NavLink>
+  {:else}
+    <NavLink to={PATHS.CREATE_USER}>Ich möchte eine Karte erstellen</NavLink>
+    {#if $currentUser}
+      <Logout />
+    {:else}
+      <NavLink to={PATHS.LOGIN_USER}
+        >Ich besitze bereits eine Karte (Anmelden)</NavLink
+      >
+    {/if}
+  {/if}
 </nav>

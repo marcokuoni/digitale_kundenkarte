@@ -24,6 +24,19 @@ export interface iUser {
   createdAt: Date
   updatedAt: Date
 }
+export interface iNewUser {
+  name?: string
+  email?: string
+  newsletter: boolean
+  password?: string
+}
+
+export interface iUpdateUser {
+  name: string
+  email: string
+  newsletter: boolean
+  password?: string
+}
 
 const UserSchema = new Schema<iUser>(
   {

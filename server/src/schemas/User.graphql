@@ -51,7 +51,7 @@ type UrlToken {
 
 
 type Query {
-  getUsers: [User]!
+  getUsersWithPassword: [User]!
   getCurrentUser: User!
   getActiveRefreshTokens: [RefreshToken]!
   getIpBlocks: [IpBlock]!
@@ -64,6 +64,10 @@ type Mutation {
     email: String
     newsletter: Boolean!
     password: String
+  ): User!
+  updateUserRoles(
+    _id: ID!
+    userRoles: [String]!
   ): User!
   signIn(transfercode: String!, password: String, successRedirect: String!): Boolean!
   signUp(

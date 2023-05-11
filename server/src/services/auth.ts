@@ -11,14 +11,13 @@ import {
   revokeRefreshToken,
   revokeRefreshTokenById,
 } from '../services/token'
-import User, { iUser } from '../models/user'
-import { iNewUser } from '../resolvers/user'
+import User, { iNewUser, iUser } from '../models/user'
 import {
   AUTHORIZATION,
   BEARER,
   UNKNOWN,
   USER_AGENT,
-  UserRoles,
+  USER_ROLES,
 } from '../lib/const'
 import { randomTokenString } from '../lib/helpers'
 
@@ -52,7 +51,7 @@ export const checkAccessRights = (
     })
   }
 
-  if (user.userRoles.includes(UserRoles.ADMIN)) {
+  if (user.userRoles.includes(USER_ROLES.ADMIN)) {
     return true
   }
 
@@ -125,7 +124,7 @@ export const signUp = async (
   const count = await User.countDocuments()
   let userRoles: string[] = []
   if (count === 0) {
-    userRoles = [UserRoles.ADMIN]
+    userRoles = [USER_ROLES.ADMIN]
     if (!password) {
       password = randomTokenString()
     }
