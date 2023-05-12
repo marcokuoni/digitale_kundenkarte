@@ -16,8 +16,12 @@
   let token = ''
   let validUntilInput = ''
 
-  let blockForMinutesInput = parseInt('process.env.DEFAULT_URL_TOKEN_BLOCK_FOR_MINUTES') // 12 hours
-  let defaultValidForMinutes = parseInt('process.env.DEFAULT_URL_TOKEN_VALID_FOR_MINUTES') // 1 minute
+  let blockForMinutesInput = parseInt(
+    'process.env.DEFAULT_URL_TOKEN_BLOCK_FOR_MINUTES'
+  ) // 12 hours
+  let defaultValidForMinutes = parseInt(
+    'process.env.DEFAULT_URL_TOKEN_VALID_FOR_MINUTES'
+  ) // 1 minute
 
   const _generateQrCode = async (
     validUntilInput: Date,
@@ -58,12 +62,16 @@
   }
 
   onMount(() => {
-    validUntilInput = _getValidUntil(defaultValidForMinutes).toISOString().slice(0, 16)
+    validUntilInput = _getValidUntil(defaultValidForMinutes)
+      .toISOString()
+      .slice(0, 16)
     const interval = setInterval(() => {
       currentDate = new Date()
       if (token !== '' && validUntil <= currentDate) {
         token = ''
-        validUntilInput = _getValidUntil(defaultValidForMinutes).toISOString().slice(0, 16)
+        validUntilInput = _getValidUntil(defaultValidForMinutes)
+          .toISOString()
+          .slice(0, 16)
         _generateQrCode(new Date(validUntilInput), blockForMinutesInput)
       }
     }, 1000)
@@ -72,6 +80,15 @@
       clearInterval(interval)
     }
   })
+
+  const _getMinTimeDiff = (validUntilInput: string) => {
+    return (
+      Math.ceil(
+        (((new Date(validUntilInput).getTime() - currentDate.getTime()) /
+          1000 / 60)
+      )) || 0
+    )
+  }
 </script>
 
 <MoreRightPage title="QR Code">
@@ -92,6 +109,11 @@
     </div>
   {/if}
   <form on:submit|preventDefault={generateUrlTokenSubmit}>
+    <p>
+      Hinweis: Blocking Zeit sollte immer länger dauern als die Gültigkeit.
+      Falls beim Scannen kein Internet vorhanden ist. Muss die Gültigkeit
+      ausreichen, damit man in zwischen Zeit wieder Internet erlangen kann.
+    </p>
     <label for="longTimeQr">
       <input
         type="checkbox"
@@ -112,7 +134,9 @@
         required
       />
     {/if}
-    <label for="blockForMinutes">QR Code blockieren für [Minuten]</label>
+    <label for="blockForMinutes"
+      >QR Code blockieren für [Min] (Empfohlen > {_getMinTimeDiff(validUntilInput)})</label
+    >
     <input
       type="number"
       name="blockForMinutes"
