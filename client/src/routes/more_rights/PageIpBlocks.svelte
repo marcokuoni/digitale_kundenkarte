@@ -2,13 +2,14 @@
   import MoreRightPage from '../../components/MoreRightPage.svelte'
   import { getIpBlocks, addIpBlock, deleteIpBlock } from '../../codegen'
   import { Wave } from 'svelte-loading-spinners'
+  import { FETCH_POLICY } from '../../lib/const'
 
   let ip = ''
   let blockedUntil = ''
   let loading = false
   let error = ''
   $: query = getIpBlocks({
-    fetchPolicy: 'network-only',
+    fetchPolicy: FETCH_POLICY.NETWORK_ONLY,
   })
 
   async function addIpBlockSubmit() {

@@ -2,12 +2,12 @@
   import MoreRightPage from '../../components/MoreRightPage.svelte'
   import { getUsersWithPassword, updateUserRoles } from '../../codegen'
   import { Wave } from 'svelte-loading-spinners'
-  import { USER_ROLES } from '../../lib/const'
+  import { FETCH_POLICY, USER_ROLES } from '../../lib/const'
 
   let loading = false
   let error = ''
   $: query = getUsersWithPassword({
-    fetchPolicy: 'network-only',
+    fetchPolicy: FETCH_POLICY.NETWORK_ONLY,
   })
 
   async function submitUpdateUser(event: SubmitEvent) {

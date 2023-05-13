@@ -4,18 +4,17 @@ import type Jwt from 'jsonwebtoken'
 
 const jwtUrlTokenKey = process.env.JWT_URL_TOKEN_KEY as Jwt.Secret
 export interface iUrlTokenPayload {
-    validUntil: Date
     blockForMinutes: number
 }
 
 export const generateUrlToken = (validUntil: Date, blockForMinutes: number) => {
   const payload: iUrlTokenPayload = {
-    validUntil,
     blockForMinutes,
   }
+
   const token = jwt.sign(payload, jwtUrlTokenKey, {
     algorithm: 'HS256',
-    expiresIn: validUntil.getTime() - Date.now(),
+    expiresIn: Math.round((validUntil.getTime() - Date.now()) / 1000),
   })
   return {
     token,

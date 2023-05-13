@@ -1,10 +1,10 @@
 import { writable } from 'svelte/store'
-import type { Exact, GetCurrentUserQuery, User } from '../codegen'
-import { AsyncgetCurrentUser, getCurrentUser } from '../codegen'
-import type { ApolloQueryResult, ObservableQuery } from '@apollo/client'
+import type { GetCurrentUserQuery, User } from '../codegen'
+import { AsyncgetCurrentUser } from '../codegen'
+import { ERROR_POLICY, FETCH_POLICY, PROCESS_ENV } from '../lib/const'
 
 const clientPingIntervall = parseInt(
-  'process.env.CLIENT_PING_INTERVAL' || '5000'
+  PROCESS_ENV.CLIENT_PING_INTERVAL || '5000'
 )
 
 function currentUser() {
@@ -14,7 +14,7 @@ function currentUser() {
   const fetchCurrentUser = async () => {
     try {
       const { data } = await AsyncgetCurrentUser({
-        fetchPolicy: 'cache-first',
+        fetchPolicy: FETCH_POLICY.CACHE_FIRST,
       })
 
       _checkUserData(data)
@@ -33,11 +33,11 @@ function currentUser() {
         }
         timer = setTimeout(async () => {
           try {
-            const token = localStorage.getItem('process.env.JWT_COOKIE_NAME')
+            const token = localStorage.getItem(PROCESS_ENV.JWT_COOKIE_NAME)
             if (token) {
               const { data } = await AsyncgetCurrentUser({
-                fetchPolicy: 'network-only',
-                errorPolicy: 'ignore',
+                fetchPolicy: FETCH_POLICY.NETWORK_ONLY,
+                errorPolicy: ERROR_POLICY.IGNORE,
               })
               _checkUserData(data)
             } else {

@@ -1,7 +1,7 @@
 <script lang="ts">
   import Card from '../components/Card.svelte'
   import Logout from '../components/Logout.svelte'
-  import { PATHS } from '../lib/const.js'
+  import { PATHS, PROCESS_ENV } from '../lib/const.js'
   import NavLink from '../components/NavLink.svelte'
   import currentUser from '../stores/currentUser'
   import HonourQrCode from '../components/HonourQrCode.svelte'
@@ -9,7 +9,7 @@
   import { onDestroy } from 'svelte'
   import { navigate } from 'svelte-routing'
 
-  const stampsLength = parseInt('process.env.STAMPS_LENGTH' || '8')
+  const stampsLength = parseInt(PROCESS_ENV.STAMPS_LENGTH || '8')
 
   const unsubscribe = currentUser.subscribe((currentUser) => {
     if (

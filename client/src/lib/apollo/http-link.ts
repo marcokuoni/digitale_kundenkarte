@@ -1,5 +1,5 @@
 import { HttpLink } from '@apollo/client'
-import { AUTH_TOKEN_SEPERATOR } from '../const'
+import { AUTH_TOKEN_SEPERATOR, PROCESS_ENV } from '../const'
 
 const customFetch = (uri, options) => {
   return fetch(uri, options).then((response) => {
@@ -7,7 +7,7 @@ const customFetch = (uri, options) => {
       const urlSplitted = response.url.split(AUTH_TOKEN_SEPERATOR)
       if (urlSplitted.length > 1) {
         const jwtAccessToken = urlSplitted[1]
-        localStorage.setItem('process.env.JWT_COOKIE_NAME', jwtAccessToken)
+        localStorage.setItem(PROCESS_ENV.JWT_COOKIE_NAME, jwtAccessToken)
       }
       window.location.href = urlSplitted[0]
     }
@@ -16,7 +16,7 @@ const customFetch = (uri, options) => {
 }
 
 export default new HttpLink({
-  uri: `process.env.SERVER_URL/graphql`,
+  uri: `${PROCESS_ENV.SERVER_URL}/graphql`,
   credentials: 'include',
   fetch: customFetch,
 })

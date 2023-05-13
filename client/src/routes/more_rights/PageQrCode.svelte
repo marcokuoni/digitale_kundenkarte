@@ -2,7 +2,7 @@
   import { onMount } from 'svelte'
   import { generateUrlToken } from '../../codegen'
   import MoreRightPage from '../../components/MoreRightPage.svelte'
-  import { PATHS } from '../../lib/const'
+  import { PATHS, PROCESS_ENV } from '../../lib/const'
 
   let currentDate = new Date()
 
@@ -17,10 +17,10 @@
   let validUntilInput = ''
 
   let blockForMinutesInput = parseInt(
-    'process.env.DEFAULT_URL_TOKEN_BLOCK_FOR_MINUTES'
+    PROCESS_ENV.DEFAULT_URL_TOKEN_BLOCK_FOR_MINUTES
   ) // 12 hours
   let defaultValidForMinutes = parseInt(
-    'process.env.DEFAULT_URL_TOKEN_VALID_FOR_MINUTES'
+    PROCESS_ENV.DEFAULT_URL_TOKEN_VALID_FOR_MINUTES
   ) // 1 minute
 
   const _generateQrCode = async (

@@ -4,10 +4,11 @@
   import WifiOff from 'svelte-icons-pack/bi/BiWifiOff'
   import { onMount } from 'svelte'
   import Modal, { getModal } from './Modal.svelte'
+  import { PROCESS_ENV } from '../lib/const'
 
-  const clientPingIntervall = parseInt('process.env.CLIENT_PING_INTERVAL' || '5000')
-  const serverRequestCountCheckIntervall = parseInt('process.env.SERVER_REQUEST_COUNT_CHECK_INTERVAL' || '1000')
-  const checkForHowManyCycles = parseInt('process.env.CHECK_FOR_HOW_MANY_CYCLES' || '600')
+  const clientPingIntervall = parseInt(PROCESS_ENV.CLIENT_PING_INTERVAL || '5000')
+  const serverRequestCountCheckIntervall = parseInt(PROCESS_ENV.SERVER_REQUEST_COUNT_CHECK_INTERVAL || '1000')
+  const checkForHowManyCycles = parseInt(PROCESS_ENV.CHECK_FOR_HOW_MANY_CYCLES || '600')
   
   let checkCounter = 0
   let clientOffline = window.navigator.onLine

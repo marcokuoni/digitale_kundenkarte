@@ -175,9 +175,8 @@ https://stackoverflow.com/questions/6470378/hashing-a-session-fingerprint-really
 
 
 # TODO
-* E-Mailadresse verlangen wenn passwort gesetzt wird. Beim Erstellen und Updaten
-* Passwort vergessen
 * Add Stamp token valid until durch expired at ersetzen
+* Passwort vergessen
 * Hinweis per Mails über eventuelle falsche Refresh Tokens (doppelt (schon revoked), Neuer Standort, mehr als 3 [Mail und ältester revoken])
 * Fehlermeldung bei falschem Passwort/Transfercode
 * Redirect to login when loggedout and delete all client datas
@@ -185,6 +184,7 @@ https://stackoverflow.com/questions/6470378/hashing-a-session-fingerprint-really
 * Zeige alle Karten inklusive ob eingelöst oder nicht
 * 404 page, forbidden page (i think not possible with the current router)
 * naming convention _ or not, check all functions
+* couldnt find a way to stop executing default redirections on fetch and just do the custom one.
 
 https://svelte.dev/tutorial/derived-stores
 

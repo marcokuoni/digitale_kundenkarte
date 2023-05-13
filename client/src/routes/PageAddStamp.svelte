@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { PATHS } from '../lib/const'
+  import { FETCH_POLICY, PATHS, PROCESS_ENV, TYPENAME } from '../lib/const'
   import { onMount } from 'svelte'
   import {
     addStamp,
@@ -11,13 +11,13 @@
 
   export let urlToken: string = ''
 
-  const stampsLength = parseInt(process.env.STAMPS_LENGTH || '8')
-  const { validUntil }: { validUntil: string } = jwt_decode(urlToken)
-  const validUntilDate = new Date(validUntil)
-
+  const stampsLength = parseInt(PROCESS_ENV.STAMPS_LENGTH || '8')
+  const { exp }: { exp: string } = jwt_decode(urlToken)
+  const validUntilDate = new Date(exp)
+  
   onMount(async () => {
       const {data:cacheData} = await AsyncgetCurrentUser({
-        fetchPolicy: 'cache-only',
+        fetchPolicy: FETCH_POLICY.CACHE_ONLY,
       })
       const value = cacheData.getCurrentUser
 
@@ -29,7 +29,7 @@
       } else {
         cards[0].stamps = [
           {
-            __typename: 'Stamp',
+            __typename: TYPENAME.STAMP,
             validUntilDate,
             creationDate: new Date().getTime(),
           },
@@ -60,12 +60,12 @@
 
   const _createNewCard = () => {
     return {
-      __typename: 'Card',
+      __typename: TYPENAME.CARD,
       creationDate: new Date().getTime(),
       honouredAt: null,
       stamps: [
         {
-          __typename: 'Stamp',
+          __typename: TYPENAME.STAMP,
           validUntilDate,
           creationDate: new Date().getTime(),
         },

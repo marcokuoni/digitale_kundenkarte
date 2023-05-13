@@ -1,6 +1,7 @@
 <script lang="ts">
+  import { PROCESS_ENV } from '../lib/const'
   import Stamp from './Stamp.svelte'
-  const stampsLength = parseInt('process.env.STAMPS_LENGTH' || '8')
+  const stampsLength = parseInt(PROCESS_ENV.STAMPS_LENGTH || '8')
 
   export let stamps: {
     creationDate: Date

@@ -3,13 +3,13 @@
   import { purge } from '../lib/apollo/persistor'
   import { signOut } from '../codegen'
   import { navigate } from 'svelte-routing'
-  import { PATHS } from '../lib/const'
+  import { PATHS, PROCESS_ENV } from '../lib/const'
   import currentUser from '../stores/currentUser'
 
   async function logout() {
     const { data } = await signOut({})
     if (data && data.signOut) {
-      localStorage.removeItem('process.env.JWT_COOKIE_NAME')
+      localStorage.removeItem(PROCESS_ENV.JWT_COOKIE_NAME)
       await purge()
       client.resetStore()
       currentUser.reset()

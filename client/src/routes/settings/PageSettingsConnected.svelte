@@ -2,11 +2,12 @@
   import { getActiveRefreshTokens, revokeRefreshToken } from '../../codegen'
   import { Wave } from 'svelte-loading-spinners'
   import SettingsPage from '../../components/SettingsPage.svelte'
+  import { FETCH_POLICY } from '../../lib/const'
 
   let loading = false
   let error = ''
   $: query = getActiveRefreshTokens({
-    fetchPolicy: 'network-only',
+    fetchPolicy: FETCH_POLICY.NETWORK_ONLY,
     //needed cause fast changing properties here :) if refresh token gets exchanged in meantime the _id will already been outdated.
     pollInterval: 100,
   })
