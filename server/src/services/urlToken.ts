@@ -1,6 +1,6 @@
-import { GraphQLError } from 'graphql'
 import * as jwt from 'jsonwebtoken'
 import type Jwt from 'jsonwebtoken'
+import { throwBadReuest } from '../lib/exceptions'
 
 const jwtUrlTokenKey = process.env.JWT_URL_TOKEN_KEY as Jwt.Secret
 export interface iUrlTokenPayload {
@@ -31,11 +31,6 @@ export const getPaylodFromUrlToken = (urlToken: string) => {
     return payload as iUrlTokenPayload
   } catch (error) {
     console.error(error)
-    throw new GraphQLError('Invalid Url Token', {
-      extensions: {
-        code: 'BAD_REQUEST',
-        http: { status: 400 },
-      },
-    })
+    throwBadReuest('Invalid Url Token')
   }
 }

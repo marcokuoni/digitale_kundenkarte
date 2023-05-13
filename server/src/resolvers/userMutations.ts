@@ -164,7 +164,9 @@ export const Mutation = {
     checkAccessRights(context.user)
     if (context.user) {
       const payload = getPaylodFromUrlToken(urlToken)
-      return await addStamp(payload, context.user)
+      if (payload) {
+        return await addStamp(payload, context.user)
+      }
     }
     return false
   },

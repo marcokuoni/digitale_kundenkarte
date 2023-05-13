@@ -1,11 +1,10 @@
-import { GraphQLError } from 'graphql'
-
 import IpBlock from '../models/ipBlock'
+import { throwForbidden } from '../lib/exceptions'
 
 const requestCountMap = new Map() // Map to store request counts per IP address
-const timeWindowMs = parseInt(process.env.TIME_WINDOW || '300000')
+const timeWindowMs = parseInt(process.env.TIME_WINDOW_MS || '300000')
 const maxRequests = parseInt(process.env.MAX_REQUESTS || '6000')
-const blockingDuration = parseInt(process.env.BLOCKING_DURATION || '300000')
+const blockingDurationMs = parseInt(process.env.BLOCKING_DURATION_MS || '300000')
 
 const trackRequestCountIpBlock = async (
   clientIP: string,
@@ -24,21 +23,11 @@ async function _checkForExistingIpBlock(clientIP: string) {
     const blockedIP = await IpBlock.findOne({ ip: clientIP })
 
     if (blockedIP && blockedIP.blockedUntil > Date.now()) {
-      throw new GraphQLError('IP is blocked', {
-        extensions: {
-          code: 'IP_BLOCKED',
-          http: { status: 403 },
-        },
-      })
+      throwForbidden('IP got blocked')
     }
   } catch (error) {
     console.error('Error checking IP block:', error)
-    throw new GraphQLError('Error checking IP block', {
-      extensions: {
-        code: 'IP_BLOCKED',
-        http: { status: 403 },
-      },
-    })
+    throwForbidden('Error checking IP block')
   }
 }
 
@@ -52,8 +41,10 @@ function _checkForFutureIpBlock(clientIP: string) {
     ([timestamp, ip]) => timestamp >= timeWindowStart && ip === clientIP
   )
 
+  console.log('%ctrackRequestCountIpBlock.ts line:44 requestCountINTimeW', 'color: #007acc;', requestCountInTimeWindow.length, maxRequests);
+
   if (requestCountInTimeWindow.length >= maxRequests) {
-    const blockedUntil = new Date(currentTime + blockingDuration)
+    const blockedUntil = new Date(currentTime + blockingDurationMs)
     IpBlock.findOneAndUpdate(
       { ip: clientIP },
       { blockedUntil },
@@ -61,19 +52,14 @@ function _checkForFutureIpBlock(clientIP: string) {
     )
       .then(() => {
         console.log(
-          `IP ${clientIP} blocked for ${blockingDuration / 1000} seconds.`
+          `IP ${clientIP} blocked for ${blockingDurationMs / 1000} seconds.`
         )
       })
       .catch((error: string) => {
         console.error('Error blocking IP:', error)
       })
 
-    throw new GraphQLError('IP got blocked', {
-      extensions: {
-        code: 'IP_BLOCKED',
-        http: { status: 403 },
-      },
-    })
+      throwForbidden('IP got blocked')
   }
 
   const requestCountInTimeWindowToDelete = Array.from(

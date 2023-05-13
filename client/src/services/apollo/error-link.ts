@@ -3,7 +3,7 @@ import { onError } from '@apollo/client/link/error'
 import { navigate } from 'svelte-routing'
 import gql from 'graphql-tag'
 
-import { PATHS, PROCESS_ENV } from '../../lib/const'
+import { CODES, PATHS, PROCESS_ENV } from '../../lib/const'
 import cache from './cache'
 import httpLink from './http-link'
 import authLink from './auth-link'
@@ -47,7 +47,7 @@ const errorLink = onError(({ graphQLErrors, operation, forward }) => {
   if (graphQLErrors) {
     for (const err of graphQLErrors) {
       switch (err.extensions.code) {
-        case 'UNAUTHENTICATED':
+        case CODES.UNAUTHENTICATED:
           if (!isRefreshing && localStorage.getItem(PROCESS_ENV.JWT_COOKIE_NAME)) {
             setIsRefreshing(true)
 

@@ -18,10 +18,10 @@
 
   let blockForMinutesInput = parseInt(
     PROCESS_ENV.DEFAULT_URL_TOKEN_BLOCK_FOR_MINUTES
-  ) // 12 hours
-  let defaultValidForMinutes = parseInt(
+  ) 
+  const defaultValidForMinutes = parseInt(
     PROCESS_ENV.DEFAULT_URL_TOKEN_VALID_FOR_MINUTES
-  ) // 1 minute
+  ) 
 
   const _generateQrCode = async (
     validUntilInput: Date,

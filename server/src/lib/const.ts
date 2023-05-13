@@ -25,3 +25,17 @@ export enum MAIL_TEMPLATES {
     MORE_THEN_ALLOWED_CONNECTED_DEVICES = 'more-then-allowed-connected-devices',
     VERIFY_EMAIL = 'verify-email',
 }
+
+export enum STATES {
+    BAD_REQUEST = 400,
+    UNAUTHENTICATED = 401,
+    FORBIDDEN = 403,
+    REDIRECT = 302,
+}
+
+export enum CODES {
+    BAD_REQUEST = 'BAD_REQUEST',
+    LOGIN = 'LOGIN',
+    UNAUTHENTICATED = 'UNAUTHENTICATED',
+    FORBIDDEN = 'FORBIDDEN',
+}

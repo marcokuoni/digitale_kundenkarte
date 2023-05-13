@@ -33,7 +33,8 @@ export default {
       'process.env.STAMPS_LENGTH': process.env.STAMPS_LENGTH,      
       'process.env.CLIENT_PING_INTERVAL': process.env.CLIENT_PING_INTERVAL,      
       'process.env.SERVER_REQUEST_COUNT_CHECK_INTERVAL': process.env.SERVER_REQUEST_COUNT_CHECK_INTERVAL,      
-      'process.env.CHECK_FOR_HOW_MANY_CYCLES': process.env.CHECK_FOR_HOW_MANY_CYCLES,      
+      'process.env.CHECK_FOR_HOW_MANY_CYCLES': process.env.CHECK_FOR_HOW_MANY_CYCLES,   
+      'process.env.BLOCKING_DURATION_MS': process.env.BLOCKING_DURATION_MS,   
     }),
     svelte({
       preprocess: sveltePreprocess({ sourceMap: !production }),

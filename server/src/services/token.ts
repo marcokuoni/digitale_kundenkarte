@@ -1,9 +1,9 @@
-import { GraphQLError } from 'graphql'
 import { randomTokenString } from '../lib/helpers'
 import RefreshToken, { iRefreshToken } from '../models/refreshToken'
 import User from '../models/user'
 import { sendMailWithTemplate } from './mail'
 import { MAIL_TEMPLATES } from '../lib/const'
+import { throwBadReuest } from '../lib/exceptions'
 
 const jwtRefreshExpiry = parseInt(process.env.JWT_REFRESH_EXPIRES_IN || '0')
 const maxRefreshTokens = parseInt(process.env.MAX_REFRESH_TOKENS || '0')
@@ -82,13 +82,8 @@ export const getRefreshToken = async (token: string) => {
         name: refreshToken.user.name,
       }
     )
-
-    throw new GraphQLError('User is not authenticated', {
-      extensions: {
-        code: 'BAD_REQUEST',
-        http: { status: 400 },
-      },
-    })
+    
+    throwBadReuest('User is not authenticated')
   }
   return refreshToken
 }
@@ -100,12 +95,7 @@ export const generateRefreshToken = async (
 ): Promise<iRefreshToken> => {
   const user = await User.findOne({ _id })
   if (!user) {
-    throw new GraphQLError('User is not existing', {
-      extensions: {
-        code: 'BAD_REQUEST',
-        http: { status: 400 },
-      },
-    })
+    throwBadReuest('User is not existing')
   }
   
   const oldRefreshToken = await RefreshToken.findOne({

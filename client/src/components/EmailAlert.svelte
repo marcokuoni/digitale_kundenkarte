@@ -6,11 +6,7 @@
 
   async function sendValidationMailHandler() {
     try {
-      const { data } = await sendValidationMail({
-        variables: {
-          email: $currentUser.email,
-        },
-      })
+      const { data } = await sendValidationMail({})
       if (data && data.sendValidationMail) {
         success = true
       } else {
@@ -22,7 +18,7 @@
   }
 </script>
 
-{#if !$currentUser.emailValidatedAt && $currentUser.email}
+{#if $currentUser && !$currentUser.emailValidatedAt && $currentUser.email}
   {#if success}
     <p>
       Bitte prüfe dein E-Mail Postfach und folge den Anweisungen darin. Im

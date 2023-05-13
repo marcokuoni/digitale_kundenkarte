@@ -1,6 +1,6 @@
-import { GraphQLError } from 'graphql'
 import User, { iCard, iUser } from '../models/user'
 import { iUrlTokenPayload } from './urlToken'
+import { throwBadReuest } from '../lib/exceptions'
 
 const stampsLength = parseInt(process.env.STAMPS_LENGTH || '8')
 
@@ -19,12 +19,7 @@ export const addStamp = async (
   }
 
   if (card && card.blockedUntil > new Date()) {
-    throw new GraphQLError('Card is blocked', {
-      extensions: {
-        code: 'BAD_REQUEST',
-        http: { status: 400 },
-      },
-    })
+    throwBadReuest('Card is blocked')
   }
 
   if (!userDb.cards) {

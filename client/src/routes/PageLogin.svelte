@@ -1,12 +1,17 @@
 <script lang="ts">
   import { signIn } from '../codegen'
-  import { PATHS } from '../lib/const'
+  import { PATHS, PROCESS_ENV } from '../lib/const'
   import NavLink from '../components/NavLink.svelte'
   import currentUser from '../stores/currentUser'
   import Logout from '../components/Logout.svelte'
+  import { formatRelativeTimeS } from '../lib/formater'
 
   export let withPassword: string = ''
 
+  const blockinDurationInMs =
+    parseInt(PROCESS_ENV.BLOCKING_DURATION_MS) > 0
+      ? Math.ceil(parseInt(PROCESS_ENV.BLOCKING_DURATION_MS) / 1000)
+      : 0
   let transfercode = ''
   let password = ''
 
@@ -27,6 +32,15 @@
         alert('Error')
       }
     } catch (e) {
+      if (e.message.indexOf('Received status code 503') >= 0) {
+        alert(
+          `Der Server ist gerade nicht erreichbar. Vermutlich wurdest du für ${formatRelativeTimeS(
+            blockinDurationInMs
+          )} gesperrt.`
+        )
+      } else {
+        console.error('wrong transfercode or password')
+      }
       console.error(e)
     }
   }
@@ -49,7 +63,9 @@
   {#if withPassword !== ''}
     <NavLink to={`/${PATHS.FORGOT_PASSWORD}`}>Passwort vergessen</NavLink>
   {:else}
-    <NavLink to={`/${PATHS.CREATE_USER}`}>Ich möchte eine Karte erstellen</NavLink>
+    <NavLink to={`/${PATHS.CREATE_USER}`}
+      >Ich möchte eine Karte erstellen</NavLink
+    >
   {/if}
 {/if}
 {#if withPassword !== ''}

@@ -1,6 +1,5 @@
 import * as jwt from 'jsonwebtoken'
 import type Jwt from 'jsonwebtoken'
-import { GraphQLError } from 'graphql'
 import { CookieOptions, Request, Response } from 'express'
 import bcrypt from 'bcrypt'
 
@@ -14,7 +13,6 @@ import {
 import User, { iNewUser, iUser } from '../models/user'
 import {
   AUTHORIZATION,
-  AUTH_TOKEN_SEPERATOR,
   BEARER,
   MAIL_TEMPLATES,
   UNKNOWN,
@@ -23,6 +21,11 @@ import {
 } from '../lib/const'
 import { randomTokenString } from '../lib/helpers'
 import { sendMailWithTemplate } from './mail'
+import {
+  throwBadReuest,
+  throwRedirectError,
+  throwUnauthenticated,
+} from '../lib/exceptions'
 
 const jwtKey = process.env.JWT_KEY as Jwt.Secret
 const jwtRefreshKey = process.env.JWT_REFRESH_KEY as Jwt.Secret
@@ -60,21 +63,17 @@ export const checkAccessRights = (
   requiredGroups: string[] = []
 ) => {
   if (!user) {
-    throw new GraphQLError('User is not authenticated', {
-      extensions: {
-        code: 'UNAUTHENTICATED',
-        http: { status: 401 },
-      },
-    })
-  }
+    throwUnauthenticated('User is not authenticated')
+  } else {
+    if (user.userRoles.includes(USER_ROLES.ADMIN)) {
+      return true
+    }
 
-  if (user.userRoles.includes(USER_ROLES.ADMIN)) {
-    return true
+    return requiredGroups.length > 0
+      ? requiredGroups.every((userRole) => user.userRoles.includes(userRole))
+      : true
   }
-
-  return requiredGroups.length > 0
-    ? requiredGroups.every((userRole) => user.userRoles.includes(userRole))
-    : true
+  return false
 }
 
 export const verifyTokenAndGetUser = async (req: Request, res: Response) => {
@@ -83,7 +82,7 @@ export const verifyTokenAndGetUser = async (req: Request, res: Response) => {
   if (jwtAccessToken && jwtAccessToken.indexOf(`${BEARER} `) >= 0) {
     jwtAccessToken = jwtAccessToken.split(' ')[1]
   }
-  let userPayload: JwtUserPayloadInterface | null = null
+  let userPayload: JwtUserPayloadInterface | undefined = undefined
   try {
     userPayload = jwt.verify(jwtAccessToken, jwtKey) as JwtUserPayloadInterface
   } catch (e) {
@@ -176,30 +175,20 @@ export const signIn = async (
   password?: string
 ) => {
   const user = await User.findOne({ transfercode: transfercode })
+
+  if (!transfercode || !user) {
+    throwBadReuest('User is not authenticated')
+  }
+
   if (password || user.password) {
     const isMatch = password
       ? await bcrypt.compare(password, user.password)
       : false
     if (!isMatch) {
-      throw new GraphQLError(
-        'User is not authenticated, more access function not done now',
-        {
-          extensions: {
-            code: 'UNAUTHENTICATED',
-            http: { status: 401 },
-          },
-        }
+      throwBadReuest(
+        'User is not authenticated, more access function not done now'
       )
     }
-  }
-
-  if (!transfercode || !user) {
-    throw new GraphQLError('User is not authenticated', {
-      extensions: {
-        code: 'UNAUTHENTICATED',
-        http: { status: 401 },
-      },
-    })
   }
 
   const refreshTokenDb = await generateRefreshToken(
@@ -217,20 +206,7 @@ export const signIn = async (
   if (user) {
     //We do a redirect after login so the client does not cache the login page datas
     //We do this with a exception so the apollo server middleware does stop the request and the redirect can be done
-    throw new GraphQLError('login', {
-      extensions: {
-        code: 'LOGIN',
-        http: {
-          status: 302,
-          headers: new Map([
-            [
-              'Location',
-              `${process.env.CLIENT_URL}${successRedirect}${AUTH_TOKEN_SEPERATOR}${token}`,
-            ],
-          ]),
-        },
-      },
-    })
+    throwRedirectError(successRedirect, token)
   }
 }
 
@@ -238,12 +214,7 @@ export const sendValidationMail = async (email: string) => {
   let hasOldValidToken = false
   const user = await User.findOne({ email })
   if (!user || !user.email || user.emailValidated) {
-    throw new GraphQLError('Bad Validation Request', {
-      extensions: {
-        code: 'BAD_REQUEST',
-        http: { status: 400 },
-      },
-    })
+    throwBadReuest('Bad Validation Request')
   }
 
   if (user) {
@@ -283,7 +254,7 @@ export const sendValidationMail = async (email: string) => {
 }
 
 export const validateEmail = async (token: string) => {
-  let payload: ValidateEmailPayloadInerface
+  let payload: ValidateEmailPayloadInerface | undefined = undefined
   try {
     payload = jwt.verify(
       token,
@@ -291,38 +262,24 @@ export const validateEmail = async (token: string) => {
     ) as ValidateEmailPayloadInerface
   } catch (e) {
     console.error(e)
-    throw new GraphQLError('Bad Token', {
-      extensions: {
-        code: 'BAD_REQUEST',
-        http: { status: 400 },
-      },
-    })
+    throwBadReuest('Bad Token')
   }
 
+  let user: (iUser & { save: () => Promise<iUser> }) | undefined = undefined
   if (!payload || !payload.token) {
-    throw new GraphQLError('Bad Token', {
-      extensions: {
-        code: 'BAD_REQUEST',
-        http: { status: 400 },
-      },
-    })
+    throwBadReuest('Bad Token')
+  } else {
+    user = await User.findById(payload.token)
   }
-
-  const user = await User.findById(payload.token)
 
   if (!user || !user.emailValidateToken || user.emailValidateToken !== token) {
-    throw new GraphQLError('Bad Token', {
-      extensions: {
-        code: 'BAD_REQUEST',
-        http: { status: 400 },
-      },
-    })
+    throwBadReuest('Bad Token')
+  } else {
+    user.emailValidateToken = undefined
+    user.emailValidatedAt = new Date()
+
+    await user.save()
   }
-
-  user.emailValidateToken = undefined
-  user.emailValidatedAt = new Date()
-
-  await user.save()
 }
 
 export const resetPassword = async (email: string) => {
@@ -366,58 +323,36 @@ export const resetPassword = async (email: string) => {
 }
 
 export const setNewPassword = async (token: string, password: string) => {
-  let payload: ResetPasswordPayloadInerface
+  let payload: ResetPasswordPayloadInerface | undefined = undefined
   try {
-    payload = jwt.verify(
-      token,
-      emailResetKey
-    ) as ResetPasswordPayloadInerface
+    payload = jwt.verify(token, emailResetKey) as ResetPasswordPayloadInerface
   } catch (e) {
     console.error(e)
-    throw new GraphQLError('Bad Token', {
-      extensions: {
-        code: 'BAD_REQUEST',
-        http: { status: 400 },
-      },
-    })
+    throwBadReuest('Bad Token')
   }
 
+  let user: (iUser & { save: () => Promise<iUser> }) | undefined = undefined
   if (!payload || !payload.token) {
-    throw new GraphQLError('Bad Token', {
-      extensions: {
-        code: 'BAD_REQUEST',
-        http: { status: 400 },
-      },
-    })
+    throwBadReuest('Bad Token')
+  } else {
+    user = await User.findById(payload.token)
   }
-
-  const user = await User.findById(payload.token)
 
   if (!user || !user.passwordResetToken || user.passwordResetToken !== token) {
-    throw new GraphQLError('Bad Token', {
-      extensions: {
-        code: 'BAD_REQUEST',
-        http: { status: 400 },
-      },
-    })
+    throwBadReuest('Bad Token')
+  } else {
+    user.password = await bcrypt.hash(password, saltRounds)
+    user.passwordResetToken = undefined
+    user.passwordChangedAt = new Date()
+
+    await user.save()
   }
-
-  user.password = await bcrypt.hash(password, saltRounds)
-  user.passwordResetToken = undefined
-  user.passwordChangedAt = new Date()
-
-  await user.save()
 }
 
 export const checkRefreshTokenExisting = (req: Request) => {
   const refreshToken = req.cookies[jwtRefreshCookieName]
   if (!refreshToken) {
-    throw new GraphQLError('User is not authenticated', {
-      extensions: {
-        code: 'UNAUTHENTICATED',
-        http: { status: 401 },
-      },
-    })
+    throwUnauthenticated('User is not authenticated')
   }
   return refreshToken
 }
@@ -445,12 +380,7 @@ export const refresh = async (req: Request, res: Response) => {
   } catch (error) {
     _clearTokensAndResponse(res)
     console.error(error)
-    throw new GraphQLError('User is not authenticated', {
-      extensions: {
-        code: 'BAD_REQUEST',
-        http: { status: 400 },
-      },
-    })
+    throwBadReuest('User is not authenticated')
   }
 }
 
