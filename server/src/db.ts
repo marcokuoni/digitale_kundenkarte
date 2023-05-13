@@ -10,6 +10,7 @@ export const connectMongoDb = function () {
   } = process.env
 
   const options = {
+    useFindAndModify: false,
     useNewUrlParser: true,
     reconnectTries: Number.MAX_VALUE,
     reconnectInterval: 500,

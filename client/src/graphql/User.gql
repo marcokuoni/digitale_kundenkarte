@@ -1,34 +1,175 @@
 fragment UserFragment on User {
   _id
+  transfercode
   name
   email
+  emailValidatedAt
   newsletter
   cards {
     creationDate
+    honouredAt
     stamps {
       creationDate
+      validUntilDate
     }
   }
+  userRoles
+  passwordChangedAt
   createdAt
   updatedAt
 }
 
-query getUsers {
-  getUsers {
+fragment RefreshTokenFragment on RefreshToken {
+  _id
+  user {
+    _id
+  }
+  expires
+  created
+  createdByIp
+  createdByUserAgent
+  createdAt
+  updatedAt
+}
+
+fragment IpBlockFrament on IpBlock {
+  _id
+  ip
+  blockedUntil
+  createdAt
+  updatedAt
+}
+
+fragment UrlTokenFragment on UrlToken {
+  token
+  validUntil
+  blockForMinutes
+}
+
+query getUsersWithPassword {
+  getUsersWithPassword {
     ...UserFragment
   }
 }
 
-mutation addUser(
-  $name: String!,
-  $email: String,
+query getCurrentUser {
+  getCurrentUser {
+    ...UserFragment
+  }
+}
+
+query getActiveRefreshTokens {
+  getActiveRefreshTokens {
+    ...RefreshTokenFragment
+  }
+}
+
+query getIpBlocks {
+  getIpBlocks {
+    ...IpBlockFrament
+  }
+}
+
+mutation updateUser(
+  $_id: ID!
+  $name: String
+  $email: String
   $newsletter: Boolean!
+  $password: String
 ) {
-  addUser(
-    name: $name,
-    email: $email,
+  updateUser(
+    _id: $_id
+    name: $name
+    email: $email
     newsletter: $newsletter
+    password: $password
   ) {
     ...UserFragment
   }
+}
+
+mutation signUp(
+  $name: String
+  $email: String
+  $newsletter: Boolean!
+  $password: String
+  $successRedirect: String!
+) {
+  signUp(
+    name: $name
+    email: $email
+    newsletter: $newsletter
+    password: $password
+    successRedirect: $successRedirect
+  )
+}
+
+mutation signIn(
+  $transfercode: String!
+  $password: String
+  $successRedirect: String!
+) {
+  signIn(
+    transfercode: $transfercode
+    password: $password
+    successRedirect: $successRedirect
+  )
+}
+
+mutation signOut {
+  signOut
+}
+
+mutation refresh {
+  refresh
+}
+
+mutation revokeRefreshToken($_id: ID!) {
+  revokeRefreshToken(_id: $_id)
+}
+
+mutation deleteIpBlock($_id: ID!) {
+  deleteIpBlock(_id: $_id)
+}
+
+mutation addIpBlock($ip: String!, $blockedUntil: Date!) {
+  addIpBlock(ip: $ip, blockedUntil: $blockedUntil)
+}
+
+mutation generateUrlToken($validUntil: Date!, $blockForMinutes: Int!) {
+  generateUrlToken(validUntil: $validUntil, blockForMinutes: $blockForMinutes) {
+    ...UrlTokenFragment
+  }
+}
+
+mutation addStamp($urlToken: String!) {
+  addStamp(urlToken: $urlToken) {
+    ...UserFragment
+  }
+}
+
+mutation honourCardFrom($transfercode: String!) {
+  honourCardFrom(transfercode: $transfercode)
+}
+
+mutation updateUserRoles($_id: ID!, $userRoles: [String]!) {
+  updateUserRoles(_id: $_id, userRoles: $userRoles) {
+    ...UserFragment
+  }
+}
+
+mutation passwordReset($email: String!) {
+  passwordReset(email: $email)
+}
+
+mutation resetPassword($token: String!, $password: String!) {
+  resetPassword(token: $token, password: $password)
+}
+
+mutation sendValidationMail {
+  sendValidationMail
+}
+
+mutation validateEmail($token: String!) {
+  validateEmail(token: $token)
 }

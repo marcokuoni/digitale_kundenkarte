@@ -1,10 +1,95 @@
-<nav>
-    <NavLink to="query">Query</NavLink>
-    <NavLink to="mutation">Mutation</NavLink>
-</nav>
+<script lang="ts">
+  import NavLink from '../components/NavLink.svelte'
+  import { onDestroy, onMount } from 'svelte'
+  import { navigate } from 'svelte-routing'
+  import { refresh } from '../codegen'
+  import { PATHS, PROCESS_ENV, USER_ROLES } from '../lib/const'
+  import currentUser from '../stores/currentUser'
+  import SecuredNavLink from '../components/SecuredNavLink.svelte'
+  import Logout from '../components/Logout.svelte'
+  import { checkAccessRights } from '../services/auth'
+  import PasswordAlert from '../components/PasswordAlert.svelte'
+  import EmailAlert from '../components/EmailAlert.svelte'
 
-<h1>Home page</h1>
+  let hasMoreRights = false
 
-<script>
-    import NavLink from '../components/NavLink.svelte'
+  onMount(async () => {
+    if (localStorage.getItem(PROCESS_ENV.JWT_COOKIE_NAME)) {
+      try {
+        await refresh({})
+      } catch (e) {
+        console.error(e.message)
+      }
+    }
+  })
+
+  const unsubscribe = currentUser.subscribe((currentUser) => {
+    if (
+      currentUser &&
+      (!currentUser.userRoles || currentUser.userRoles.length === 0)
+    ) {
+      navigate(`/${PATHS.CARD}`)
+    } else if (
+      currentUser &&
+      currentUser.userRoles &&
+      currentUser.userRoles.length > 0
+    ) {
+      hasMoreRights = true
+    }
+  })
+
+  onDestroy(unsubscribe)
 </script>
+
+<h1>Startseite</h1>
+<nav>
+  {#if hasMoreRights}
+    <SecuredNavLink
+      to={`/${PATHS.QR_CODE}`}
+      requiredRoles={[USER_ROLES.EMPLOYEE]}>QR Code generieren</SecuredNavLink
+    >
+    <SecuredNavLink
+      to={`${PATHS.HONOUR_CARD}`}
+      requiredRoles={[USER_ROLES.EMPLOYEE]}>Karte einlösen</SecuredNavLink
+    >
+    <SecuredNavLink
+      to={`/${PATHS.IP_BLOCKS}`}
+      requiredRoles={[USER_ROLES.ADMIN]}>Blockierte IPs</SecuredNavLink
+    >
+    <SecuredNavLink
+      to={`/${PATHS.USER_ROLES}`}
+      requiredRoles={[USER_ROLES.ADMIN]}
+      >Benutzergruppen verwalten</SecuredNavLink
+    >
+    <NavLink to={`/${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}
+      >Benutzer erstellen mit Passwort</NavLink
+    >
+    {#if $currentUser}
+      <Logout />
+      {#if checkAccessRights($currentUser, [USER_ROLES.ADMIN])}
+        <NavLink to={`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}
+          >Anmelden mit Passwort</NavLink
+        >
+      {/if}
+    {:else}
+      <NavLink to={`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}
+        >Anmelden mit Passwort</NavLink
+      >
+    {/if}
+
+    <EmailAlert />
+    <PasswordAlert />
+    <NavLink to={`/${PATHS.SETTINGS}`}>Einstellungen</NavLink>
+  {:else}
+    <NavLink to={`/${PATHS.CREATE_USER}`}
+      >Ich möchte eine Karte erstellen</NavLink
+    >
+    {#if $currentUser}
+      <Logout />
+    {:else}
+      <NavLink to={`/${PATHS.LOGIN_USER}`}
+        >Ich besitze bereits eine Karte (Anmelden)</NavLink
+      >
+    {/if}
+  {/if}
+</nav>

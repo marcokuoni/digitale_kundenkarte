@@ -12,7 +12,6 @@ services:
       - --experimental.http3=true
       - --providers.docker=true
       - --providers.file.directory=/etc/traefik/dynamic
-      - --entrypoints.server.address=:$SERVER_ENTRY_PORT
       - --entrypoints.client.address=:$CLIENT_ENTRY_PORT
       - --entrypoints.client_live_reload.address=:$CLIENT_LIVE_RELOAD_PORT
       - --entrypoints.client_secure.address=:$CLIENT_SECURE_ENTRY_PORT
@@ -22,7 +21,6 @@ services:
       # Logging levels are DEBUG, PANIC, FATAL, ERROR, WARN, and INFO.
       - --log.level=debug
     ports:
-      - $SERVER_ENTRY_PORT:$SERVER_ENTRY_PORT
       - $CLIENT_LIVE_RELOAD_PORT:$CLIENT_LIVE_RELOAD_PORT
       - "$CLIENT_SECURE_ENTRY_PORT:$CLIENT_SECURE_ENTRY_PORT/tcp"
       - "$CLIENT_SECURE_ENTRY_PORT:$CLIENT_SECURE_ENTRY_PORT/udp"
@@ -39,9 +37,18 @@ services:
       context: client
       args:
         - CLIENT_PORT=$CLIENT_PORT
-        - SERVER_URL=$DOMAIN:$SERVER_ENTRY_PORT
-        - SCHEMA_VERSION_KEY=$SCHEMA_VERSION_KEY
-        - SCHEMA_VERSION=$SCHEMA_VERSION
+    environment:
+      - SERVER_URL=$CLIENT_URL
+      - SCHEMA_VERSION_KEY=$SCHEMA_VERSION_KEY
+      - SCHEMA_VERSION=$SCHEMA_VERSION
+      - JWT_COOKIE_NAME=$JWT_COOKIE_NAME
+      - DEFAULT_URL_TOKEN_BLOCK_FOR_MINUTES=$DEFAULT_URL_TOKEN_BLOCK_FOR_MINUTES
+      - DEFAULT_URL_TOKEN_VALID_FOR_MINUTES=$DEFAULT_URL_TOKEN_VALID_FOR_MINUTES
+      - STAMPS_LENGTH=$STAMPS_LENGTH
+      - CLIENT_PING_INTERVAL=$CLIENT_PING_INTERVAL
+      - SERVER_REQUEST_COUNT_CHECK_INTERVAL=$SERVER_REQUEST_COUNT_CHECK_INTERVAL
+      - CHECK_FOR_HOW_MANY_CYCLES=$CHECK_FOR_HOW_MANY_CYCLES
+      - BLOCKING_DURATION_MS=$BLOCKING_DURATION_MS
     restart: always
     volumes:
       - ./client:/usr/src/app
@@ -72,7 +79,7 @@ services:
       args:
         - SERVER_PORT=$SERVER_PORT
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=$NODE_ENV
       - MONGO_USERNAME=$MONGO_USERNAME
       - MONGO_PASSWORD=$MONGO_PASSWORD
       - MONGO_HOSTNAME=$MONGO_HOSTNAME
@@ -82,14 +89,38 @@ services:
       - APOLLO_KEY=$APOLLO_KEY
       - APOLLO_GRAPH_REF=$APOLLO_GRAPH_REF
       - APOLLO_SCHEMA_REPORTING=$APOLLO_SCHEMA_REPORTING
+      - JWT_KEY=$JWT_KEY
+      - JWT_EXPIRES_IN=$JWT_EXPIRES_IN
+      - JWT_REFRESH_KEY=$JWT_REFRESH_KEY
+      - JWT_REFRESH_EXPIRES_IN=$JWT_REFRESH_EXPIRES_IN
+      - JWT_REFRESH_COOKIE_NAME=$JWT_REFRESH_COOKIE_NAME
+      - CLIENT_URL=$CLIENT_URL
+      - SERVER_URL=$CLIENT_URL
+      - PASSWORD_SALT_ROUNDS=$PASSWORD_SALT_ROUNDS
+      - JWT_URL_TOKEN_KEY=$JWT_URL_TOKEN_KEY
+      - STAMPS_LENGTH=$STAMPS_LENGTH
+      - FROM_EMAIL_ADDRESS=$FROM_EMAIL_ADDRESS
+      - EMAIL_RESET_SECRET=$EMAIL_RESET_SECRET
+      - EMAIL_RESET_EXPIRES_IN=$EMAIL_RESET_EXPIRES_IN
+      - EMAIL_SERVER_HOST=$EMAIL_SERVER_HOST
+      - EMAIL_USERNAME=$EMAIL_USERNAME
+      - EMAIL_PASSWORD=$EMAIL_PASSWORD
+      - MAX_REFRESH_TOKENS=$MAX_REFRESH_TOKENS
+      - EMAIL_VALIDATE_SECRET=$EMAIL_VALIDATE_SECRET
+      - EMAIL_VALIDATE_EXPIRES_IN=$EMAIL_VALIDATE_EXPIRES_IN
+      - TIME_WINDOW_MS=$TIME_WINDOW_MS
+      - MAX_REQUESTS=$MAX_REQUESTS
+      - BLOCKING_DURATION_MS=$BLOCKING_DURATION_MS
+      - CROWN_BAR_URL=$CROWN_BAR_URL
+      - CROWN_BAR_INSTA=$CROWN_BAR_INSTA
     restart: always
     volumes:
       - ./server:/usr/src/app
     labels:
       - traefik.enable=true
-      - traefik.http.routers.server_route.entrypoints=server
+      - traefik.http.routers.server_route.entrypoints=client_secure
       - traefik.http.routers.server_route.tls=true
-      - traefik.http.routers.server_route.rule=Host(`$DOMAIN`)
+      - traefik.http.routers.server_route.rule=(Host(`$DOMAIN`) && Path(`/graphql`))
       - traefik.http.routers.server_route.service=server_service
       - traefik.http.services.server_service.loadbalancer.server.port=$SERVER_PORT
       - traefik.http.services.server_service.loadbalancer.healthcheck.path=/graphql?query=%7B__typename%7D

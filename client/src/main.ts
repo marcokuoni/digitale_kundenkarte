@@ -1,5 +1,5 @@
 import App from './App.svelte'
-import { initPersistor } from './apollo-client'
+import initPersistor from './services/apollo/persistor'
 ;(async () => {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', async () => {
@@ -7,15 +7,15 @@ import { initPersistor } from './apollo-client'
 
       const wb = new Workbox('/sw.js')
 
-      const showSkipWaitingPrompt = async (event) => {
+      const showSkipWaitingPrompt = async () => {
         wb.addEventListener('controlling', () => {
           window.location.reload()
         })
 
         //TODO: Make this nice looking
         const updateAccepted = await new Promise((resolve) => {
-          resolve(true)
-          // resolve(confirm('soll die App ein Update erfahren?'))
+          // resolve(true)
+          resolve(confirm('soll die App ein Update erfahren?'))
         })
 
         if (updateAccepted) {
@@ -23,12 +23,12 @@ import { initPersistor } from './apollo-client'
         }
       }
 
-      wb.addEventListener('waiting', (event) => {
-        showSkipWaitingPrompt(event)
+      wb.addEventListener('waiting', () => {
+        showSkipWaitingPrompt()
       })
 
       //NOTE deactivate local storage cache
-      wb.register()
+      // wb.register()
       // /NOTE deactivate local storage cache
     })
   }

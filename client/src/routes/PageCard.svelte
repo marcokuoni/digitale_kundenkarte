@@ -1,161 +1,124 @@
 <script lang="ts">
-  import { addUser, getUsers } from '../codegen.js'
-  import gql from 'graphql-tag'
-  import Stamp from '../components/Stamp.svelte'
   import Card from '../components/Card.svelte'
-  import CardSettings from '../components/CardSettings.svelte'
+  import Logout from '../components/Logout.svelte'
+  import { PATHS, PROCESS_ENV } from '../lib/const.js'
+  import NavLink from '../components/NavLink.svelte'
+  import currentUser from '../stores/currentUser'
+  import HonourQrCode from '../components/HonourQrCode.svelte'
+  import { formatRelativeTimeS } from '../lib/formater'
+  import { onDestroy } from 'svelte'
+  import { navigate } from 'svelte-routing'
+  import EmailAlert from '../components/EmailAlert.svelte'
 
-  let inputName = ''
-  let inputEmail = ''
-  let inputNewsletter = false
+  const stampsLength = parseInt(PROCESS_ENV.STAMPS_LENGTH || '8')
 
-  const getUsersQuery = getUsers({})
-
-  let settingsOverlayVisible = false
-
-  function toggleOverlayVisibility() {
-    settingsOverlayVisible = !settingsOverlayVisible
-  }
-
-  const stampsPlaceholder = [
-    new Date('2023-03-02T18:00:00.000Z'),
-    new Date('2023-03-09T18:00:00.000Z'),
-    new Date('2023-03-16T18:00:00.000Z'),
-    new Date('2023-03-23T18:00:00.000Z'),
-  ]
-
-  getUsersQuery.subscribe((data) => {
-    if (data.error) {
-      console.log('error', data.error)
-    }
-    if (data.loading) {
-      console.log('loading...')
-    } else {
-      console.log('data', data.data.getUsers)
+  const unsubscribe = currentUser.subscribe((currentUser) => {
+    if (
+      currentUser &&
+      currentUser.userRoles &&
+      currentUser.userRoles.length > 0
+    ) {
+      navigate(`/${PATHS.HOME}`)
     }
   })
 
-  /*function logUsers() {
-        console.log(getUsersQuery)
-    }*/
+  onDestroy(unsubscribe)
 
-  async function handleUserClick() {
-    console.log('adding user')
-    const res = await addUser({
-      variables: {
-        name: inputName,
-        email: inputEmail,
-        newsletter: inputNewsletter,
-      },
-
-      update: (cache, { data: { addUser } }) => {
-        cache.modify({
-          fields: {
-            getUsers(existingUsers = []) {
-              const newUserRef = cache.writeFragment({
-                data: addUser,
-                fragment: gql`
-                  fragment NewUser on User {
-                    __typename
-                    _id
-                    email
-                    newsletter
-                    cards
-                    createdAt
-                    updatedAt
-                    name
-                  }
-                `,
-              })
-              return existingUsers.concat(newUserRef)
-            },
-          },
-        })
-      },
-
-      optimisticResponse: {
-        addUser: {
-          __typename: 'User',
-          _id: new Date().getTime(),
-          email: '',
-          newsletter: false,
-          cards: [],
-          createdAt: Date.now(),
-          updatedAt: Date.now(),
-          name: inputName,
-        },
-      },
-    })
-
-    inputName = ''
-    console.log('result:')
-    console.log(res)
-  }
+  $: stampCount =
+    ($currentUser &&
+      $currentUser.cards[0] &&
+      $currentUser.cards[0].stamps.length) ||
+    0
+  $: stamps =
+    ($currentUser && $currentUser.cards[0] && $currentUser.cards[0].stamps) ||
+    []
+  $: hasAFullCard =
+    ($currentUser &&
+      $currentUser.cards.filter(
+        (card) => !card.honouredAt && card.stamps.length === stampsLength
+      ).length > 0) ||
+    false
+  $: timeSpanToLastStamp =
+    $currentUser &&
+    $currentUser.cards[0] &&
+    $currentUser.cards[0].stamps.length > 0
+      ? (new Date(
+          $currentUser.cards[0].stamps[
+            $currentUser.cards[0].stamps.length - 1
+          ].creationDate
+        ).getTime() -
+          new Date().getTime()) /
+        1000
+      : 0
 </script>
 
 <main>
-  <section class="card-section">
-    <div class="card-wrapper">
-      <Card stamps={stampsPlaceholder} />
-    </div>
-    <button class="all-cards-button">ALLE KARTEN</button>
-  </section>
-
-  <section class="info-section">
-    <div class="info-wrapper">
-      <p class="info-label">NAME</p>
-      <p class="info-text">Silvan Helbling</p>
-
-      <div class="info-group">
-        <div>
-          <p class="info-label">STEMPEL</p>
-          <p class="info-text">
-            4<span class="stamps-secondary-text">/ 8</span>
-          </p>
-        </div>
-        <div>
-          <p class="info-label">LETZTER</p>
-          <p class="info-text">vor 12 Tagen</p>
-        </div>
+  {#if !$currentUser}
+    <!-- TODO: we need a way to communicate loading and alert states to the user? -->
+    <span>Loading...</span>
+    <Logout />
+  {:else}
+    <section class="card-section">
+      <div class="card-wrapper">
+        <Card {stamps} />
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="footer-section">
-    <div class="footer">
-      <button on:click={toggleOverlayVisibility}>EINSTELLUNGEN</button>
-      <a href="https://thecrownbar.ch">WEBSITE</a>
-      <a href="https://instagram.com/thecrownbarrappi">INSTAGRAM</a>
-    </div>
-  </section>
-
-  <CardSettings
-    visible={settingsOverlayVisible}
-    on:toggleOverlay={toggleOverlayVisibility}
-  />
-
-  <!--     
-    {#if $getUsersQuery.loading}
-        <p>loading...</p>
-    {:else}
-        {#if $getUsersQuery.data?.getUsers.length === 0}
-            <p>No User (Add some!)</p>
+    <section class="info-section">
+      <div class="info-wrapper">
+        <p class="info-label">Name</p>
+        {#if $currentUser && $currentUser.name}
+          <p class="info-text">Hallo {$currentUser.name}</p>
         {/if}
-        {#each $getUsersQuery.data?.getUsers || [] as user, i}
-            <div>User {i + 1} -&gt; {user.name}</div>
-        {/each}
-        <button on:click={() => $getUsersQuery.query.refetch({})}>Refresh</button>
-    {/if}
-    -->
 
-  <!--<button on:click={logUsers}>Log users</button>-->
-  <!--
-    <p>Add user:</p>
-    <input type="text" placeholder="username" bind:value={inputName}/>
-    <input type="email" placeholder="email" bind:value={inputEmail}/>
-    <input type="checkbox" name="newsletter" bind:checked={inputNewsletter}/>
-    <button on:click={handleUserClick} disabled={inputName.length === 0}>Add User</button>
-    -->
+        <div class="info-group">
+          <div>
+            <p class="info-label">Stempel</p>
+            <p class="info-text">
+              {stampCount}<span class="stamps-secondary-text">/ 8</span>
+            </p>
+          </div>
+          <div>
+            <p class="info-label">Letzter</p>
+            {#if timeSpanToLastStamp !== 0}
+              <p class="info-text">
+                {formatRelativeTimeS(timeSpanToLastStamp)}
+              </p>
+            {/if}
+          </div>
+        </div>
+
+        {#if $currentUser.cards.length > 0}
+          <div class="info-group">
+            <div>
+              <p class="info-label">Einzulösende Karten</p>
+              <p class="info-text">
+                {$currentUser.cards.filter(
+                  (card) =>
+                    !card.honouredAt && card.stamps.length === stampsLength
+                ).length}<span class="stamps-secondary-text"
+                  >/ {$currentUser.cards.length}</span
+                >
+              </p>
+            </div>
+          </div>
+        {/if}
+      </div>
+    </section>
+
+    <section class="footer-section">
+      <div class="footer">
+        <EmailAlert />
+        <NavLink to={`/${PATHS.SETTINGS}`}>Einstellungen</NavLink>
+        <a href={PROCESS_ENV.CROWN_BAR_URL}>WEBSITE</a>
+        <a href={PROCESS_ENV.CROWN_BAR_INSTA}>INSTAGRAM</a>
+        <Logout />
+        {#if hasAFullCard}
+          <HonourQrCode transfercode={$currentUser.transfercode} />
+        {/if}
+      </div>
+    </section>
+  {/if}
 </main>
 
 <style>
@@ -178,7 +141,6 @@
     flex-direction: column;
   }
 
-  button,
   a {
     cursor: pointer;
     padding: 2px 4px;
@@ -190,10 +152,6 @@
 
     border: none;
     text-decoration: none;
-  }
-
-  .all-cards-button {
-    margin-top: 20px;
   }
 
   /* info */
@@ -222,6 +180,7 @@
   .info-label {
     font-size: 9pt;
     font-weight: bold;
+    text-transform: uppercase;
     color: var(--accent-color);
   }
 

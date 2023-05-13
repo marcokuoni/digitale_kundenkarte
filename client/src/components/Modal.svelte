@@ -9,6 +9,7 @@
 
 <script lang="ts">
   import { onDestroy } from 'svelte'
+  import { EVENTS, KEYS, OVERFLOW } from '../lib/const'
 
   let topDiv
   let visible = false
@@ -18,7 +19,7 @@
   export let id = ''
 
   function keyPress(ev) {
-    if (ev.key == 'Escape' && onTop == topDiv) {
+    if (ev.key == KEYS.ESCAPE && onTop == topDiv) {
       close()
     }
   }
@@ -28,9 +29,9 @@
     if (visible) return
     prevOnTop = onTop
     onTop = topDiv
-    window.addEventListener('keydown', keyPress)
+    window.addEventListener(EVENTS.KEYDOWN, keyPress)
 
-    document.body.style.overflow = 'hidden'
+    document.body.style.overflow = OVERFLOW.HIDDEN
 
     visible = true
 
@@ -39,7 +40,7 @@
 
   function close() {
     if (!visible) return
-    window.removeEventListener('keydown', keyPress)
+    window.removeEventListener(EVENTS.KEYDOWN, keyPress)
     onTop = prevOnTop
     if (onTop == null) document.body.style.overflow = ''
     visible = false
@@ -50,7 +51,7 @@
 
   onDestroy(() => {
     delete modals[id]
-    window.removeEventListener('keydown', keyPress)
+    window.removeEventListener(EVENTS.KEYDOWN, keyPress)
   })
 </script>
 

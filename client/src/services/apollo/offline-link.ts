@@ -1,5 +1,6 @@
 import { ApolloLink, Observable } from '@apollo/client'
 import gql from 'graphql-tag'
+import { EVENTS } from '../../lib/const'
 
 const syncStatusQuery = gql`
   query syncStatus {
@@ -23,9 +24,10 @@ export default class OfflineLink extends ApolloLink {
           observer.next(result)
         },
 
-        error: async () => {
-          const error = new CustomEvent('apolloError')
-          window.dispatchEvent(error)
+        error: async (error) => {
+          console.error(error)
+          const errorEvent = new CustomEvent(EVENTS.APOLLO_ERROR)
+          window.dispatchEvent(errorEvent)
           // Resolve the mutation with the optimistic response so the UI can be updated
           observer.next({
             data: context.optimisticResponse,
