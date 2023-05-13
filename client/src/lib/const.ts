@@ -21,3 +21,4 @@ export enum USER_ROLES {
 
 export const AUTHORIZATION = 'authorization'
 export const BEARER = 'Bearer'
+export const AUTH_TOKEN_SEPERATOR = `?${AUTHORIZATION}=`

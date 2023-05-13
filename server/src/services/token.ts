@@ -1,3 +1,4 @@
+import { GraphQLError } from 'graphql'
 import { randomTokenString } from '../lib/helpers'
 import RefreshToken, { iRefreshToken } from '../models/refreshToken'
 
@@ -34,6 +35,7 @@ export const refreshRefreshToken = async (
   //TODO: no refresh token should be used twice create an info for the user
   // the refresh token will be null here if it was already used but no body will realize it at the moment just the refresh will fail
   const refreshToken = await getRefreshToken(token)
+  
   const { user } = refreshToken
 
   const newRefreshToken = await generateRefreshToken(
@@ -59,7 +61,12 @@ export const getRefreshToken = async (token: string) => {
   const refreshToken = await RefreshToken.findOne({ token }).populate('user')
   if (!refreshToken || refreshToken.revoked || refreshToken.isExpired) {
     console.error('Invalid token')
-    return null
+    throw new GraphQLError('User is not authenticated', {
+      extensions: {
+        code: 'BAD_REQUEST',
+        http: { status: 400 },
+      },
+    })
   }
   return refreshToken
 }

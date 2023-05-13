@@ -53,7 +53,7 @@
       >Benutzergruppen verwalten</SecuredNavLink
     >
     <NavLink to={`${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}
-      >Benutzer anlegen mit Passwort</NavLink
+      >Benutzer erstellen mit Passwort</NavLink
     >
     {#if $currentUser}
       <Logout />

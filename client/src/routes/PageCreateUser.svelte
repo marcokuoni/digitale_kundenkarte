@@ -40,7 +40,7 @@
   <label for="name">Name</label>
   <input type="text" id="name" bind:value={name} />
   <label for="email">E-Mail</label>
-  <input type="email" id="email" bind:value={email} />
+  <input type="email" required={withPassword !== ''} id="email" bind:value={email} />
   <label for="newsletter"
     ><input
       type="checkbox"
@@ -51,15 +51,17 @@
   >
   {#if withPassword !== ''}
     <label for="password">Passwort</label>
-    <input type="password" id="password" bind:value={password} />
+    <input type="password" id="password" required bind:value={password} />
   {/if}
   <button type="submit">Benutzer erstellen</button>
 </form>
 
 {#if withPassword !== ''}
   <NavLink to={`${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}>Anmelden</NavLink>
-  <Logout />
-  <NavLink to={`/${PATHS.HOME}`}>Startseite</NavLink>
+  {#if $currentUser}
+    <Logout />
+    <NavLink to={`/${PATHS.HOME}`}>Startseite</NavLink>
+  {/if}
 {:else}
   {#if $currentUser}
     <Logout />

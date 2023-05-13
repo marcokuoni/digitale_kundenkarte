@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { updateUser } from '../../codegen'
+  import { updateUser, type UpdateUserMutationVariables } from '../../codegen'
   import currentUser from '../../stores/currentUser'
   import SettingsPage from '../../components/SettingsPage.svelte'
   import { Wave } from 'svelte-loading-spinners'
@@ -18,14 +18,19 @@
       const newsletter = formData.get('newsletter')?.toString() === 'true'
       const password = formData.get('password')?.toString()
 
+      const variables: UpdateUserMutationVariables = {
+        _id,
+        name,
+        email,
+        newsletter,
+      }
+
+      if (password) {
+        variables.password = password
+      }
+
       const { data } = await updateUser({
-        variables: {
-          _id,
-          name,
-          email,
-          newsletter,
-          password,
-        },
+        variables,
         optimisticResponse: {
           updateUser: {
             ...$currentUser,
@@ -76,6 +81,7 @@
         type="email"
         id="email"
         name="email"
+        required={$currentUser?.userRoles && $currentUser.userRoles.length > 0}
         value={$currentUser && $currentUser.email}
       />
       <label for="newsletter"
@@ -89,14 +95,7 @@
       >
       {#if $currentUser?.userRoles && $currentUser.userRoles.length > 0}
         <label for="password">Passwort</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          value={''}
-          required={$currentUser?.userRoles &&
-            $currentUser.userRoles.length > 0}
-        />
+        <input type="password" id="password" name="password" value={''} />
       {/if}
       <button type="submit">Benutzer aktuallisieren</button>
     </form>

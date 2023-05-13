@@ -14,6 +14,7 @@ import {
 import User, { iNewUser, iUser } from '../models/user'
 import {
   AUTHORIZATION,
+  AUTH_TOKEN_SEPERATOR,
   BEARER,
   UNKNOWN,
   USER_AGENT,
@@ -194,11 +195,22 @@ export const signIn = async (
     token: refreshTokenDb.token,
   }
 
-  _createTokensAndResponse(res, userPayload)
-
+  const token = _createTokensAndResponse(res, userPayload)
+  
   if (user) {
     //We do a redirect after login so the client does not cache the login page datas
-    res.redirect(302, process.env.CLIENT_URL + successRedirect)
+    //We do this with a exception so the apollo server middleware does stop the request and the redirect can be done
+    throw new GraphQLError('login', {
+      extensions: {
+        code: 'LOGIN',
+        http: {
+          status: 302,
+          headers: new Map([
+            ['Location', `${process.env.CLIENT_URL}${successRedirect}${AUTH_TOKEN_SEPERATOR}${token}`],
+          ]),
+        },
+      },
+    })
   }
 }
 
@@ -267,13 +279,14 @@ const _createTokensAndResponse = (
     audience: process.env.CLIENT_URL || 'https://karte.localhost',
     jwtid: randomTokenString(),
   })
-
   res
     .setHeader(AUTHORIZATION, `${BEARER} ${token}`)
     .cookie(jwtRefreshCookieName, refreshToken, {
       maxAge: jwtRefreshExpiry * 1000,
       ...cookieOptions,
     })
+    
+    return token
 }
 
 const _isTransfercodeExisting = async (transfercode: number) => {

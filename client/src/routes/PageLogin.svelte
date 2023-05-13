@@ -33,10 +33,10 @@
 <h1>Anmelden</h1>
 <form on:submit|preventDefault={loginUser}>
   <label for="transfercode">Transfer Code</label>
-  <input type="text" id="transfercode" bind:value={transfercode} />
+  <input type="text" id="transfercode" required bind:value={transfercode} />
   {#if withPassword !== ''}
     <label for="password">Passwort</label>
-    <input type="password" id="password" bind:value={password} />
+    <input type="password" id="password" required bind:value={password} />
   {/if}
   <button type="submit">Anmelden</button>
 </form>

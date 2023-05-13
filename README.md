@@ -184,6 +184,7 @@ https://stackoverflow.com/questions/6470378/hashing-a-session-fingerprint-really
 * Fehlermeldung wenn IP geblockt ist
 * Zeige alle Karten inklusive ob eingelöst oder nicht
 * 404 page, forbidden page (i think not possible with the current router)
+* naming convention _ or not, check all functions
 
 https://svelte.dev/tutorial/derived-stores
 
