@@ -8,6 +8,7 @@
   import { formatRelativeTimeS } from '../lib/formater'
   import { onDestroy } from 'svelte'
   import { navigate } from 'svelte-routing'
+  import EmailAlert from '../components/EmailAlert.svelte'
 
   const stampsLength = parseInt(PROCESS_ENV.STAMPS_LENGTH || '8')
 
@@ -92,6 +93,7 @@
 
     <section class="footer-section">
       <div class="footer">
+        <EmailAlert />
         <NavLink to={`/${PATHS.SETTINGS}`}>Einstellungen</NavLink>
         <a href="https://thecrownbar.ch">WEBSITE</a>
         <a href="https://instagram.com/thecrownbarrappi">INSTAGRAM</a>

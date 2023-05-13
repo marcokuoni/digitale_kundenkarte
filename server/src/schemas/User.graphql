@@ -16,6 +16,7 @@ type User {
   transfercode: String!
   name: String
   email: String
+  emailValidatedAt: Date
   newsletter: Boolean
   cards: [Card]!
   userRoles: [String]!
@@ -88,4 +89,6 @@ type Mutation {
   generateUrlToken(validUntil: Date!, blockForMinutes: Int!): UrlToken!
   addStamp(urlToken:String!): User! 
   honourCardFrom(transfercode:String!): Boolean!
+  sendValidationMail: Boolean!
+  validateEmail(token: String!): Boolean!
 }

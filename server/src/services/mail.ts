@@ -34,6 +34,7 @@ interface MailTemplateData {
   hasOldValidToken?: boolean
   ipAddress?: string
   userAgent?: string
+  validateToken?: string
 }
 
 export const sendMailWithTemplate = async (
@@ -134,6 +135,27 @@ export const getMailTemplate = (template: string, data?: MailTemplateData) => {
                 Du hast mehr als ${process.env.MAX_REFRESH_TOKENS} Geräte mit deinem Konto verbunden. Bitte melde dich laufend über die App von unnötigen Geräten ab. Deine älteste Verbindung wird nun automatisch geschlossen.
 
                 Von Geräten abmelden: ${process.env.CLIENT_URL}/${PATHS.SETTINGS}/${PATHS.CONNECTED}
+
+                Viele Grüße,
+                Dein Karte Team`,
+      }
+      break
+    case MAIL_TEMPLATES.VERIFY_EMAIL:
+      mailContent = {
+        subject: `Bitte bestätige deine E-Mail Adresse`,
+        text: `
+                Hallo ${data?.name},
+              
+                ${
+                  data?.hasOldValidToken &&
+                  `Du hattest bereits eine Anfrage zum Validieren deiner E-Mailadresse gestellt. Falls nicht wechsle umbedingt auch das Passwort von deinem Konto um sicher zu gehen, dass niemand anderes deine E-Mailadresse validieren wollte.
+                  
+                  Passwort ändern: ${process.env.CLIENT_URL}/${PATHS.SETTINGS}/${PATHS.PROFILE}`
+                }
+
+                Bitte bestätige deine E-Mail Adresse in dem du auf folgenden Link klickst:
+
+                ${process.env.CLIENT_URL}/${PATHS.VERIFY_EMAIL}/${data?.validateToken}
 
                 Viele Grüße,
                 Dein Karte Team`,

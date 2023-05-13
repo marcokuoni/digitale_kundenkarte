@@ -5,10 +5,8 @@
   import Logout from '../components/Logout.svelte'
   import { resetPassword } from '../codegen'
   import { navigate } from 'svelte-routing'
-  import jwt_decode from 'jwt-decode'
 
   export let token = ''
-
   let password = ''
 
   async function savePassword() {

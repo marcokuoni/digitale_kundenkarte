@@ -9,6 +9,7 @@
   import Logout from '../components/Logout.svelte'
   import { checkAccessRights } from '../services/auth'
   import PasswordAlert from '../components/PasswordAlert.svelte'
+  import EmailAlert from '../components/EmailAlert.svelte'
 
   let hasMoreRights = false
 
@@ -76,6 +77,7 @@
       >
     {/if}
 
+    <EmailAlert />
     <PasswordAlert />
     <NavLink to={`/${PATHS.SETTINGS}`}>Einstellungen</NavLink>
   {:else}

@@ -47,11 +47,13 @@ export type Mutation = {
   refresh: Scalars['Boolean'];
   resetPassword: Scalars['Boolean'];
   revokeRefreshToken: Scalars['Boolean'];
+  sendValidationMail: Scalars['Boolean'];
   signIn: Scalars['Boolean'];
   signOut: Scalars['Boolean'];
   signUp: Scalars['Boolean'];
   updateUser: User;
   updateUserRoles: User;
+  validateEmail: Scalars['Boolean'];
 };
 
 
@@ -128,6 +130,11 @@ export type MutationUpdateUserRolesArgs = {
   userRoles: Array<InputMaybe<Scalars['String']>>;
 };
 
+
+export type MutationValidateEmailArgs = {
+  token: Scalars['String'];
+};
+
 export type Query = {
   __typename?: 'Query';
   getActiveRefreshTokens: Array<Maybe<RefreshToken>>;
@@ -167,6 +174,7 @@ export type User = {
   cards: Array<Maybe<Card>>;
   createdAt: Scalars['Date'];
   email?: Maybe<Scalars['String']>;
+  emailValidatedAt?: Maybe<Scalars['Date']>;
   name?: Maybe<Scalars['String']>;
   newsletter?: Maybe<Scalars['Boolean']>;
   passwordChangedAt?: Maybe<Scalars['Date']>;
@@ -175,7 +183,7 @@ export type User = {
   userRoles: Array<Maybe<Scalars['String']>>;
 };
 
-export type UserFragmentFragment = { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, userRoles: Array<string | null>, passwordChangedAt?: any | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> };
+export type UserFragmentFragment = { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, emailValidatedAt?: any | null, newsletter?: boolean | null, userRoles: Array<string | null>, passwordChangedAt?: any | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> };
 
 export type RefreshTokenFragmentFragment = { __typename?: 'RefreshToken', _id: string, expires: any, created: any, createdByIp: string, createdByUserAgent: string, createdAt: any, updatedAt: any, user: { __typename?: 'User', _id: string } };
 
@@ -186,12 +194,12 @@ export type UrlTokenFragmentFragment = { __typename?: 'UrlToken', token: string,
 export type GetUsersWithPasswordQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUsersWithPasswordQuery = { __typename?: 'Query', getUsersWithPassword: Array<{ __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, userRoles: Array<string | null>, passwordChangedAt?: any | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> } | null> };
+export type GetUsersWithPasswordQuery = { __typename?: 'Query', getUsersWithPassword: Array<{ __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, emailValidatedAt?: any | null, newsletter?: boolean | null, userRoles: Array<string | null>, passwordChangedAt?: any | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> } | null> };
 
 export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, userRoles: Array<string | null>, passwordChangedAt?: any | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> } };
+export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, emailValidatedAt?: any | null, newsletter?: boolean | null, userRoles: Array<string | null>, passwordChangedAt?: any | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> } };
 
 export type GetActiveRefreshTokensQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -212,7 +220,7 @@ export type UpdateUserMutationVariables = Exact<{
 }>;
 
 
-export type UpdateUserMutation = { __typename?: 'Mutation', updateUser: { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, userRoles: Array<string | null>, passwordChangedAt?: any | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> } };
+export type UpdateUserMutation = { __typename?: 'Mutation', updateUser: { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, emailValidatedAt?: any | null, newsletter?: boolean | null, userRoles: Array<string | null>, passwordChangedAt?: any | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> } };
 
 export type SignUpMutationVariables = Exact<{
   name?: InputMaybe<Scalars['String']>;
@@ -279,7 +287,7 @@ export type AddStampMutationVariables = Exact<{
 }>;
 
 
-export type AddStampMutation = { __typename?: 'Mutation', addStamp: { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, userRoles: Array<string | null>, passwordChangedAt?: any | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> } };
+export type AddStampMutation = { __typename?: 'Mutation', addStamp: { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, emailValidatedAt?: any | null, newsletter?: boolean | null, userRoles: Array<string | null>, passwordChangedAt?: any | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> } };
 
 export type HonourCardFromMutationVariables = Exact<{
   transfercode: Scalars['String'];
@@ -294,7 +302,7 @@ export type UpdateUserRolesMutationVariables = Exact<{
 }>;
 
 
-export type UpdateUserRolesMutation = { __typename?: 'Mutation', updateUserRoles: { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, userRoles: Array<string | null>, passwordChangedAt?: any | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> } };
+export type UpdateUserRolesMutation = { __typename?: 'Mutation', updateUserRoles: { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, emailValidatedAt?: any | null, newsletter?: boolean | null, userRoles: Array<string | null>, passwordChangedAt?: any | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> } };
 
 export type PasswordResetMutationVariables = Exact<{
   email: Scalars['String'];
@@ -311,12 +319,25 @@ export type ResetPasswordMutationVariables = Exact<{
 
 export type ResetPasswordMutation = { __typename?: 'Mutation', resetPassword: boolean };
 
+export type SendValidationMailMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SendValidationMailMutation = { __typename?: 'Mutation', sendValidationMail: boolean };
+
+export type ValidateEmailMutationVariables = Exact<{
+  token: Scalars['String'];
+}>;
+
+
+export type ValidateEmailMutation = { __typename?: 'Mutation', validateEmail: boolean };
+
 export const UserFragmentFragmentDoc = gql`
     fragment UserFragment on User {
   _id
   transfercode
   name
   email
+  emailValidatedAt
   newsletter
   cards {
     creationDate
@@ -482,6 +503,16 @@ export const PasswordResetDoc = gql`
 export const ResetPasswordDoc = gql`
     mutation resetPassword($token: String!, $password: String!) {
   resetPassword(token: $token, password: $password)
+}
+    `;
+export const SendValidationMailDoc = gql`
+    mutation sendValidationMail {
+  sendValidationMail
+}
+    `;
+export const ValidateEmailDoc = gql`
+    mutation validateEmail($token: String!) {
+  validateEmail(token: $token)
 }
     `;
 export const getUsersWithPassword = (
@@ -824,6 +855,30 @@ export const resetPassword = (
           ) => {
             const m = client.mutate<ResetPasswordMutation, ResetPasswordMutationVariables>({
               mutation: ResetPasswordDoc,
+              ...options,
+            });
+            return m;
+          }
+export const sendValidationMail = (
+            options: Omit<
+              MutationOptions<any, SendValidationMailMutationVariables>, 
+              "mutation"
+            >
+          ) => {
+            const m = client.mutate<SendValidationMailMutation, SendValidationMailMutationVariables>({
+              mutation: SendValidationMailDoc,
+              ...options,
+            });
+            return m;
+          }
+export const validateEmail = (
+            options: Omit<
+              MutationOptions<any, ValidateEmailMutationVariables>, 
+              "mutation"
+            >
+          ) => {
+            const m = client.mutate<ValidateEmailMutation, ValidateEmailMutationVariables>({
+              mutation: ValidateEmailDoc,
               ...options,
             });
             return m;

@@ -22,6 +22,7 @@
   import { onMount } from 'svelte'
   import PageForgotPassword from './routes/PageForgotPassword.svelte'
   import PageResetPassword from './routes/PageResetPassword.svelte'
+  import PageValidateEmail from './routes/PageValidateEmail.svelte'
 
   export let url = ''
 
@@ -63,6 +64,10 @@
 
         <Route path={`${PATHS.RESET_PASSWORD}/:token`} let:params >
           <PageResetPassword token={params.token}/>
+        </Route>
+
+        <Route path={`${PATHS.VERIFY_EMAIL}/:token`} let:params >
+          <PageValidateEmail token={params.token}/>
         </Route>
 
         <Route path={`${PATHS.LOGIN_USER}/:withPassword`} let:params>

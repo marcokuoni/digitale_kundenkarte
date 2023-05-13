@@ -3,6 +3,7 @@ fragment UserFragment on User {
   transfercode
   name
   email
+  emailValidatedAt
   newsletter
   cards {
     creationDate
@@ -163,4 +164,12 @@ mutation passwordReset($email: String!) {
 
 mutation resetPassword($token: String!, $password: String!) {
   resetPassword(token: $token, password: $password)
+}
+
+mutation sendValidationMail {
+  sendValidationMail
+}
+
+mutation validateEmail($token: String!) {
+  validateEmail(token: $token)
 }

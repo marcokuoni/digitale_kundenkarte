@@ -27,9 +27,13 @@ import { sendMailWithTemplate } from './mail'
 const jwtKey = process.env.JWT_KEY as Jwt.Secret
 const jwtRefreshKey = process.env.JWT_REFRESH_KEY as Jwt.Secret
 const emailResetKey = process.env.EMAIL_RESET_SECRET as Jwt.Secret
+const emailValidateKey = process.env.EMAIL_VALIDATE_SECRET as Jwt.Secret
 const jwtExpiry = parseInt(process.env.JWT_EXPIRES_IN || '0')
 const jwtRefreshExpiry = parseInt(process.env.JWT_REFRESH_EXPIRES_IN || '0')
 const jwtEmailResetExpiry = parseInt(process.env.EMAIL_RESET_EXPIRES_IN || '0')
+const jwtEmailValidateExpiry = parseInt(
+  process.env.EMAIL_VALIDATE_EXPIRES_IN || '0'
+)
 const jwtRefreshCookieName =
   process.env.JWT_REFRESH_COOKIE_NAME || 'refresh_token'
 const cookieOptions: CookieOptions = {
@@ -44,6 +48,10 @@ export interface JwtUserPayloadInterface {
 }
 
 interface ResetPasswordPayloadInerface {
+  token: string
+}
+
+interface ValidateEmailPayloadInerface {
   token: string
 }
 
@@ -226,6 +234,97 @@ export const signIn = async (
   }
 }
 
+export const sendValidationMail = async (email: string) => {
+  let hasOldValidToken = false
+  const user = await User.findOne({ email })
+  if (!user || !user.email || user.emailValidated) {
+    throw new GraphQLError('Bad Validation Request', {
+      extensions: {
+        code: 'BAD_REQUEST',
+        http: { status: 400 },
+      },
+    })
+  }
+
+  if (user) {
+    if (user.emailValidateToken) {
+      try {
+        jwt.verify(
+          user.emailValidateToken,
+          emailValidateKey
+        ) as ValidateEmailPayloadInerface
+        hasOldValidToken = true
+      } catch (e) {
+        console.error(e)
+      }
+    }
+
+    const payload: ValidateEmailPayloadInerface = {
+      token: user._id,
+    }
+
+    const validateToken = jwt.sign(payload, emailValidateKey, {
+      algorithm: 'HS256',
+      expiresIn: jwtEmailValidateExpiry,
+      issuer: process.env.SERVER_URL || 'https://karte.localhost',
+      audience: process.env.CLIENT_URL || 'https://karte.localhost',
+      jwtid: randomTokenString(),
+    })
+
+    user.emailValidateToken = validateToken
+    await user.save()
+
+    await sendMailWithTemplate(user.email, MAIL_TEMPLATES.VERIFY_EMAIL, {
+      name: user.name,
+      validateToken,
+      hasOldValidToken,
+    })
+  }
+}
+
+export const validateEmail = async (token: string) => {
+  let payload: ValidateEmailPayloadInerface
+  try {
+    payload = jwt.verify(
+      token,
+      emailValidateKey
+    ) as ValidateEmailPayloadInerface
+  } catch (e) {
+    console.error(e)
+    throw new GraphQLError('Bad Token', {
+      extensions: {
+        code: 'BAD_REQUEST',
+        http: { status: 400 },
+      },
+    })
+  }
+
+  if (!payload || !payload.token) {
+    throw new GraphQLError('Bad Token', {
+      extensions: {
+        code: 'BAD_REQUEST',
+        http: { status: 400 },
+      },
+    })
+  }
+
+  const user = await User.findById(payload.token)
+
+  if (!user || !user.emailValidateToken || user.emailValidateToken !== token) {
+    throw new GraphQLError('Bad Token', {
+      extensions: {
+        code: 'BAD_REQUEST',
+        http: { status: 400 },
+      },
+    })
+  }
+
+  user.emailValidateToken = undefined
+  user.emailValidatedAt = new Date()
+
+  await user.save()
+}
+
 export const resetPassword = async (email: string) => {
   const user = await User.findOne({ email })
   let hasOldValidToken = false
@@ -258,25 +357,32 @@ export const resetPassword = async (email: string) => {
     user.passwordResetToken = resetToken
     await user.save()
 
-    await sendMailWithTemplate(
-      user.email,
-      MAIL_TEMPLATES.RESET_PASSWORD,
-      {
-        name: user.name,
-        resetToken,
-        hasOldValidToken,
-      },      
-    )
+    await sendMailWithTemplate(user.email, MAIL_TEMPLATES.RESET_PASSWORD, {
+      name: user.name,
+      resetToken,
+      hasOldValidToken,
+    })
   }
 }
 
 export const setNewPassword = async (token: string, password: string) => {
-  const payload = jwt.verify(
-    token,
-    emailResetKey
-  ) as ResetPasswordPayloadInerface
+  let payload: ResetPasswordPayloadInerface
+  try {
+    payload = jwt.verify(
+      token,
+      emailResetKey
+    ) as ResetPasswordPayloadInerface
+  } catch (e) {
+    console.error(e)
+    throw new GraphQLError('Bad Token', {
+      extensions: {
+        code: 'BAD_REQUEST',
+        http: { status: 400 },
+      },
+    })
+  }
 
-  if (!payload.token) {
+  if (!payload || !payload.token) {
     throw new GraphQLError('Bad Token', {
       extensions: {
         code: 'BAD_REQUEST',
@@ -315,7 +421,6 @@ export const checkRefreshTokenExisting = (req: Request) => {
   }
   return refreshToken
 }
-
 
 export const refresh = async (req: Request, res: Response) => {
   const refreshToken = checkRefreshTokenExisting(req)

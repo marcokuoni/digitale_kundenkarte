@@ -16,6 +16,8 @@ export interface iUser {
   _id: string
   name?: string
   email?: string
+  emailValidateToken?: string
+  emailValidatedAt?: Date
   newsletter?: boolean
   transfercode: string
   password?: string
@@ -52,6 +54,14 @@ const UserSchema = new Schema<iUser>(
     email: {
       type: String,
       default: '',
+      required: false,
+    },
+    emailValidateToken: {
+      type: String,
+      required: false,
+    },
+    emailValidatedAt: {
+      type: Date,
       required: false,
     },
     newsletter: {

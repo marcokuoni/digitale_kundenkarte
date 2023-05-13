@@ -15,6 +15,7 @@ export enum PATHS {
     SETTINGS = 'settings',
     PROFILE = 'profile',
     CONNECTED = 'connected',
+    VERIFY_EMAIL = 'verify-email',
 }
 export enum MAIL_TEMPLATES {
     RESET_PASSWORD = 'reset-password',
@@ -22,4 +23,5 @@ export enum MAIL_TEMPLATES {
     DIFFERENT_DEVICE = 'different-device',
     CREATED_FROM_UNKNOWN_DEVICE = 'created-from-unknown-device',
     MORE_THEN_ALLOWED_CONNECTED_DEVICES = 'more-then-allowed-connected-devices',
+    VERIFY_EMAIL = 'verify-email',
 }

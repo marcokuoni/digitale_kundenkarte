@@ -4,6 +4,7 @@
   import SettingsPage from '../../components/layouts/SettingsPageLayout.svelte'
   import { Wave } from 'svelte-loading-spinners'
   import PasswordAlert from '../../components/PasswordAlert.svelte'
+  import EmailAlert from '../../components/EmailAlert.svelte'
 
   let loading = false
 
@@ -55,12 +56,12 @@
   }
 </script>
 
-<SettingsPage title="Benutzerkonto">
+<SettingsPage title="Profil">
   {#if loading}
     <Wave size="100" color="#FF3E00" unit="px" />
   {/if}
   {#if !$currentUser}
-    <h2>Kein Benutzer gefunden</h2>
+    <h2>Kein Profil gefunden</h2>
   {:else}
     <h2>Dein Transfercode: {$currentUser && $currentUser.transfercode}</h2>
     <form on:submit|preventDefault={submitUpdateUser}>
@@ -77,7 +78,11 @@
         name="name"
         value={$currentUser && $currentUser.name}
       />
-      <label for="email">E-Mail</label>
+
+      <EmailAlert />
+      <label for="email">E-Mail{$currentUser.emailValidatedAt && (` (Validiert am: ${new Date(
+        $currentUser.emailValidatedAt
+      ).toLocaleString('de-CH')})`)}</label>
       <input
         type="email"
         id="email"
@@ -103,7 +108,7 @@
         >
         <input type="password" id="password" name="password" value={''} />
       {/if}
-      <button type="submit">Benutzer aktuallisieren</button>
+      <button type="submit">Profil aktuallisieren</button>
     </form>
   {/if}
 </SettingsPage>

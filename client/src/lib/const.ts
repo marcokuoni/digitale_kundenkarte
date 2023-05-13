@@ -14,6 +14,7 @@ export enum PATHS {
     USER_ROLES = 'user-roles',
     FORGOT_PASSWORD = 'forgot-password',
     RESET_PASSWORD = 'reset-password',
+    VERIFY_EMAIL = 'verify-email',
 }
 
 export enum USER_ROLES {
