@@ -62,26 +62,25 @@
       <div class="card-wrapper">
         <Card {stamps} />
       </div>
-      <button class="all-cards-button">ALLE KARTEN</button>
     </section>
 
     <section class="info-section">
       <div class="info-wrapper">
         <!-- TODO: Make uppercase by css-->
-        <p class="info-label">NAME</p>
+        <p class="info-label">Name</p>
         {#if $currentUser && $currentUser.name}
           <p class="info-text">Hallo {$currentUser.name}</p>
         {/if}
 
         <div class="info-group">
           <div>
-            <p class="info-label">STEMPEL</p>
+            <p class="info-label">Stempel</p>
             <p class="info-text">
               {stampCount}<span class="stamps-secondary-text">/ 8</span>
             </p>
           </div>
           <div>
-            <p class="info-label">LETZTER</p>
+            <p class="info-label">Letzter</p>
             {#if timeSpanToLastStamp !== 0}
               <p class="info-text">
                 {formatRelativeTimeS(timeSpanToLastStamp)}
@@ -89,6 +88,22 @@
             {/if}
           </div>
         </div>
+
+        {#if $currentUser.cards.length > 0}
+          <div class="info-group">
+            <div>
+              <p class="info-label">Einzulösende Karten</p>
+              <p class="info-text">
+                {$currentUser.cards.filter(
+                  (card) =>
+                    !card.honouredAt && card.stamps.length === stampsLength
+                ).length}<span class="stamps-secondary-text"
+                  >/ {$currentUser.cards.length}</span
+                >
+              </p>
+            </div>
+          </div>
+        {/if}
       </div>
     </section>
 
@@ -171,6 +186,7 @@
   .info-label {
     font-size: 9pt;
     font-weight: bold;
+    text-transform: uppercase;
     color: var(--accent-color);
   }
 
