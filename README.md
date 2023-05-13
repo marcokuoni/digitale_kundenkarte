@@ -175,7 +175,7 @@ https://stackoverflow.com/questions/6470378/hashing-a-session-fingerprint-really
 
 
 # TODO
-* Hinweis per Mails über eventuelle falsche Refresh Tokens (doppelt (schon revoked), Neuer Standort, mehr als 3 [Mail und ältester revoken])
+* validate emailaddress
 * Fehlermeldung bei falschem Passwort/Transfercode
 * Redirect to login when loggedout and delete all client datas
 * Fehlermeldung wenn IP geblockt ist

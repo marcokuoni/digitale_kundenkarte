@@ -16,13 +16,13 @@ import {
   AUTHORIZATION,
   AUTH_TOKEN_SEPERATOR,
   BEARER,
-  PATHS,
+  MAIL_TEMPLATES,
   UNKNOWN,
   USER_AGENT,
   USER_ROLES,
 } from '../lib/const'
 import { randomTokenString } from '../lib/helpers'
-import { sendMail } from './mail'
+import { sendMailWithTemplate } from './mail'
 
 const jwtKey = process.env.JWT_KEY as Jwt.Secret
 const jwtRefreshKey = process.env.JWT_REFRESH_KEY as Jwt.Secret
@@ -195,7 +195,7 @@ export const signIn = async (
   }
 
   const refreshTokenDb = await generateRefreshToken(
-    user.id,
+    user._id,
     req.socket.remoteAddress || '0.0.0.0',
     req.headers[USER_AGENT] || UNKNOWN
   )
@@ -258,24 +258,14 @@ export const resetPassword = async (email: string) => {
     user.passwordResetToken = resetToken
     await user.save()
 
-    sendMail(
+    await sendMailWithTemplate(
       user.email,
-      'Passwort zurücksetzen',
-      `
-  Hallo ${user.name},
-
-  ${
-    hasOldValidToken &&
-    'Du hattest bereits eine Anfrage zum Rücksetzen deines Passworts gestellt. Falls nicht wechsle umbedingt auch das Passwort von deinem E-Mailkonto um sicher zu gehen, dass niemand anderes dein Passwort zurücksetzen kann.'
-  }
-
-  Um dein Passwort zurückzusetzen, klicke bitte auf folgenden Link:
-  ${process.env.CLIENT_URL}/${PATHS.RESET_PASSWORD}/${resetToken}
-
-  Falls du dein Passwort nicht zurücksetzen möchtest, ignoriere diese E-Mail.
-
-  Viele Grüße,
-  Dein Karte Team`
+      MAIL_TEMPLATES.RESET_PASSWORD,
+      {
+        name: user.name,
+        resetToken,
+        hasOldValidToken,
+      },      
     )
   }
 }

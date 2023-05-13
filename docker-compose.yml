@@ -104,6 +104,7 @@ services:
       - EMAIL_SERVER_HOST=$EMAIL_SERVER_HOST
       - EMAIL_USERNAME=$EMAIL_USERNAME
       - EMAIL_PASSWORD=$EMAIL_PASSWORD
+      - MAX_REFRESH_TOKENS=$MAX_REFRESH_TOKENS
     restart: always
     volumes:
       - ./server:/usr/src/app

@@ -3,6 +3,7 @@ import { ServerContext } from '../server_types'
 import { checkAccessRights } from '../services/auth'
 import User from '../models/user'
 import ipBlock from '../models/ipBlock'
+import { getActiveRefreshTokens } from '../services/token'
 
 export const Query = {
     async getUsersWithPassword(root: never, args: never, context: ServerContext) {
@@ -20,12 +21,7 @@ export const Query = {
     ) {
       checkAccessRights(context.user)
       if (context.user) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //@ts-ignore
-        return await RefreshToken.find({
-          user: context.user._id,
-          revoked: { $exists: false },
-        }).exec()
+        return await getActiveRefreshTokens(context.user._id)
       }
       return []
     },

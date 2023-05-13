@@ -3,7 +3,7 @@
   import { onDestroy, onMount } from 'svelte'
   import { navigate } from 'svelte-routing'
   import { refresh } from '../codegen'
-  import { PATHS, USER_ROLES } from '../lib/const'
+  import { PATHS, PROCESS_ENV, USER_ROLES } from '../lib/const'
   import currentUser from '../stores/currentUser'
   import SecuredNavLink from '../components/SecuredNavLink.svelte'
   import Logout from '../components/Logout.svelte'
@@ -13,10 +13,12 @@
   let hasMoreRights = false
 
   onMount(async () => {
-    try {
-      await refresh({})
-    } catch (e) {
-      console.error(e.message)
+    if (localStorage.getItem(PROCESS_ENV.JWT_COOKIE_NAME)) {
+      try {
+        await refresh({})
+      } catch (e) {
+        console.error(e.message)
+      }
     }
   })
 
@@ -41,16 +43,21 @@
 <h1>Startseite</h1>
 <nav>
   {#if hasMoreRights}
-    <SecuredNavLink to={`/${PATHS.QR_CODE}`} requiredRoles={[USER_ROLES.EMPLOYEE]}
-      >QR Code generieren</SecuredNavLink
+    <SecuredNavLink
+      to={`/${PATHS.QR_CODE}`}
+      requiredRoles={[USER_ROLES.EMPLOYEE]}>QR Code generieren</SecuredNavLink
     >
-    <SecuredNavLink to={`${PATHS.HONOUR_CARD}`} requiredRoles={[USER_ROLES.EMPLOYEE]}
-      >Karte einlösen</SecuredNavLink
+    <SecuredNavLink
+      to={`${PATHS.HONOUR_CARD}`}
+      requiredRoles={[USER_ROLES.EMPLOYEE]}>Karte einlösen</SecuredNavLink
     >
-    <SecuredNavLink to={`/${PATHS.IP_BLOCKS}`} requiredRoles={[USER_ROLES.ADMIN]}
-      >Blockierte IPs</SecuredNavLink
+    <SecuredNavLink
+      to={`/${PATHS.IP_BLOCKS}`}
+      requiredRoles={[USER_ROLES.ADMIN]}>Blockierte IPs</SecuredNavLink
     >
-    <SecuredNavLink to={`/${PATHS.USER_ROLES}`} requiredRoles={[USER_ROLES.ADMIN]}
+    <SecuredNavLink
+      to={`/${PATHS.USER_ROLES}`}
+      requiredRoles={[USER_ROLES.ADMIN]}
       >Benutzergruppen verwalten</SecuredNavLink
     >
     <NavLink to={`/${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}
@@ -72,7 +79,9 @@
     <PasswordAlert />
     <NavLink to={`/${PATHS.SETTINGS}`}>Einstellungen</NavLink>
   {:else}
-    <NavLink to={`/${PATHS.CREATE_USER}`}>Ich möchte eine Karte erstellen</NavLink>
+    <NavLink to={`/${PATHS.CREATE_USER}`}
+      >Ich möchte eine Karte erstellen</NavLink
+    >
     {#if $currentUser}
       <Logout />
     {:else}

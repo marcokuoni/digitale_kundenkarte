@@ -12,4 +12,14 @@ export enum USER_ROLES {
 }
 export enum PATHS {
     RESET_PASSWORD = 'reset-password',
+    SETTINGS = 'settings',
+    PROFILE = 'profile',
+    CONNECTED = 'connected',
+}
+export enum MAIL_TEMPLATES {
+    RESET_PASSWORD = 'reset-password',
+    TOKEN_USED_TWICE = 'token-used-twice',
+    DIFFERENT_DEVICE = 'different-device',
+    CREATED_FROM_UNKNOWN_DEVICE = 'created-from-unknown-device',
+    MORE_THEN_ALLOWED_CONNECTED_DEVICES = 'more-then-allowed-connected-devices',
 }
