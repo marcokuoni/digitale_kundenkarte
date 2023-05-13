@@ -141,7 +141,6 @@
     flex-direction: column;
   }
 
-  button,
   a {
     cursor: pointer;
     padding: 2px 4px;
@@ -153,10 +152,6 @@
 
     border: none;
     text-decoration: none;
-  }
-
-  .all-cards-button {
-    margin-top: 20px;
   }
 
   /* info */
