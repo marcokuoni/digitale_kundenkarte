@@ -3,7 +3,7 @@ import ipBlock from '../models/ipBlock'
 import { iNewUser, iUpdateUser } from '../models/user'
 import User from '../models/user'
 import { ServerContext } from '../server_types'
-import { checkAccessRights, revokeRefreshTokenManualy, signIn, signOut, signUp } from '../services/auth'
+import { checkAccessRights, checkRefreshTokenExisting, resetPassword, revokeRefreshTokenManualy, setNewPassword, signIn, signOut, signUp } from '../services/auth'
 import { addStamp, honourCardFrom } from '../services/card'
 import { generateUrlToken, getPaylodFromUrlToken } from '../services/urlToken'
 
@@ -19,6 +19,7 @@ export const Mutation = {
       }
       if (password) {
         values.password = password
+        values.passwordChangedAt = new Date()
       }
 
       return await User.findOneAndUpdate({ _id }, values, { new: true })
@@ -45,6 +46,35 @@ export const Mutation = {
       )
       return true
     },
+    async passwordReset(
+      root: never,
+      {
+        email
+      }: {
+        email: string
+      }
+    ) {
+      await resetPassword(
+        email
+      )
+      return true
+    },
+    async resetPassword(
+      root: never,
+      {
+        token,
+        password,
+      }: {
+        token: string
+        password: string
+      }
+    ) {
+      await setNewPassword(
+        token,
+        password,
+      )
+      return true
+    },
     async signUp(
       root: never,
       newUser: iNewUser & { successRedirect?: string },
@@ -55,9 +85,12 @@ export const Mutation = {
       await signUp(context.req, context.res, successRedirect || '/', newUser)
       return true
     },
-    async refresh() {
-      // await refresh(context.req, context.res)
-      // refresh gets already called in the context middleware (verifyTokenAndGetUser)
+    async refresh(
+      root: never,
+      newUser: never,
+      context: ServerContext) {
+        // refresh gets already called in the context middleware (verifyTokenAndGetUser)
+      checkRefreshTokenExisting(context.req)
       return true
     },
     async signOut(root: never, args: never, context: ServerContext) {

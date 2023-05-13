@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { generateUrlToken } from '../../codegen'
-  import MoreRightPage from '../../components/MoreRightPage.svelte'
+  import MoreRightPage from '../../components/layouts/MoreRightPageLayout.svelte'
   import { PATHS, PROCESS_ENV } from '../../lib/const'
 
   let currentDate = new Date()

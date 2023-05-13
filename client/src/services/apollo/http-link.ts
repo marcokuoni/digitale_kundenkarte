@@ -1,5 +1,5 @@
 import { HttpLink } from '@apollo/client'
-import { AUTH_TOKEN_SEPERATOR, PROCESS_ENV } from '../const'
+import { AUTH_TOKEN_SEPERATOR, PROCESS_ENV } from '../../lib/const'
 
 const customFetch = (uri, options) => {
   return fetch(uri, options).then((response) => {

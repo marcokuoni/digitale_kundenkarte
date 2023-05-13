@@ -1,4 +1,4 @@
-import client from "./lib/apollo/client";
+import client from "./services/apollo/client";
 import type {
         ApolloQueryResult, ObservableQuery, WatchQueryOptions, QueryOptions, MutationOptions
       } from "@apollo/client";
@@ -43,7 +43,9 @@ export type Mutation = {
   deleteIpBlock: Scalars['Boolean'];
   generateUrlToken: UrlToken;
   honourCardFrom: Scalars['Boolean'];
+  passwordReset: Scalars['Boolean'];
   refresh: Scalars['Boolean'];
+  resetPassword: Scalars['Boolean'];
   revokeRefreshToken: Scalars['Boolean'];
   signIn: Scalars['Boolean'];
   signOut: Scalars['Boolean'];
@@ -77,6 +79,17 @@ export type MutationGenerateUrlTokenArgs = {
 
 export type MutationHonourCardFromArgs = {
   transfercode: Scalars['String'];
+};
+
+
+export type MutationPasswordResetArgs = {
+  email: Scalars['String'];
+};
+
+
+export type MutationResetPasswordArgs = {
+  password: Scalars['String'];
+  token: Scalars['String'];
 };
 
 
@@ -156,12 +169,13 @@ export type User = {
   email?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   newsletter?: Maybe<Scalars['Boolean']>;
+  passwordChangedAt?: Maybe<Scalars['Date']>;
   transfercode: Scalars['String'];
   updatedAt: Scalars['Date'];
   userRoles: Array<Maybe<Scalars['String']>>;
 };
 
-export type UserFragmentFragment = { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, userRoles: Array<string | null>, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> };
+export type UserFragmentFragment = { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, userRoles: Array<string | null>, passwordChangedAt?: any | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> };
 
 export type RefreshTokenFragmentFragment = { __typename?: 'RefreshToken', _id: string, expires: any, created: any, createdByIp: string, createdByUserAgent: string, createdAt: any, updatedAt: any, user: { __typename?: 'User', _id: string } };
 
@@ -172,12 +186,12 @@ export type UrlTokenFragmentFragment = { __typename?: 'UrlToken', token: string,
 export type GetUsersWithPasswordQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUsersWithPasswordQuery = { __typename?: 'Query', getUsersWithPassword: Array<{ __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, userRoles: Array<string | null>, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> } | null> };
+export type GetUsersWithPasswordQuery = { __typename?: 'Query', getUsersWithPassword: Array<{ __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, userRoles: Array<string | null>, passwordChangedAt?: any | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> } | null> };
 
 export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, userRoles: Array<string | null>, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> } };
+export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, userRoles: Array<string | null>, passwordChangedAt?: any | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> } };
 
 export type GetActiveRefreshTokensQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -198,7 +212,7 @@ export type UpdateUserMutationVariables = Exact<{
 }>;
 
 
-export type UpdateUserMutation = { __typename?: 'Mutation', updateUser: { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, userRoles: Array<string | null>, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> } };
+export type UpdateUserMutation = { __typename?: 'Mutation', updateUser: { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, userRoles: Array<string | null>, passwordChangedAt?: any | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> } };
 
 export type SignUpMutationVariables = Exact<{
   name?: InputMaybe<Scalars['String']>;
@@ -265,7 +279,7 @@ export type AddStampMutationVariables = Exact<{
 }>;
 
 
-export type AddStampMutation = { __typename?: 'Mutation', addStamp: { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, userRoles: Array<string | null>, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> } };
+export type AddStampMutation = { __typename?: 'Mutation', addStamp: { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, userRoles: Array<string | null>, passwordChangedAt?: any | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> } };
 
 export type HonourCardFromMutationVariables = Exact<{
   transfercode: Scalars['String'];
@@ -280,7 +294,22 @@ export type UpdateUserRolesMutationVariables = Exact<{
 }>;
 
 
-export type UpdateUserRolesMutation = { __typename?: 'Mutation', updateUserRoles: { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, userRoles: Array<string | null>, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> } };
+export type UpdateUserRolesMutation = { __typename?: 'Mutation', updateUserRoles: { __typename?: 'User', _id: string, transfercode: string, name?: string | null, email?: string | null, newsletter?: boolean | null, userRoles: Array<string | null>, passwordChangedAt?: any | null, createdAt: any, updatedAt: any, cards: Array<{ __typename?: 'Card', creationDate: any, honouredAt?: any | null, stamps: Array<{ __typename?: 'Stamp', creationDate: any, validUntilDate?: any | null } | null> } | null> } };
+
+export type PasswordResetMutationVariables = Exact<{
+  email: Scalars['String'];
+}>;
+
+
+export type PasswordResetMutation = { __typename?: 'Mutation', passwordReset: boolean };
+
+export type ResetPasswordMutationVariables = Exact<{
+  token: Scalars['String'];
+  password: Scalars['String'];
+}>;
+
+
+export type ResetPasswordMutation = { __typename?: 'Mutation', resetPassword: boolean };
 
 export const UserFragmentFragmentDoc = gql`
     fragment UserFragment on User {
@@ -298,6 +327,7 @@ export const UserFragmentFragmentDoc = gql`
     }
   }
   userRoles
+  passwordChangedAt
   createdAt
   updatedAt
 }
@@ -444,6 +474,16 @@ export const UpdateUserRolesDoc = gql`
   }
 }
     ${UserFragmentFragmentDoc}`;
+export const PasswordResetDoc = gql`
+    mutation passwordReset($email: String!) {
+  passwordReset(email: $email)
+}
+    `;
+export const ResetPasswordDoc = gql`
+    mutation resetPassword($token: String!, $password: String!) {
+  resetPassword(token: $token, password: $password)
+}
+    `;
 export const getUsersWithPassword = (
             options: Omit<
               WatchQueryOptions<GetUsersWithPasswordQueryVariables>, 
@@ -760,6 +800,30 @@ export const updateUserRoles = (
           ) => {
             const m = client.mutate<UpdateUserRolesMutation, UpdateUserRolesMutationVariables>({
               mutation: UpdateUserRolesDoc,
+              ...options,
+            });
+            return m;
+          }
+export const passwordReset = (
+            options: Omit<
+              MutationOptions<any, PasswordResetMutationVariables>, 
+              "mutation"
+            >
+          ) => {
+            const m = client.mutate<PasswordResetMutation, PasswordResetMutationVariables>({
+              mutation: PasswordResetDoc,
+              ...options,
+            });
+            return m;
+          }
+export const resetPassword = (
+            options: Omit<
+              MutationOptions<any, ResetPasswordMutationVariables>, 
+              "mutation"
+            >
+          ) => {
+            const m = client.mutate<ResetPasswordMutation, ResetPasswordMutationVariables>({
+              mutation: ResetPasswordDoc,
               ...options,
             });
             return m;

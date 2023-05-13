@@ -6,8 +6,8 @@
     AsyncgetCurrentUser,
   } from '../codegen'
   import jwt_decode from 'jwt-decode'
-  import { navigateToWithoutHistory } from '../lib/navigate'
-  import { updatePersistCache } from '../lib/apollo/persistor'
+  import { navigateToWithoutHistory } from '../services/navigate'
+  import { updatePersistCache } from '../services/apollo/persistor'
 
   export let urlToken: string = ''
 
@@ -51,7 +51,7 @@
 
       if (data && data.addStamp) {
         await updatePersistCache()
-        navigateToWithoutHistory(PATHS.CARD)
+        navigateToWithoutHistory(`/${PATHS.CARD}`)
         console.log('stamp added')
       } else {
         console.error('Error')

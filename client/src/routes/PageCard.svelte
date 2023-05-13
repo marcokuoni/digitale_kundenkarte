@@ -92,7 +92,7 @@
 
     <section class="footer-section">
       <div class="footer">
-        <NavLink to={PATHS.SETTINGS}>Einstellungen</NavLink>
+        <NavLink to={`/${PATHS.SETTINGS}`}>Einstellungen</NavLink>
         <a href="https://thecrownbar.ch">WEBSITE</a>
         <a href="https://instagram.com/thecrownbarrappi">INSTAGRAM</a>
         <Logout />

@@ -3,7 +3,7 @@ import { onError } from '@apollo/client/link/error'
 import { navigate } from 'svelte-routing'
 import gql from 'graphql-tag'
 
-import { PATHS, PROCESS_ENV } from '../const'
+import { PATHS, PROCESS_ENV } from '../../lib/const'
 import cache from './cache'
 import httpLink from './http-link'
 import authLink from './auth-link'
@@ -47,13 +47,6 @@ const errorLink = onError(({ graphQLErrors, operation, forward }) => {
   if (graphQLErrors) {
     for (const err of graphQLErrors) {
       switch (err.extensions.code) {
-        case 'BAD_REQUEST':
-          console.error('probably refresh token failed/revoked')
-          localStorage.removeItem(PROCESS_ENV.JWT_COOKIE_NAME)
-          purge()
-          refreshTokenApiClient.resetStore()
-          navigate(`/${PATHS.LOGIN_USER}`)
-          break
         case 'UNAUTHENTICATED':
           if (!isRefreshing) {
             setIsRefreshing(true)
@@ -67,7 +60,11 @@ const errorLink = onError(({ graphQLErrors, operation, forward }) => {
                 await purge()
                 refreshTokenApiClient.resetStore()
 
-                navigate(`/${PATHS.LOGIN_USER}`)
+                if (window.location.pathname.indexOf(PATHS.LOGIN_USER) < 0 &&
+                window.location.pathname.indexOf(PATHS.RESET_PASSWORD) < 0 && 
+                window.location.pathname.indexOf(PATHS.FORGOT_PASSWORD) < 0) {
+                  navigate(`/${PATHS.LOGIN_USER}`)
+                }
 
                 return forward(operation)
               })

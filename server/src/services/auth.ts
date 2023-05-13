@@ -16,16 +16,20 @@ import {
   AUTHORIZATION,
   AUTH_TOKEN_SEPERATOR,
   BEARER,
+  PATHS,
   UNKNOWN,
   USER_AGENT,
   USER_ROLES,
 } from '../lib/const'
 import { randomTokenString } from '../lib/helpers'
+import { sendMail } from './mail'
 
 const jwtKey = process.env.JWT_KEY as Jwt.Secret
 const jwtRefreshKey = process.env.JWT_REFRESH_KEY as Jwt.Secret
+const emailResetKey = process.env.EMAIL_RESET_SECRET as Jwt.Secret
 const jwtExpiry = parseInt(process.env.JWT_EXPIRES_IN || '0')
 const jwtRefreshExpiry = parseInt(process.env.JWT_REFRESH_EXPIRES_IN || '0')
+const jwtEmailResetExpiry = parseInt(process.env.EMAIL_RESET_EXPIRES_IN || '0')
 const jwtRefreshCookieName =
   process.env.JWT_REFRESH_COOKIE_NAME || 'refresh_token'
 const cookieOptions: CookieOptions = {
@@ -36,6 +40,10 @@ const cookieOptions: CookieOptions = {
 const saltRounds = parseInt(process.env.SALT_ROUNDS || '10')
 
 export interface JwtUserPayloadInterface {
+  token: string
+}
+
+interface ResetPasswordPayloadInerface {
   token: string
 }
 
@@ -145,6 +153,7 @@ export const signUp = async (
     transfercode: _formatTransfercode(transfercode),
     ...newUser,
     password: hash,
+    passwordChangedAt: new Date(),
     userRoles,
   })
 
@@ -196,7 +205,7 @@ export const signIn = async (
   }
 
   const token = _createTokensAndResponse(res, userPayload)
-  
+
   if (user) {
     //We do a redirect after login so the client does not cache the login page datas
     //We do this with a exception so the apollo server middleware does stop the request and the redirect can be done
@@ -206,7 +215,10 @@ export const signIn = async (
         http: {
           status: 302,
           headers: new Map([
-            ['Location', `${process.env.CLIENT_URL}${successRedirect}${AUTH_TOKEN_SEPERATOR}${token}`],
+            [
+              'Location',
+              `${process.env.CLIENT_URL}${successRedirect}${AUTH_TOKEN_SEPERATOR}${token}`,
+            ],
           ]),
         },
       },
@@ -214,7 +226,94 @@ export const signIn = async (
   }
 }
 
-export const refresh = async (req: Request, res: Response) => {
+export const resetPassword = async (email: string) => {
+  const user = await User.findOne({ email })
+  let hasOldValidToken = false
+
+  if (user) {
+    if (user.passwordResetToken) {
+      try {
+        jwt.verify(
+          user.passwordResetToken,
+          emailResetKey
+        ) as ResetPasswordPayloadInerface
+        hasOldValidToken = true
+      } catch (e) {
+        console.error(e)
+      }
+    }
+
+    const payload: ResetPasswordPayloadInerface = {
+      token: user._id,
+    }
+
+    const resetToken = jwt.sign(payload, emailResetKey, {
+      algorithm: 'HS256',
+      expiresIn: jwtEmailResetExpiry,
+      issuer: process.env.SERVER_URL || 'https://karte.localhost',
+      audience: process.env.CLIENT_URL || 'https://karte.localhost',
+      jwtid: randomTokenString(),
+    })
+
+    user.passwordResetToken = resetToken
+    await user.save()
+
+    sendMail(
+      user.email,
+      'Passwort zurücksetzen',
+      `
+  Hallo ${user.name},
+
+  ${
+    hasOldValidToken &&
+    'Du hattest bereits eine Anfrage zum Rücksetzen deines Passworts gestellt. Falls nicht wechsle umbedingt auch das Passwort von deinem E-Mailkonto um sicher zu gehen, dass niemand anderes dein Passwort zurücksetzen kann.'
+  }
+
+  Um dein Passwort zurückzusetzen, klicke bitte auf folgenden Link:
+  ${process.env.CLIENT_URL}/${PATHS.RESET_PASSWORD}/${resetToken}
+
+  Falls du dein Passwort nicht zurücksetzen möchtest, ignoriere diese E-Mail.
+
+  Viele Grüße,
+  Dein Karte Team`
+    )
+  }
+}
+
+export const setNewPassword = async (token: string, password: string) => {
+  const payload = jwt.verify(
+    token,
+    emailResetKey
+  ) as ResetPasswordPayloadInerface
+
+  if (!payload.token) {
+    throw new GraphQLError('Bad Token', {
+      extensions: {
+        code: 'BAD_REQUEST',
+        http: { status: 400 },
+      },
+    })
+  }
+
+  const user = await User.findById(payload.token)
+
+  if (!user || !user.passwordResetToken || user.passwordResetToken !== token) {
+    throw new GraphQLError('Bad Token', {
+      extensions: {
+        code: 'BAD_REQUEST',
+        http: { status: 400 },
+      },
+    })
+  }
+
+  user.password = await bcrypt.hash(password, saltRounds)
+  user.passwordResetToken = undefined
+  user.passwordChangedAt = new Date()
+
+  await user.save()
+}
+
+export const checkRefreshTokenExisting = (req: Request) => {
   const refreshToken = req.cookies[jwtRefreshCookieName]
   if (!refreshToken) {
     throw new GraphQLError('User is not authenticated', {
@@ -224,6 +323,12 @@ export const refresh = async (req: Request, res: Response) => {
       },
     })
   }
+  return refreshToken
+}
+
+
+export const refresh = async (req: Request, res: Response) => {
+  const refreshToken = checkRefreshTokenExisting(req)
 
   try {
     const userPayload = jwt.verify(
@@ -285,8 +390,8 @@ const _createTokensAndResponse = (
       maxAge: jwtRefreshExpiry * 1000,
       ...cookieOptions,
     })
-    
-    return token
+
+  return token
 }
 
 const _isTransfercodeExisting = async (transfercode: number) => {

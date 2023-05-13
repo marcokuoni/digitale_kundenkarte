@@ -1,6 +1,6 @@
 import { ApolloLink } from '@apollo/client'
 
-import { BEARER, AUTHORIZATION, PROCESS_ENV } from '../const'
+import { BEARER, AUTHORIZATION, PROCESS_ENV } from '../../lib/const'
 
 type Headers = {
   authorization?: string

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import MoreRightPage from '../../components/MoreRightPage.svelte'
+  import MoreRightPage from '../../components/layouts/MoreRightPageLayout.svelte'
   import { getUsersWithPassword, updateUserRoles } from '../../codegen'
   import { Wave } from 'svelte-loading-spinners'
   import { FETCH_POLICY, USER_ROLES } from '../../lib/const'

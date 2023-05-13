@@ -40,7 +40,12 @@
   <label for="name">Name</label>
   <input type="text" id="name" bind:value={name} />
   <label for="email">E-Mail</label>
-  <input type="email" required={withPassword !== ''} id="email" bind:value={email} />
+  <input
+    type="email"
+    required={withPassword !== ''}
+    id="email"
+    bind:value={email}
+  />
   <label for="newsletter"
     ><input
       type="checkbox"
@@ -57,16 +62,18 @@
 </form>
 
 {#if withPassword !== ''}
-  <NavLink to={`${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}>Anmelden</NavLink>
+  <NavLink to={`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}>Anmelden</NavLink>
   {#if $currentUser}
     <Logout />
     <NavLink to={`/${PATHS.HOME}`}>Startseite</NavLink>
+  {:else}
+    <NavLink to={`/${PATHS.FORGOT_PASSWORD}`}>Passwort vergessen</NavLink>
   {/if}
 {:else}
   {#if $currentUser}
     <Logout />
   {:else}
-    <NavLink to={PATHS.LOGIN_USER}>Ich besitze bereits eine Karte</NavLink>
+    <NavLink to={`/${PATHS.LOGIN_USER}`}>Ich besitze bereits eine Karte</NavLink>
   {/if}
-  <NavLink to={PATHS.CARD}>Zu meiner Karte</NavLink>
+  <NavLink to={`/${PATHS.CARD}`}>Zu meiner Karte</NavLink>
 {/if}

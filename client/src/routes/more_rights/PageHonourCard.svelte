@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { honourCardFrom } from '../../codegen'
-  import MoreRightPage from '../../components/MoreRightPage.svelte'
+  import MoreRightPage from '../../components/layouts/MoreRightPageLayout.svelte'
 
   export let transfercode: string = ''
   let successfully: boolean | null = null

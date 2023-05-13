@@ -1,6 +1,6 @@
 import { CachePersistor, LocalStorageWrapper } from 'apollo3-cache-persist'
 import cache from './cache'
-import { PROCESS_ENV } from '../const'
+import { PROCESS_ENV } from '../../lib/const'
 
 //NOTE deactivate local storage cache
 const persistor = new CachePersistor({

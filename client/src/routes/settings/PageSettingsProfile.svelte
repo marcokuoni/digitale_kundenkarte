@@ -1,8 +1,9 @@
 <script lang="ts">
   import { updateUser, type UpdateUserMutationVariables } from '../../codegen'
   import currentUser from '../../stores/currentUser'
-  import SettingsPage from '../../components/SettingsPage.svelte'
+  import SettingsPage from '../../components/layouts/SettingsPageLayout.svelte'
   import { Wave } from 'svelte-loading-spinners'
+  import PasswordAlert from '../../components/PasswordAlert.svelte'
 
   let loading = false
 
@@ -94,7 +95,12 @@
         /> Will Newsletter</label
       >
       {#if $currentUser?.userRoles && $currentUser.userRoles.length > 0}
-        <label for="password">Passwort</label>
+        <PasswordAlert />
+        <label for="password"
+          >Passwort (letzte Änderung am: {new Date(
+            $currentUser.passwordChangedAt
+          ).toLocaleString('de-CH')})</label
+        >
         <input type="password" id="password" name="password" value={''} />
       {/if}
       <button type="submit">Benutzer aktuallisieren</button>

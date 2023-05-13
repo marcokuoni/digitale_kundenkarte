@@ -175,8 +175,6 @@ https://stackoverflow.com/questions/6470378/hashing-a-session-fingerprint-really
 
 
 # TODO
-* Add Stamp token valid until durch expired at ersetzen
-* Passwort vergessen
 * Hinweis per Mails über eventuelle falsche Refresh Tokens (doppelt (schon revoked), Neuer Standort, mehr als 3 [Mail und ältester revoken])
 * Fehlermeldung bei falschem Passwort/Transfercode
 * Redirect to login when loggedout and delete all client datas

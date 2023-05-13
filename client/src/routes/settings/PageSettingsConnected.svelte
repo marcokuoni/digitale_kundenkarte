@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getActiveRefreshTokens, revokeRefreshToken } from '../../codegen'
   import { Wave } from 'svelte-loading-spinners'
-  import SettingsPage from '../../components/SettingsPage.svelte'
+  import SettingsPage from '../../components/layouts/SettingsPageLayout.svelte'
   import { FETCH_POLICY } from '../../lib/const'
 
   let loading = false

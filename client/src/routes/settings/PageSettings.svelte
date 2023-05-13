@@ -24,12 +24,12 @@
     {#if hasMoreRights}
       <NavLink to={`/${PATHS.HOME}`}>Startseite</NavLink>
     {:else}
-      <NavLink to={PATHS.CARD}>Zu meiner Karte</NavLink>
+      <NavLink to={`/${PATHS.CARD}`}>Zu meiner Karte</NavLink>
     {/if}
   </div>
   <div>
-    <NavLink to={`${PATHS.SETTINGS}/${PATHS.PROFILE}`}>Profil</NavLink>
-    <NavLink to={`${PATHS.SETTINGS}/${PATHS.CONNECTED}`}
+    <NavLink to={`/${PATHS.SETTINGS}/${PATHS.PROFILE}`}>Profil</NavLink>
+    <NavLink to={`/${PATHS.SETTINGS}/${PATHS.CONNECTED}`}
       >Verbundene Geräte</NavLink
     >
   </div>

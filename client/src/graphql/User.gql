@@ -13,6 +13,7 @@ fragment UserFragment on User {
     }
   }
   userRoles
+  passwordChangedAt
   createdAt
   updatedAt
 }
@@ -154,4 +155,12 @@ mutation updateUserRoles($_id: ID!, $userRoles: [String]!) {
   updateUserRoles(_id: $_id, userRoles: $userRoles) {
     ...UserFragment
   }
+}
+
+mutation passwordReset($email: String!) {
+  passwordReset(email: $email)
+}
+
+mutation resetPassword($token: String!, $password: String!) {
+  resetPassword(token: $token, password: $password)
 }

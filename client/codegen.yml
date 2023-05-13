@@ -11,5 +11,5 @@ generates:
       - typescript-operations
       - graphql-codegen-svelte-apollo
     config:
-      clientPath: './lib/apollo/client'
+      clientPath: './services/apollo/client'
       asyncQuery: true

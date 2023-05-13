@@ -19,6 +19,8 @@ export interface iUser {
   newsletter?: boolean
   transfercode: string
   password?: string
+  passwordResetToken?: string
+  passwordChangedAt?: Date
   cards?: iCard[]
   userRoles: string[]
   createdAt: Date
@@ -36,6 +38,8 @@ export interface iUpdateUser {
   email: string
   newsletter: boolean
   password?: string
+  passwordResetToken?: string
+  passwordChangedAt?: Date
 }
 
 const UserSchema = new Schema<iUser>(
@@ -61,6 +65,14 @@ const UserSchema = new Schema<iUser>(
     },
     password: {
       type: String,
+      required: false,
+    },
+    passwordResetToken: {
+      type: String,
+      required: false,
+    },
+    passwordChangedAt: {
+      type: Date,
       required: false,
     },
     cards: [

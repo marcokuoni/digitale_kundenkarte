@@ -8,15 +8,6 @@ export const addStamp = async (
   urlTokenPayload: iUrlTokenPayload,
   user: iUser
 ) => {
-  if (urlTokenPayload.validUntil > new Date()) {
-    throw new GraphQLError('Token is not valid', {
-      extensions: {
-        code: 'BAD_REQUEST',
-        http: { status: 400 },
-      },
-    })
-  }
-
   let card = null
   const userDb = await User.findOne({ _id: user._id })
 

@@ -2,6 +2,8 @@
   import { signIn } from '../codegen'
   import { PATHS } from '../lib/const'
   import NavLink from '../components/NavLink.svelte'
+  import currentUser from '../stores/currentUser'
+  import Logout from '../components/Logout.svelte'
 
   export let withPassword: string = ''
 
@@ -31,22 +33,30 @@
 </script>
 
 <h1>Anmelden</h1>
-<form on:submit|preventDefault={loginUser}>
-  <label for="transfercode">Transfer Code</label>
-  <input type="text" id="transfercode" required bind:value={transfercode} />
-  {#if withPassword !== ''}
-    <label for="password">Passwort</label>
-    <input type="password" id="password" required bind:value={password} />
-  {/if}
-  <button type="submit">Anmelden</button>
-</form>
+{#if $currentUser}
+  <Logout />
+{:else}
+  <form on:submit|preventDefault={loginUser}>
+    <label for="transfercode">Transfer Code</label>
+    <input type="text" id="transfercode" required bind:value={transfercode} />
+    {#if withPassword !== ''}
+      <label for="password">Passwort</label>
+      <input type="password" id="password" required bind:value={password} />
+    {/if}
+    <button type="submit">Anmelden</button>
+  </form>
 
+  {#if withPassword !== ''}
+    <NavLink to={`/${PATHS.FORGOT_PASSWORD}`}>Passwort vergessen</NavLink>
+  {:else}
+    <NavLink to={`/${PATHS.CREATE_USER}`}>Ich möchte eine Karte erstellen</NavLink>
+  {/if}
+{/if}
 {#if withPassword !== ''}
-  <NavLink to={`${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}
+  <NavLink to={`/${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}
     >Benutzer erstellen</NavLink
   >
   <NavLink to={`/${PATHS.HOME}`}>Startseite</NavLink>
 {:else}
-  <NavLink to={PATHS.CREATE_USER}>Ich möchte eine Karte erstellen</NavLink>
-  <NavLink to={PATHS.CARD}>Zu meiner Karte</NavLink>
+  <NavLink to={`/${PATHS.CARD}`}>Zu meiner Karte</NavLink>
 {/if}

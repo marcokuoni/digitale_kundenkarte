@@ -12,6 +12,8 @@ export enum PATHS {
     HONOUR_CARD = 'honour-card',
     WITH_PASSWORD = 'with-password',
     USER_ROLES = 'user-roles',
+    FORGOT_PASSWORD = 'forgot-password',
+    RESET_PASSWORD = 'reset-password',
 }
 
 export enum USER_ROLES {
