@@ -60,8 +60,10 @@ interface ValidateEmailPayloadInerface {
 
 export const checkAccessRights = (
   user?: iUser,
-  requiredGroups: string[] = []
+  requiredGroups: string[] = [],
+  ownerId = ''
 ) => {
+  let hasAccess = false
   if (!user) {
     throwUnauthenticated('User is not authenticated')
   } else {
@@ -69,11 +71,17 @@ export const checkAccessRights = (
       return true
     }
 
-    return requiredGroups.length > 0
-      ? requiredGroups.every((userRole) => user.userRoles.includes(userRole))
-      : true
+    if(requiredGroups.length > 0) {
+      hasAccess = requiredGroups.every((userRole) => user.userRoles.includes(userRole))
+    } else {
+      hasAccess = true
+    }
+
+    if(ownerId) {
+      hasAccess = hasAccess && user._id === ownerId
+    }
   }
-  return false
+  return hasAccess
 }
 
 export const verifyTokenAndGetUser = async (req: Request, res: Response) => {

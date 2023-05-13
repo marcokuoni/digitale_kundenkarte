@@ -5,9 +5,10 @@
   import Logout from '../components/Logout.svelte'
   import { validateEmail } from '../codegen'
   import { navigate } from 'svelte-routing'
-  import { onMount } from 'svelte'
+  import { onDestroy, onMount } from 'svelte'
 
   export let token = ''
+  let userLoggedIn = false
 
   onMount(async () => {
     if (token) {
@@ -18,7 +19,11 @@
           },
         })
         if (data && data.validateEmail) {
-          navigate(`/${PATHS.CARD}`)
+          if (!userLoggedIn) {
+            navigate(`/${PATHS.LOGIN_USER}`)
+          } else {
+            navigate(`/${PATHS.CARD}`)
+          }
         } else {
           alert('Error')
         }
@@ -27,17 +32,24 @@
       }
     }
   })
+
+  const unsubscribe = currentUser.subscribe((currentUser) => {
+    if (currentUser) {
+      userLoggedIn = true
+    }
+  })
+
+  onDestroy(unsubscribe)
 </script>
 
 <h1>E-Mailadresse validieren</h1>
 
 {#if $currentUser}
   <Logout />
+{:else}
+  <NavLink to={`/${PATHS.LOGIN_USER}`}
+    >Ich besitze bereits eine Karte (Anmelden)</NavLink
+  >
 {/if}
-
-<NavLink to={`/${PATHS.FORGOT_PASSWORD}`}>Passwort vergessen</NavLink>
-<NavLink to={`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}>Anmelden</NavLink>
-<NavLink to={`/${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}
-  >Benutzer erstellen</NavLink
->
-<NavLink to={`/${PATHS.HOME}`}>Startseite</NavLink>
+<NavLink to={`/${PATHS.CREATE_USER}`}>Ich möchte eine Karte erstellen</NavLink>
+<NavLink to={`/${PATHS.CARD}`}>Zu meiner Karte</NavLink>

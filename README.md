@@ -175,7 +175,6 @@ https://stackoverflow.com/questions/6470378/hashing-a-session-fingerprint-really
 
 
 # TODO
-* Fehlermeldung wenn IP geblockt ist
 * Mindestens noch offene nicht eingelöste counter. Zeige alle Karten inklusive ob eingelöst oder nicht
 * naming convention _ or not, check all functions
 * 404 page, forbidden page (i think not possible with the current router)

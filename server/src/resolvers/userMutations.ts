@@ -16,14 +16,15 @@ import {
   validateEmail,
 } from '../services/auth'
 import { addStamp, honourCardFrom } from '../services/card'
-import { sendMailWithTemplate } from '../services/mail'
 import { generateUrlToken, getPaylodFromUrlToken } from '../services/urlToken'
 
 export const Mutation = {
   async updateUser(
     root: never,
-    { _id, name, email, newsletter, password }: { _id: string } & iUpdateUser
+    { _id, name, email, newsletter, password }: { _id: string } & iUpdateUser,
+    context: ServerContext
   ) {
+    checkAccessRights(context.user, [], _id)
     const values: iUpdateUser = {
       name,
       email,
