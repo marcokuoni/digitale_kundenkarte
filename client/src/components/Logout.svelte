@@ -3,7 +3,7 @@
   import { purge } from '../services/apollo/persistor'
   import { signOut } from '../codegen'
   import { navigate } from 'svelte-routing'
-  import { PATHS, PROCESS_ENV } from '../lib/const'
+  import { BUTTON_TYPES, PATHS, PROCESS_ENV } from '../lib/const'
   import currentUser from '../stores/currentUser'
   import { onDestroy } from 'svelte'
 
@@ -41,4 +41,4 @@
   onDestroy(unsubscribe)
 </script>
 
-<button type="button" on:click={logout}>Abmelden</button>
+<button type={BUTTON_TYPES.BUTTON} on:click={logout}>Abmelden</button>

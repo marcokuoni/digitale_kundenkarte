@@ -2,7 +2,7 @@
   import { getActiveRefreshTokens, revokeRefreshToken } from '../../codegen'
   import { Wave } from 'svelte-loading-spinners'
   import SettingsPage from '../../components/layouts/SettingsPageLayout.svelte'
-  import { FETCH_POLICY } from '../../lib/const'
+  import { BUTTON_TYPES, DE_CH, FETCH_POLICY } from '../../lib/const'
 
   let loading = false
   let error = ''
@@ -57,13 +57,13 @@
       {#each $query.data?.getActiveRefreshTokens || [] as refreshToken}
         <tr>
           <td>{refreshToken._id}</td>
-          <td>{new Date(refreshToken.expires).toLocaleString('de-CH')}</td>
-          <td>{new Date(refreshToken.created).toLocaleString('de-CH')}</td>
+          <td>{new Date(refreshToken.expires).toLocaleString(DE_CH)}</td>
+          <td>{new Date(refreshToken.created).toLocaleString(DE_CH)}</td>
           <td>{refreshToken.createdByIp}</td>
           <td>{refreshToken.createdByUserAgent}</td>
           <td
             ><button
-              type="button"
+              type={BUTTON_TYPES.BUTTON}
               on:click={revokeClickHandler}
               data-_id={refreshToken._id}>Abmelden</button
             ></td

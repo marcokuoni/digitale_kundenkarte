@@ -28,7 +28,7 @@
       currentUser &&
       (!currentUser.userRoles || currentUser.userRoles.length === 0)
     ) {
-      navigate('/card')
+      navigate(`/${PATHS.CARD}`)
     } else if (
       currentUser &&
       currentUser.userRoles &&

@@ -6,11 +6,16 @@
   import { validateEmail } from '../codegen'
   import { navigate } from 'svelte-routing'
   import { onDestroy, onMount } from 'svelte'
+  import { Wave } from 'svelte-loading-spinners'
+  import EmailAlert from '../components/EmailAlert.svelte'
 
   export let token = ''
+
   let userLoggedIn = false
+  let loading = false
 
   onMount(async () => {
+    loading = true
     if (token) {
       try {
         const { data } = await validateEmail({
@@ -31,6 +36,7 @@
         console.error(e)
       }
     }
+    loading = false
   })
 
   const unsubscribe = currentUser.subscribe((currentUser) => {
@@ -43,6 +49,13 @@
 </script>
 
 <h1>E-Mailadresse validieren</h1>
+{#if loading}
+  <Wave size="100" color="#FF3E00" unit="px" />
+{/if}
+{#if token === ''}
+  <p>Token fehlt. Versuche es noch einmal</p>
+  <EmailAlert />
+{/if}
 
 {#if $currentUser}
   <Logout />

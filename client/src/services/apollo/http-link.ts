@@ -1,7 +1,7 @@
 import { HttpLink } from '@apollo/client'
 import { AUTH_TOKEN_SEPERATOR, PROCESS_ENV } from '../../lib/const'
 
-const customFetch = (uri, options) => {
+const _customFetch = (uri, options) => {
   return fetch(uri, options).then((response) => {
     if (response.redirected) {
       const urlSplitted = response.url.split(AUTH_TOKEN_SEPERATOR)
@@ -18,5 +18,5 @@ const customFetch = (uri, options) => {
 export default new HttpLink({
   uri: `${PROCESS_ENV.SERVER_URL}/graphql`,
   credentials: 'include',
-  fetch: customFetch,
+  fetch: _customFetch,
 })

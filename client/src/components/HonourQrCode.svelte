@@ -1,18 +1,16 @@
 <script lang="ts">
-  import { PATHS } from '../lib/const'
+  import { BUTTON_TYPES, NOOPENER_NPREFERRER, PATHS, QR_CODE_API_URL, TARGETS } from '../lib/const'
   import Modal, { getModal } from './Modal.svelte'
 
   const HONOUR = 'honour'
   export let transfercode = ''
   let createStampUrl = `${window.location.origin}/${PATHS.HONOUR_CARD}/${transfercode}`
-  let createQRCodeUrl =
-    'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' +
-    createStampUrl
+  let createQRCodeUrl = `${QR_CODE_API_URL}${createStampUrl}`
 </script>
 
-<button type="button" on:click={() => getModal(HONOUR).open()}> Karte einlösen </button>
+<button type={BUTTON_TYPES.BUTTON} on:click={() => getModal(HONOUR).open()}> Karte einlösen </button>
 <Modal id={HONOUR}>
-    <a href={createStampUrl} target="_blank" rel="noopener noreferrer"
+    <a href={createStampUrl} target={TARGETS.BLANK} rel={NOOPENER_NPREFERRER}
       >{createStampUrl}</a
     >
   <img src={createQRCodeUrl} alt="QR Code" />

@@ -7,7 +7,7 @@ import initPersistor from './services/apollo/persistor'
 
       const wb = new Workbox('/sw.js')
 
-      const showSkipWaitingPrompt = async (event) => {
+      const showSkipWaitingPrompt = async () => {
         wb.addEventListener('controlling', () => {
           window.location.reload()
         })
@@ -23,8 +23,8 @@ import initPersistor from './services/apollo/persistor'
         }
       }
 
-      wb.addEventListener('waiting', (event) => {
-        showSkipWaitingPrompt(event)
+      wb.addEventListener('waiting', () => {
+        showSkipWaitingPrompt()
       })
 
       //NOTE deactivate local storage cache

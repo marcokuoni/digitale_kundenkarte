@@ -2,7 +2,7 @@
   import MoreRightPage from '../../components/layouts/MoreRightPageLayout.svelte'
   import { getUsersWithPassword, updateUserRoles } from '../../codegen'
   import { Wave } from 'svelte-loading-spinners'
-  import { FETCH_POLICY, USER_ROLES } from '../../lib/const'
+  import { BUTTON_TYPES, FETCH_POLICY, INPUT_TYPES, NAMES, USER_ROLES } from '../../lib/const'
 
   let loading = false
   let error = ''
@@ -16,8 +16,8 @@
     if (forms.checkValidity()) {
       const formData = new FormData(forms)
 
-      const _id = formData.get('_id')?.toString()
-      const userRoles = formData.getAll('userRoles') as USER_ROLES[]
+      const _id = formData.get(NAMES.ID)?.toString()
+      const userRoles = formData.getAll(NAMES.USER_ROLES) as USER_ROLES[]
       
       try {
         await updateUserRoles({
@@ -62,12 +62,12 @@
           <td>{user.name}</td>
           <td>
             <form on:submit|preventDefault={submitUpdateUser}>
-              <input type="hidden" id="_id" name="_id" value={user._id} />
+              <input type={INPUT_TYPES.HIDDEN} id={NAMES.ID} name={NAMES.ID} value={user._id} />
               <label>
                 <input
-                  type="checkbox"
+                  type={INPUT_TYPES.CHECKBOX}
                   id={USER_ROLES.ADMIN}
-                  name="userRoles"
+                  name={NAMES.USER_ROLES}
                   value={USER_ROLES.ADMIN}
                   checked={user.userRoles.includes(USER_ROLES.ADMIN)}
                 />
@@ -75,15 +75,15 @@
               </label>
               <label>
                 <input
-                  type="checkbox"
+                type={INPUT_TYPES.CHECKBOX}
                   id={USER_ROLES.EMPLOYEE}
-                  name="userRoles"
+                  name={NAMES.USER_ROLES}
                   value={USER_ROLES.EMPLOYEE}
                   checked={user.userRoles.includes(USER_ROLES.EMPLOYEE)}
                 />
                 Mitarbeiter
               </label>
-              <button type="submit">Benutzer aktuallisieren</button>
+              <button type={BUTTON_TYPES.SUBMIT}>Benutzer aktuallisieren</button>
             </form>
           </td>
         </tr>

@@ -18,11 +18,11 @@ const RefreshDoc = gql`
 let isRefreshing = false
 let pendingRequests: (() => void)[] = []
 
-const setIsRefreshing = (value: boolean) => {
+const _setIsRefreshing = (value: boolean) => {
   isRefreshing = value
 }
 
-const addPendingRequest = (pendingRequest: () => void) => {
+const _addPendingRequest = (pendingRequest: () => void) => {
   pendingRequests.push(pendingRequest)
 }
 
@@ -32,12 +32,12 @@ const refreshTokenApiClient = new ApolloClient({
   cache,
 })
 
-const resolvePendingRequests = () => {
+const _resolvePendingRequests = () => {
   pendingRequests.map((callback) => callback())
   pendingRequests = []
 }
 
-const getNewToken = async () => {
+const _getNewToken = async () => {
   await refreshTokenApiClient.mutate({
     mutation: RefreshDoc,
   })
@@ -49,12 +49,12 @@ const errorLink = onError(({ graphQLErrors, operation, forward }) => {
       switch (err.extensions.code) {
         case CODES.UNAUTHENTICATED:
           if (!isRefreshing && localStorage.getItem(PROCESS_ENV.JWT_COOKIE_NAME)) {
-            setIsRefreshing(true)
+            _setIsRefreshing(true)
 
             return fromPromise(
-              getNewToken().catch(async () => {
-                resolvePendingRequests()
-                setIsRefreshing(false)
+              _getNewToken().catch(async () => {
+                _resolvePendingRequests()
+                _setIsRefreshing(false)
 
                 localStorage.removeItem(PROCESS_ENV.JWT_COOKIE_NAME)
                 await purge()
@@ -69,15 +69,15 @@ const errorLink = onError(({ graphQLErrors, operation, forward }) => {
                 return forward(operation)
               })
             ).flatMap(() => {
-              resolvePendingRequests()
-              setIsRefreshing(false)
+              _resolvePendingRequests()
+              _setIsRefreshing(false)
 
               return forward(operation)
             })
           } else {
             return fromPromise(
               new Promise((resolve) => {
-                addPendingRequest(() => resolve(true))
+                _addPendingRequest(() => resolve(true))
               })
             ).flatMap(() => {
               return forward(operation)

@@ -2,29 +2,43 @@
   import MoreRightPage from '../../components/layouts/MoreRightPageLayout.svelte'
   import { getIpBlocks, addIpBlock, deleteIpBlock } from '../../codegen'
   import { Wave } from 'svelte-loading-spinners'
-  import { FETCH_POLICY } from '../../lib/const'
+  import {
+    BUTTON_TYPES,
+    DE_CH,
+    FETCH_POLICY,
+    INPUT_TYPES,
+    NAMES,
+    PLACEHOLDER_IP,
+  } from '../../lib/const'
 
-  let ip = ''
-  let blockedUntil = ''
   let loading = false
   let error = ''
   $: query = getIpBlocks({
     fetchPolicy: FETCH_POLICY.NETWORK_ONLY,
   })
 
-  async function addIpBlockSubmit() {
-    const { data } = await addIpBlock({
-      variables: {
-        ip,
-        blockedUntil,
-      },
-    })
-    if (data && data.addIpBlock) {
-      await $query.query.refetch()
-      alert('Success')
-    } else {
-      alert('Error')
+  async function addIpBlockSubmit(event: SubmitEvent) {
+    loading = true
+    const forms = event.target as HTMLFormElement
+    if (forms.checkValidity()) {
+      const formData = new FormData(forms)
+      
+      const ip = formData.get(NAMES.IP)?.toString()
+      const blockedUntil = formData.get(NAMES.BLOCKED_UNTIL)?.toString()
+      const { data } = await addIpBlock({
+        variables: {
+          ip,
+          blockedUntil,
+        },
+      })
+      if (data && data.addIpBlock) {
+        await $query.query.refetch()
+        alert('Success')
+      } else {
+        alert('Error')
+      }
     }
+    loading = false
   }
 
   const deleteClickHandler = async (e: MouseEvent) => {
@@ -48,18 +62,24 @@
 
 <MoreRightPage title="Geblockte IPs">
   <form on:submit|preventDefault={addIpBlockSubmit}>
-    <label for="ip">IP</label>
+    <label for={NAMES.IP}>IP</label>
     <input
-      type="text"
-      id="ip"
-      bind:value={ip}
-      placeholder="::ffff:172.18.0.5"
+      type={INPUT_TYPES.TEXT}
+      id={NAMES.IP}
+      name={NAMES.IP}
+      required
+      placeholder={PLACEHOLDER_IP}
+      value=""
     />
-    <label for="blockedUntil">Blockieren bis</label>
-    <input type="datetime-local" id="blockedUntil" bind:value={blockedUntil} />
-    <button type="submit" disabled={ip === '' || blockedUntil === ''}
-      >Block IP</button
-    >
+    <label for={NAMES.BLOCKED_UNTIL}>Blockieren bis</label>
+    <input
+      type={INPUT_TYPES.DATETIME_LOCAL}
+      id={NAMES.BLOCKED_UNTIL}
+      name={NAMES.BLOCKED_UNTIL}
+      required
+      value=""
+    />
+    <button type={BUTTON_TYPES.SUBMIT}>Block IP</button>
   </form>
   {#if loading}
     <Wave size="100" color="#FF3E00" unit="px" />
@@ -82,11 +102,11 @@
         <tr>
           <td>{ipBlock._id}</td>
           <td>{ipBlock.ip}</td>
-          <td>{new Date(ipBlock.blockedUntil).toLocaleString('de-CH')}</td>
-          <td>{new Date(ipBlock.createdAt).toLocaleString('de-CH')}</td>
+          <td>{new Date(ipBlock.blockedUntil).toLocaleString(DE_CH)}</td>
+          <td>{new Date(ipBlock.createdAt).toLocaleString(DE_CH)}</td>
           <td
             ><button
-              type="button"
+              type={BUTTON_TYPES.BUTTON}
               on:click={deleteClickHandler}
               data-_id={ipBlock._id}>Löschen</button
             ></td

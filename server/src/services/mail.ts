@@ -42,11 +42,11 @@ export const sendMailWithTemplate = async (
   template: string,
   data?: MailTemplateData
 ) => {
-  const { subject, text } = getMailTemplate(template, data)
+  const { subject, text } = _getMailTemplate(template, data)
   await sendMail(to, subject, text)
 }
 
-export const getMailTemplate = (template: string, data?: MailTemplateData) => {
+const _getMailTemplate = (template: string, data?: MailTemplateData) => {
   let mailContent = {
     subject: '',
     text: '',

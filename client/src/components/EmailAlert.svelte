@@ -1,6 +1,7 @@
 <script lang="ts">
   import currentUser from '../stores/currentUser'
   import { sendValidationMail } from '../codegen'
+  import { BUTTON_TYPES } from '../lib/const'
 
   let success = false
 
@@ -26,7 +27,7 @@
     </p>
   {:else}
     <p>Wir empfehlen dir dringend deine E-Mail-Adresse zu validieren</p>
-    <button type="button" on:click={sendValidationMailHandler}
+    <button type={BUTTON_TYPES.BUTTON} on:click={sendValidationMailHandler}
       >Validierungs E-Mail nochmals senden</button
     >
   {/if}

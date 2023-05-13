@@ -49,6 +49,8 @@ export enum PROCESS_ENV {
     SERVER_REQUEST_COUNT_CHECK_INTERVAL = 'process.env.SERVER_REQUEST_COUNT_CHECK_INTERVAL',
     CHECK_FOR_HOW_MANY_CYCLES = 'process.env.CHECK_FOR_HOW_MANY_CYCLES',
     BLOCKING_DURATION_MS = 'process.env.BLOCKING_DURATION_MS',
+    CROWN_BAR_URL = 'process.env.CROWN_BAR_URL',
+    CROWN_BAR_INSTA = 'process.env.CROWN_BAR_INSTA',
 }
 
 export enum CODES {
@@ -57,6 +59,74 @@ export enum CODES {
     FORBIDDEN = 'FORBIDDEN',
 }
 
+export enum BUTTON_TYPES {
+    BUTTON = 'button',
+    SUBMIT = 'submit',
+}
+
+export enum INPUT_TYPES {
+    TEXT = 'text',
+    CHECKBOX = 'checkbox',
+    HIDDEN = 'hidden',
+    EMAIL = 'email',
+    PASSWORD = 'password',
+    DATETIME_LOCAL = "datetime-local"
+}
+
+export enum TARGETS {
+    BLANK = '_blank',
+}
+
+export enum KEYS {
+    ESCAPE = 'Escape'
+}
+
+export enum EVENTS {
+    KEYDOWN = 'keydown',
+    APOLLO_ERROR = 'apolloError',
+    OFFLINE = 'offline',
+    ONLINE = 'online'
+}
+
+export enum OVERFLOW {
+    HIDDEN = 'hidden'
+}
+
+export enum PARAMS {
+    TRANSFERCODE = 'transfercode',
+    URL_TOKEN = 'urlToken',
+    WITH_PASSWORD = 'withPassword',
+    TOKEN = 'token',
+}
+
+export enum NAMES {
+    TRANSFERCODE = 'transfercode',
+    IP = 'ip',
+    BLOCKED_UNTIL = 'blockedUntil',
+    LONG_TIME_QR = 'longTimeQr',
+    VALID_UNTIL = 'validUntil',
+    BLOCK_FOR_MINUTES = 'blockForMinutes',
+    ID = '_id',
+    USER_ROLES = 'userRoles',
+    NAME = 'name',
+    EMAIL = 'email',
+    NEWSLETTER = 'newsletter',
+    PASSWORD = 'password',
+}
+
+export enum TIME_UNIT {
+    SECOND = 'second',
+    MINUTE = 'minute',
+    HOUR = 'hour',
+    DAY = 'day',
+}
+
 export const AUTHORIZATION = 'authorization'
 export const BEARER = 'Bearer'
 export const AUTH_TOKEN_SEPERATOR = `?${AUTHORIZATION}=`
+export const DE_CH = 'de-CH'
+export const QR_CODE_API_URL = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='
+export const RECEIVED_CODE_503 = 'Received status code 503'
+export const NOOPENER_NPREFERRER = 'noopener noreferrer'
+export const TRUE = 'true'
+export const PLACEHOLDER_IP = '::ffff:172.18.0.5'

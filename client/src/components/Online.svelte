@@ -4,11 +4,14 @@
   import WifiOff from 'svelte-icons-pack/bi/BiWifiOff'
   import { onMount } from 'svelte'
   import Modal, { getModal } from './Modal.svelte'
-  import { PROCESS_ENV } from '../lib/const'
+  import { EVENTS, PROCESS_ENV } from '../lib/const'
 
   const clientPingIntervall = parseInt(PROCESS_ENV.CLIENT_PING_INTERVAL || '5000')
   const serverRequestCountCheckIntervall = parseInt(PROCESS_ENV.SERVER_REQUEST_COUNT_CHECK_INTERVAL || '1000')
   const checkForHowManyCycles = parseInt(PROCESS_ENV.CHECK_FOR_HOW_MANY_CYCLES || '600')
+  const REQUESTS = 'requests'
+  const READONLY = 'readonly'
+  const QUEUE_NAME = 'queueName'
   
   let checkCounter = 0
   let clientOffline = window.navigator.onLine
@@ -21,15 +24,15 @@
     pingClientRecursive()
   })
 
-  window.addEventListener('offline', () => {
+  window.addEventListener(EVENTS.OFFLINE, () => {
     clientOffline = true
   })
 
-  window.addEventListener('online', () => {
+  window.addEventListener(EVENTS.ONLINE, () => {
     clientOffline = false
   })
 
-  window.addEventListener('apolloError', () => {
+  window.addEventListener(EVENTS.APOLLO_ERROR, () => {
     serverOffline = true
     checkCounter = 0
     checkRequestCountRecursive()
@@ -58,11 +61,11 @@
   }
 
   async function checkQueuedRequestCount() {
-    if (db && db.objectStoreNames.contains('requests')) {
-      const transaction = db.transaction(['requests'], 'readonly')
+    if (db && db.objectStoreNames.contains(REQUESTS)) {
+      const transaction = db.transaction([REQUESTS], READONLY)
       if (transaction) {
-        const objectStore = transaction.objectStore('requests')
-        const myIndex = objectStore.index('queueName')
+        const objectStore = transaction.objectStore(REQUESTS)
+        const myIndex = objectStore.index(QUEUE_NAME)
         const countRequest = myIndex.count()
         countRequest.onsuccess = () => {
           queuedRequestSize = countRequest.result || 0

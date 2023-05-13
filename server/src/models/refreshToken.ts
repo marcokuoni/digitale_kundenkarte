@@ -19,7 +19,7 @@ export interface iRefreshToken {
   updatedAt: Date
 }
 
-const schema = new Schema<iRefreshToken>({
+const RefreshTokenSchema = new Schema<iRefreshToken>({
     user: { type: Schema.Types.ObjectId, ref: 'user' },
     token: String,
     expires: Date,
@@ -38,4 +38,4 @@ const schema = new Schema<iRefreshToken>({
   },
 });
 
-export default mongoose.model('refreshToken', schema);
+export default mongoose.model('refreshToken', RefreshTokenSchema);

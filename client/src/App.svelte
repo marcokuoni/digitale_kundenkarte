@@ -15,7 +15,7 @@
   import PageIpBlocks from './routes/more_rights/PageIpBlocks.svelte'
   import PageQrCode from './routes/more_rights/PageQrCode.svelte'
   import PageUserRoles from './routes/more_rights/PageUserRoles.svelte'
-  import { PATHS, USER_ROLES } from './lib/const'
+  import { PARAMS, PATHS, USER_ROLES } from './lib/const'
   import SecuredRoute from './components/SecuredRoute.svelte'
   import PageHonourCard from './routes/more_rights/PageHonourCard.svelte'
   import currentUser from './stores/currentUser'
@@ -50,7 +50,7 @@
           <PageCreateUser />
         </Route>
 
-        <Route path={`${PATHS.CREATE_USER}/:withPassword`} let:params>
+        <Route path={`${PATHS.CREATE_USER}/:${PARAMS.WITH_PASSWORD}`} let:params>
           <PageCreateUser withPassword={params.withPassword} />
         </Route>
 
@@ -62,19 +62,19 @@
           <PageForgotPassword />
         </Route>
 
-        <Route path={`${PATHS.RESET_PASSWORD}/:token`} let:params >
+        <Route path={`${PATHS.RESET_PASSWORD}/:${PARAMS.TOKEN}`} let:params >
           <PageResetPassword token={params.token}/>
         </Route>
 
-        <Route path={`${PATHS.VERIFY_EMAIL}/:token`} let:params >
+        <Route path={`${PATHS.VERIFY_EMAIL}/:${PARAMS.TOKEN}`} let:params >
           <PageValidateEmail token={params.token}/>
         </Route>
 
-        <Route path={`${PATHS.LOGIN_USER}/:withPassword`} let:params>
+        <Route path={`${PATHS.LOGIN_USER}/:${PARAMS.WITH_PASSWORD}`} let:params>
           <PageLogin withPassword={params.withPassword} />
         </Route>
 
-        <Route path={`${PATHS.ADD_STAMP}/:urlToken`} let:params>
+        <Route path={`${PATHS.ADD_STAMP}/:${PARAMS.URL_TOKEN}`} let:params>
           <PageAddStamp urlToken={params.urlToken} />
         </Route>
 
@@ -119,7 +119,7 @@
         </SecuredRoute>
 
         <SecuredRoute
-          path={`${PATHS.HONOUR_CARD}/:transfercode`}
+          path={`${PATHS.HONOUR_CARD}/:${PARAMS.TRANSFERCODE}}`}
           let:params
           requiredRoles={[USER_ROLES.EMPLOYEE]}
         >

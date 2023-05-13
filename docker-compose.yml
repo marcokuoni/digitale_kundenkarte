@@ -111,6 +111,8 @@ services:
       - TIME_WINDOW_MS=$TIME_WINDOW_MS
       - MAX_REQUESTS=$MAX_REQUESTS
       - BLOCKING_DURATION_MS=$BLOCKING_DURATION_MS
+      - CROWN_BAR_URL=$CROWN_BAR_URL
+      - CROWN_BAR_INSTA=$CROWN_BAR_INSTA
     restart: always
     volumes:
       - ./server:/usr/src/app

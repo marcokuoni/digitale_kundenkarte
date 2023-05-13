@@ -66,7 +66,6 @@
 
     <section class="info-section">
       <div class="info-wrapper">
-        <!-- TODO: Make uppercase by css-->
         <p class="info-label">Name</p>
         {#if $currentUser && $currentUser.name}
           <p class="info-text">Hallo {$currentUser.name}</p>
@@ -111,8 +110,8 @@
       <div class="footer">
         <EmailAlert />
         <NavLink to={`/${PATHS.SETTINGS}`}>Einstellungen</NavLink>
-        <a href="https://thecrownbar.ch">WEBSITE</a>
-        <a href="https://instagram.com/thecrownbarrappi">INSTAGRAM</a>
+        <a href={PROCESS_ENV.CROWN_BAR_URL}>WEBSITE</a>
+        <a href={PROCESS_ENV.CROWN_BAR_INSTA}>INSTAGRAM</a>
         <Logout />
         {#if hasAFullCard}
           <HonourQrCode transfercode={$currentUser.transfercode} />

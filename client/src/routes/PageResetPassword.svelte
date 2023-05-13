@@ -1,30 +1,39 @@
 <script lang="ts">
   import currentUser from '../stores/currentUser'
-  import { PATHS } from '../lib/const'
+  import { BUTTON_TYPES, INPUT_TYPES, NAMES, PATHS } from '../lib/const'
   import NavLink from '../components/NavLink.svelte'
   import Logout from '../components/Logout.svelte'
   import { resetPassword } from '../codegen'
   import { navigate } from 'svelte-routing'
+  import { Wave } from 'svelte-loading-spinners'
 
   export let token = ''
-  let password = ''
 
-  async function savePassword() {
-    try {
-      const { data } = await resetPassword({
-        variables: {
-          token,
-          password,
-        },
-      })
-      if (data && data.resetPassword) {
-        navigate(`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`)
-      } else {
-        alert('Error')
+  let loading = false
+
+  async function savePassword(event: SubmitEvent) {
+    loading = true
+    const forms = event.target as HTMLFormElement
+    if (forms.checkValidity()) {
+      const formData = new FormData(forms)
+      const password = formData.get(NAMES.PASSWORD)?.toString()
+      try {
+        const { data } = await resetPassword({
+          variables: {
+            token,
+            password,
+          },
+        })
+        if (data && data.resetPassword) {
+          navigate(`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`)
+        } else {
+          alert('Error')
+        }
+      } catch (e) {
+        console.error(e)
       }
-    } catch (e) {
-      console.error(e)
     }
+    loading = false
   }
 </script>
 
@@ -33,11 +42,24 @@
 {#if $currentUser}
   <Logout />
 {:else}
-  <form on:submit|preventDefault={savePassword}>
-    <label for="password">Passwort</label>
-    <input type="password" id="password" required bind:value={password} />
-    <button type="submit">Speichern</button>
-  </form>
+  {#if loading}
+    <Wave size="100" color="#FF3E00" unit="px" />
+  {/if}
+  {#if token === ''}
+    <p>Token fehlt. Versuche es noch einmal</p>
+    <NavLink to={`/${PATHS.FORGOT_PASSWORD}`}>Passwort vergessen</NavLink>
+  {:else}
+    <form on:submit|preventDefault={savePassword}>
+      <label for={NAMES.PASSWORD}>Passwort</label>
+      <input
+        type={INPUT_TYPES.PASSWORD}
+        id={NAMES.PASSWORD}
+        required
+        value=""
+      />
+      <button type={BUTTON_TYPES.SUBMIT}>Speichern</button>
+    </form>
+  {/if}
 {/if}
 
 <NavLink to={`/${PATHS.FORGOT_PASSWORD}`}>Passwort vergessen</NavLink>

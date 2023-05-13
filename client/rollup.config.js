@@ -35,6 +35,8 @@ export default {
       'process.env.SERVER_REQUEST_COUNT_CHECK_INTERVAL': process.env.SERVER_REQUEST_COUNT_CHECK_INTERVAL,      
       'process.env.CHECK_FOR_HOW_MANY_CYCLES': process.env.CHECK_FOR_HOW_MANY_CYCLES,   
       'process.env.BLOCKING_DURATION_MS': process.env.BLOCKING_DURATION_MS,   
+      'process.env.CROWN_BAR_URL': process.env.CROWN_BAR_URL,   
+      'process.env.CROWN_BAR_INSTA': process.env.CROWN_BAR_INSTA,   
     }),
     svelte({
       preprocess: sveltePreprocess({ sourceMap: !production }),

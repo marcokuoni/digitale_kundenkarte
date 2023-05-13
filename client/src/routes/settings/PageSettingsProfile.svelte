@@ -5,6 +5,7 @@
   import { Wave } from 'svelte-loading-spinners'
   import PasswordAlert from '../../components/PasswordAlert.svelte'
   import EmailAlert from '../../components/EmailAlert.svelte'
+  import { BUTTON_TYPES, DE_CH, INPUT_TYPES, NAMES, TRUE } from '../../lib/const'
 
   let loading = false
 
@@ -14,11 +15,11 @@
     if (forms.checkValidity()) {
       const formData = new FormData(forms)
 
-      const _id = formData.get('_id')?.toString()
-      const name = formData.get('name')?.toString()
-      const email = formData.get('email')?.toString()
-      const newsletter = formData.get('newsletter')?.toString() === 'true'
-      const password = formData.get('password')?.toString()
+      const _id = formData.get(NAMES.ID)?.toString()
+      const name = formData.get(NAMES.NAME)?.toString()
+      const email = formData.get(NAMES.EMAIL)?.toString()
+      const newsletter = formData.get(NAMES.NEWSLETTER)?.toString() === TRUE
+      const password = formData.get(NAMES.PASSWORD)?.toString()
 
       const variables: UpdateUserMutationVariables = {
         _id,
@@ -66,49 +67,49 @@
     <h2>Dein Transfercode: {$currentUser && $currentUser.transfercode}</h2>
     <form on:submit|preventDefault={submitUpdateUser}>
       <input
-        type="hidden"
-        id="_id"
-        name="_id"
+        type={INPUT_TYPES.HIDDEN}
+        id={NAMES.ID}
+        name={NAMES.ID}
         value={$currentUser && $currentUser._id}
       />
-      <label for="name">Name</label>
+      <label for={NAMES.NAME}>Name</label>
       <input
-        type="text"
-        id="name"
-        name="name"
+        type={INPUT_TYPES.TEXT}
+        id={NAMES.NAME}
+        name={NAMES.NAME}
         value={$currentUser && $currentUser.name}
       />
 
       <EmailAlert />
-      <label for="email">E-Mail{$currentUser.emailValidatedAt && (` (Validiert am: ${new Date(
+      <label for={NAMES.EMAIL}>E-Mail{$currentUser.emailValidatedAt && (` (Validiert am: ${new Date(
         $currentUser.emailValidatedAt
-      ).toLocaleString('de-CH')})`)}</label>
+      ).toLocaleString(DE_CH)})`)}</label>
       <input
-        type="email"
-        id="email"
-        name="email"
+        type={INPUT_TYPES.EMAIL}
+        id={NAMES.EMAIL}
+        name={NAMES.EMAIL}
         required={$currentUser?.userRoles && $currentUser.userRoles.length > 0}
         value={$currentUser && $currentUser.email}
       />
-      <label for="newsletter"
+      <label for={NAMES.NEWSLETTER}
         ><input
-          type="checkbox"
-          id="newsletter"
-          name="newsletter"
-          value="true"
+          type={INPUT_TYPES.CHECKBOX}
+          id={NAMES.NEWSLETTER}
+          name={NAMES.NEWSLETTER}
+          value={TRUE}
           checked={$currentUser && $currentUser.newsletter}
         /> Will Newsletter</label
       >
       {#if $currentUser?.userRoles && $currentUser.userRoles.length > 0}
         <PasswordAlert />
-        <label for="password"
+        <label for={NAMES.PASSWORD}
           >Passwort (letzte Änderung am: {new Date(
             $currentUser.passwordChangedAt
-          ).toLocaleString('de-CH')})</label
+          ).toLocaleString(DE_CH)})</label
         >
-        <input type="password" id="password" name="password" value={''} />
+        <input type={INPUT_TYPES.PASSWORD} id={NAMES.PASSWORD} name={NAMES.PASSWORD} value={''} />
       {/if}
-      <button type="submit">Profil aktuallisieren</button>
+      <button type={BUTTON_TYPES.SUBMIT}>Profil aktuallisieren</button>
     </form>
   {/if}
 </SettingsPage>
