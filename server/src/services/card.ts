@@ -1,5 +1,5 @@
 import User, { iCard, iUser } from '../models/user'
-import { iUrlTokenPayload } from './urlToken'
+import { iUrlTokenPayload } from './stampToken'
 import { throwBadReuest } from '../lib/exceptions'
 
 const stampsLength = parseInt(process.env.STAMPS_LENGTH || '8')

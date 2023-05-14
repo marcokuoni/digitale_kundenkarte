@@ -28,20 +28,12 @@ export interface iUser {
   createdAt: Date
   updatedAt: Date
 }
-export interface iNewUser {
+
+export interface iUpdateUser {
   name?: string
   email?: string
   newsletter: boolean
   password?: string
-}
-
-export interface iUpdateUser {
-  name: string
-  email: string
-  newsletter: boolean
-  password?: string
-  passwordResetToken?: string
-  passwordChangedAt?: Date
 }
 
 const UserSchema = new Schema<iUser>(

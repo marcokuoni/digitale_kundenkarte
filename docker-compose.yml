@@ -6,11 +6,11 @@ services:
       - client
       - server
     image: traefik:latest
-
     command:
       - --api.insecure=true
       - --experimental.http3=true
       - --providers.docker=true
+      - --providers.docker.allowEmptyServices=true
       - --providers.file.directory=/etc/traefik/dynamic
       - --entrypoints.client.address=:$CLIENT_ENTRY_PORT
       - --entrypoints.client_live_reload.address=:$CLIENT_LIVE_RELOAD_PORT
@@ -29,6 +29,23 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock 
       - ./traefik/certs-traefik.yaml:/etc/traefik/dynamic/certs-traefik.yaml
       - ./traefik/certs/:/etc/certs/
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.server_route.entrypoints=client_secure
+      - traefik.http.routers.server_route.tls=true
+      - traefik.http.routers.server_route.rule=(Host(`$DOMAIN`) && Path(`/graphql`))
+      - traefik.http.routers.server_route.service=server_service
+      - traefik.http.routers.client_live_reload_route.entrypoints=client_live_reload
+      - traefik.http.routers.client_live_reload_route.middlewares=customHeader
+      - traefik.http.routers.client_live_reload_route.tls=true
+      - traefik.http.routers.client_live_reload_route.rule=(Host(`$DOMAIN`) && !Path(`/graphql`))
+      - traefik.http.routers.client_live_reload_route.service=client_live_reload_service
+      - traefik.http.middlewares.customHeader.headers.customresponseheaders.x-content-type-options=
+      - traefik.http.routers.client_route.entrypoints=client_secure
+      - traefik.http.routers.client_route.tls=true
+      - traefik.http.routers.client_route.rule=(Host(`$DOMAIN`) && !Path(`/graphql`))
+      - traefik.http.routers.client_route.service=client_service
 
   client:
     depends_on: 
@@ -53,17 +70,6 @@ services:
     volumes:
       - ./client:/usr/src/app
     labels:
-      - traefik.enable=true
-      - traefik.http.middlewares.customHeader.headers.customresponseheaders.x-content-type-options=
-      - traefik.http.routers.client_live_reload_route.entrypoints=client_live_reload
-      - traefik.http.routers.client_live_reload_route.middlewares=customHeader
-      - traefik.http.routers.client_live_reload_route.tls=true
-      - traefik.http.routers.client_live_reload_route.rule=Host(`$DOMAIN`)
-      - traefik.http.routers.client_live_reload_route.service=client_live_reload_service
-      - traefik.http.routers.client_route.entrypoints=client_secure
-      - traefik.http.routers.client_route.tls=true
-      - traefik.http.routers.client_route.rule=Host(`$DOMAIN`)
-      - traefik.http.routers.client_route.service=client_service
       - traefik.http.services.client_live_reload_service.loadbalancer.server.port=$CLIENT_LIVE_RELOAD_PORT
       - traefik.http.services.client_service.loadbalancer.server.port=$CLIENT_PORT
       - traefik.http.services.client_service.loadbalancer.healthcheck.path=/
@@ -113,15 +119,10 @@ services:
       - BLOCKING_DURATION_MS=$BLOCKING_DURATION_MS
       - CROWN_BAR_URL=$CROWN_BAR_URL
       - CROWN_BAR_INSTA=$CROWN_BAR_INSTA
-    restart: always
     volumes:
       - ./server:/usr/src/app
+    restart: always
     labels:
-      - traefik.enable=true
-      - traefik.http.routers.server_route.entrypoints=client_secure
-      - traefik.http.routers.server_route.tls=true
-      - traefik.http.routers.server_route.rule=(Host(`$DOMAIN`) && Path(`/graphql`))
-      - traefik.http.routers.server_route.service=server_service
       - traefik.http.services.server_service.loadbalancer.server.port=$SERVER_PORT
       - traefik.http.services.server_service.loadbalancer.healthcheck.path=/graphql?query=%7B__typename%7D
       - traefik.http.services.server_service.loadbalancer.healthcheck.headers.apollo-require-preflight=true
@@ -139,6 +140,7 @@ services:
       - $MONGO_PORT:$MONGO_PORT
     volumes:  
       - dbdata:/data/db 
+    restart: always
 
 volumes:
   dbdata:

@@ -1,41 +1,34 @@
-import { MAIL_TEMPLATES, USER_ROLES } from '../lib/const'
+import { USER_ROLES } from '../lib/const'
 import ipBlock from '../models/ipBlock'
-import { iNewUser, iUpdateUser } from '../models/user'
+import { iUpdateUser } from '../models/user'
 import User from '../models/user'
 import { ServerContext } from '../server_types'
 import {
-  checkAccessRights,
   checkRefreshTokenExisting,
-  resetPassword,
   revokeRefreshTokenManualy,
-  sendValidationMail,
-  setNewPassword,
   signIn,
   signOut,
   signUp,
-  validateEmail,
 } from '../services/auth'
+import { sendValidationMail, validateEmail } from '../services/authEmailValidation'
+import { checkAccessRights } from '../services/authHelper'
+import { resetPassword, setNewPassword } from '../services/authPasswordReset'
 import { addStamp, honourCardFrom } from '../services/card'
-import { generateUrlToken, getPaylodFromUrlToken } from '../services/urlToken'
+import { generateUrlToken, getPaylodFromUrlToken } from '../services/stampToken'
+import { updateUser } from '../services/user'
 
 export const Mutation = {
   async updateUser(
     root: never,
-    { _id, name, email, newsletter, password }: { _id: string } & iUpdateUser,
+    { _id, ...values }: { _id: string } & iUpdateUser,
     context: ServerContext
   ) {
     checkAccessRights(context.user, [], _id)
-    const values: iUpdateUser = {
-      name,
-      email,
-      newsletter,
-    }
-    if (password) {
-      values.password = password
-      values.passwordChangedAt = new Date()
-    }
 
-    return await User.findOneAndUpdate({ _id }, values, { new: true })
+    if (context.user) {
+      return await updateUser(_id, values, context.user)
+    }
+    return false
   },
   async signIn(
     root: never,
@@ -103,7 +96,7 @@ export const Mutation = {
   },
   async signUp(
     root: never,
-    newUser: iNewUser & { successRedirect?: string },
+    newUser: iUpdateUser & { successRedirect?: string },
     context: ServerContext
   ) {
     const successRedirect = newUser.successRedirect

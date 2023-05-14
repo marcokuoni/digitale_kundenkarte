@@ -1,9 +1,9 @@
 import { USER_ROLES } from '../lib/const'
 import { ServerContext } from '../server_types'
-import { checkAccessRights } from '../services/auth'
+import { checkAccessRights } from '../services/authHelper'
 import User from '../models/user'
 import ipBlock from '../models/ipBlock'
-import { getActiveRefreshTokens } from '../services/token'
+import { getActiveRefreshTokens } from '../services/authToken'
 
 export const Query = {
     async getUsersWithPassword(root: never, args: never, context: ServerContext) {

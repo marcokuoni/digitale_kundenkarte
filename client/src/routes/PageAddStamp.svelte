@@ -12,8 +12,8 @@
   export let urlToken: string = ''
 
   const stampsLength = parseInt(PROCESS_ENV.STAMPS_LENGTH || '8')
-  const { exp }: { exp: string } = jwt_decode(urlToken)
-  const validUntilDate = new Date(exp)
+  const { exp }: { exp: number } = jwt_decode(urlToken)
+  const validUntilDate = new Date(exp * 1000)
   
   onMount(async () => {
       const {data:cacheData} = await AsyncgetCurrentUser({

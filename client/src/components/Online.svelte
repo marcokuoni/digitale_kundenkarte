@@ -2,41 +2,29 @@
   import Icon from 'svelte-icons-pack/Icon.svelte'
   import Wifi from 'svelte-icons-pack/bi/BiWifi'
   import WifiOff from 'svelte-icons-pack/bi/BiWifiOff'
-  import { onMount } from 'svelte'
+  import { onDestroy, onMount } from 'svelte'
   import Modal, { getModal } from './Modal.svelte'
   import { EVENTS, PROCESS_ENV } from '../lib/const'
 
-  const clientPingIntervall = parseInt(PROCESS_ENV.CLIENT_PING_INTERVAL || '5000')
-  const serverRequestCountCheckIntervall = parseInt(PROCESS_ENV.SERVER_REQUEST_COUNT_CHECK_INTERVAL || '1000')
-  const checkForHowManyCycles = parseInt(PROCESS_ENV.CHECK_FOR_HOW_MANY_CYCLES || '600')
+  const clientPingIntervall = parseInt(
+    PROCESS_ENV.CLIENT_PING_INTERVAL || '5000'
+  )
+  const serverRequestCountCheckIntervall = parseInt(
+    PROCESS_ENV.SERVER_REQUEST_COUNT_CHECK_INTERVAL || '1000'
+  )
+  const checkForHowManyCycles = parseInt(
+    PROCESS_ENV.CHECK_FOR_HOW_MANY_CYCLES || '600'
+  )
   const REQUESTS = 'requests'
   const READONLY = 'readonly'
   const QUEUE_NAME = 'queueName'
-  
+
   let checkCounter = 0
   let clientOffline = window.navigator.onLine
   let serverOffline = false
   let queuedRequestSize = 0
   let db = null
   const DBOpenRequest = window.indexedDB.open('workbox-background-sync')
-
-  onMount(async () => {
-    pingClientRecursive()
-  })
-
-  window.addEventListener(EVENTS.OFFLINE, () => {
-    clientOffline = true
-  })
-
-  window.addEventListener(EVENTS.ONLINE, () => {
-    clientOffline = false
-  })
-
-  window.addEventListener(EVENTS.APOLLO_ERROR, () => {
-    serverOffline = true
-    checkCounter = 0
-    checkRequestCountRecursive()
-  })
 
   DBOpenRequest.onsuccess = (event) => {
     db = DBOpenRequest.result
@@ -88,6 +76,35 @@
         clientOffline = true
       })
   }
+
+  const offlineHander = () => {
+    clientOffline = true
+  }
+
+  const onlineHandler = () => {
+    clientOffline = false
+  }
+
+  const serverOfflineHandler = () => {
+    console.log('%cOnline.svelte line:89', 'color: #007acc;', 'aasdflhaslkdfjalksdf');
+    serverOffline = true
+    checkCounter = 0
+    checkRequestCountRecursive()
+  }
+
+  onMount(async () => {
+    pingClientRecursive()
+  })
+
+  window.addEventListener(EVENTS.OFFLINE, offlineHander)
+  window.addEventListener(EVENTS.ONLINE, onlineHandler)
+  window.addEventListener(EVENTS.APOLLO_ERROR, serverOfflineHandler)
+
+  onDestroy(() => {
+    window.removeEventListener(EVENTS.OFFLINE, offlineHander)
+    window.removeEventListener(EVENTS.ONLINE, onlineHandler)
+    window.removeEventListener(EVENTS.APOLLO_ERROR, serverOfflineHandler)
+  })
 </script>
 
 <button class="btn" on:click={() => getModal().open()}>

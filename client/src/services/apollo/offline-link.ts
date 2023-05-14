@@ -25,9 +25,9 @@ export default class OfflineLink extends ApolloLink {
         },
 
         error: async (error) => {
-          console.error(error)
           const errorEvent = new CustomEvent(EVENTS.APOLLO_ERROR)
           window.dispatchEvent(errorEvent)
+          console.error(error)
           // Resolve the mutation with the optimistic response so the UI can be updated
           observer.next({
             data: context.optimisticResponse,

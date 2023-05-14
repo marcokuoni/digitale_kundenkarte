@@ -13,7 +13,7 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 
 import { loadGraphQlSchema } from './loader'
-import { verifyTokenAndGetUser } from './services/auth'
+import { verifyTokenAndGetUser } from './services/authHelper'
 import { ACCESS_CONTROL_EXPOSE_HEADERS, AUTHORIZATION } from './lib/const'
 import type { KarteContext } from './server_types'
 import trackRequestCountIpBlock from './services/trackRequestCountIpBlock'
