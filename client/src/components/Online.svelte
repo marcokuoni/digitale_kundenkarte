@@ -5,6 +5,7 @@
   import { onDestroy, onMount } from 'svelte'
   import Modal, { getModal } from './Modal.svelte'
   import { EVENTS, PROCESS_ENV } from '../lib/const'
+  import currentUser from '../stores/currentUser'
 
   const clientPingIntervall = parseInt(
     PROCESS_ENV.CLIENT_PING_INTERVAL || '5000'
@@ -58,6 +59,9 @@
         countRequest.onsuccess = () => {
           queuedRequestSize = countRequest.result || 0
           serverOffline = queuedRequestSize > 0
+          if(!serverOffline) {
+            currentUser.fetchCurrentUser()
+          }
         }
       }
     }
@@ -86,7 +90,6 @@
   }
 
   const serverOfflineHandler = () => {
-    console.log('%cOnline.svelte line:89', 'color: #007acc;', 'aasdflhaslkdfjalksdf');
     serverOffline = true
     checkCounter = 0
     checkRequestCountRecursive()
