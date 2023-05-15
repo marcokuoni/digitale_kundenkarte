@@ -25,33 +25,39 @@ function currentUser() {
     }
   }
 
-  const _loadUserInfinity = () => {
+  const fetchCurrentUserOverNetwork = async () => {
     try {
-      const reloadUser = () => {
+      const token = localStorage.getItem(PROCESS_ENV.JWT_COOKIE_NAME)
+      if (token) {
+        const { data } = await AsyncgetCurrentUser({
+          fetchPolicy: FETCH_POLICY.NETWORK_ONLY,
+          errorPolicy: ERROR_POLICY.IGNORE,
+        })
+        _checkUserData(data)
+      } else {
+        clearTimeout(timer)
+      }
+    } catch (e) {
+      //ignore error
+      // after login no token is set yet, so we need to fetch the user data
+    }
+  }
+
+
+  const _loadUserInfinity = async () => {
+    try {
+      const reloadUser = async () => {
         if (timer) {
           clearTimeout(timer)
         }
+        await fetchCurrentUserOverNetwork()
         timer = setTimeout(async () => {
-          try {
-            const token = localStorage.getItem(PROCESS_ENV.JWT_COOKIE_NAME)
-            if (token) {
-              const { data } = await AsyncgetCurrentUser({
-                fetchPolicy: FETCH_POLICY.NETWORK_ONLY,
-                errorPolicy: ERROR_POLICY.IGNORE,
-              })
-              _checkUserData(data)
-            } else {
-              clearTimeout(timer)
-            }
-          } catch (e) {
-            //ignore error
-            // after login no token is set yet, so we need to fetch the user data
-          }
-          reloadUser()
+          await fetchCurrentUserOverNetwork()
+          await reloadUser()
         }, clientPingIntervall)
       }
       if (!timer) {
-        reloadUser()
+        await reloadUser()
       }
     } catch (e) {
       console.error(e.message)

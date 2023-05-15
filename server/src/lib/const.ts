@@ -24,6 +24,7 @@ export enum MAIL_TEMPLATES {
     CREATED_FROM_UNKNOWN_DEVICE = 'created-from-unknown-device',
     MORE_THEN_ALLOWED_CONNECTED_DEVICES = 'more-then-allowed-connected-devices',
     VERIFY_EMAIL = 'verify-email',
+    RESEND_TRANSFERCODE = 'resend-transfercode',
 }
 
 export enum STATES {

@@ -175,8 +175,6 @@ https://stackoverflow.com/questions/6470378/hashing-a-session-fingerprint-really
 
 
 # TODO
-* const in forms
-* naming convention _ or not, check all functions
 * 404 page, forbidden page (i think not possible with the current router)
 * couldnt find a way to stop executing default redirections on fetch and just do the custom one.
 

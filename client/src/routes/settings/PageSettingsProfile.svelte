@@ -81,9 +81,9 @@
       />
 
       <EmailAlert />
-      <label for={NAMES.EMAIL}>E-Mail{$currentUser.emailValidatedAt && (` (Validiert am: ${new Date(
+      <label for={NAMES.EMAIL}>E-Mail {$currentUser.emailValidatedAt ? (`(Validiert am: ${new Date(
         $currentUser.emailValidatedAt
-      ).toLocaleString(DE_CH)})`)}</label>
+      ).toLocaleString(DE_CH)})`) : ''}</label>
       <input
         type={INPUT_TYPES.EMAIL}
         id={NAMES.EMAIL}
@@ -103,9 +103,9 @@
       {#if $currentUser?.userRoles && $currentUser.userRoles.length > 0}
         <PasswordAlert />
         <label for={NAMES.PASSWORD}
-          >Passwort (letzte Änderung am: {new Date(
+          >Passwort {$currentUser.passwordChangedAt ? `(letzte Änderung am: ${new Date(
             $currentUser.passwordChangedAt
-          ).toLocaleString(DE_CH)})</label
+          ).toLocaleString(DE_CH)})` : ''}</label
         >
         <input type={INPUT_TYPES.PASSWORD} id={NAMES.PASSWORD} name={NAMES.PASSWORD} value={''} />
       {/if}

@@ -23,6 +23,7 @@
   import PageForgotPassword from './routes/PageForgotPassword.svelte'
   import PageResetPassword from './routes/PageResetPassword.svelte'
   import PageValidateEmail from './routes/PageValidateEmail.svelte'
+  import PageForgotTransfercode from './routes/PageForgotTransfercode.svelte'
 
   export let url = ''
 
@@ -56,6 +57,10 @@
 
         <Route path={`${PATHS.LOGIN_USER}`} >
           <PageLogin />
+        </Route>
+
+        <Route path={`${PATHS.FORGOT_TRANSFERCODE}`} >
+          <PageForgotTransfercode />
         </Route>
 
         <Route path={`${PATHS.FORGOT_PASSWORD}`} >

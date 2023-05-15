@@ -37,6 +37,7 @@ export default {
       'process.env.BLOCKING_DURATION_MS': process.env.BLOCKING_DURATION_MS,   
       'process.env.CROWN_BAR_URL': process.env.CROWN_BAR_URL,   
       'process.env.CROWN_BAR_INSTA': process.env.CROWN_BAR_INSTA,   
+      'process.env.ADMIN_EMAIL_ADDRESS': process.env.ADMIN_EMAIL_ADDRESS,   
     }),
     svelte({
       preprocess: sveltePreprocess({ sourceMap: !production }),

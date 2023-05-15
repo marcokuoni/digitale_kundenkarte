@@ -10,6 +10,7 @@
   import { checkAccessRights } from '../services/auth'
   import PasswordAlert from '../components/PasswordAlert.svelte'
   import EmailAlert from '../components/EmailAlert.svelte'
+  import NoteForMailAddressTransfercode from '../components/NoteForMailAddressTransfercode.svelte'
 
   let hasMoreRights = false
 
@@ -42,54 +43,59 @@
 </script>
 
 <h1>Startseite</h1>
-<nav>
-  {#if hasMoreRights}
-    <SecuredNavLink
-      to={`/${PATHS.QR_CODE}`}
-      requiredRoles={[USER_ROLES.EMPLOYEE]}>QR Code generieren</SecuredNavLink
-    >
-    <SecuredNavLink
-      to={`${PATHS.HONOUR_CARD}`}
-      requiredRoles={[USER_ROLES.EMPLOYEE]}>Karte einlösen</SecuredNavLink
-    >
-    <SecuredNavLink
-      to={`/${PATHS.IP_BLOCKS}`}
-      requiredRoles={[USER_ROLES.ADMIN]}>Blockierte IPs</SecuredNavLink
-    >
-    <SecuredNavLink
-      to={`/${PATHS.USER_ROLES}`}
-      requiredRoles={[USER_ROLES.ADMIN]}
-      >Benutzergruppen verwalten</SecuredNavLink
-    >
-    <NavLink to={`/${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}
-      >Benutzer erstellen mit Passwort</NavLink
-    >
-    {#if $currentUser}
-      <Logout />
-      {#if checkAccessRights($currentUser, [USER_ROLES.ADMIN])}
+
+<EmailAlert>
+  {#if $currentUser}
+    <p class="info-text">Transfercode: {$currentUser.transfercode}</p>
+  {/if}
+  <nav>
+    <NoteForMailAddressTransfercode />
+    {#if hasMoreRights}
+      <SecuredNavLink
+        to={`/${PATHS.QR_CODE}`}
+        requiredRoles={[USER_ROLES.EMPLOYEE]}>QR Code generieren</SecuredNavLink
+      >
+      <SecuredNavLink
+        to={`${PATHS.HONOUR_CARD}`}
+        requiredRoles={[USER_ROLES.EMPLOYEE]}>Karte einlösen</SecuredNavLink
+      >
+      <SecuredNavLink
+        to={`/${PATHS.IP_BLOCKS}`}
+        requiredRoles={[USER_ROLES.ADMIN]}>Blockierte IPs</SecuredNavLink
+      >
+      <SecuredNavLink
+        to={`/${PATHS.USER_ROLES}`}
+        requiredRoles={[USER_ROLES.ADMIN]}
+        >Benutzergruppen verwalten</SecuredNavLink
+      >
+      <NavLink to={`/${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}
+        >Benutzer erstellen mit Passwort</NavLink
+      >
+      {#if $currentUser}
+        <Logout />
+        {#if checkAccessRights($currentUser, [USER_ROLES.ADMIN])}
+          <NavLink to={`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}
+            >Anmelden mit Passwort</NavLink
+          >
+        {/if}
+      {:else}
         <NavLink to={`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}
           >Anmelden mit Passwort</NavLink
         >
       {/if}
+      <PasswordAlert />
+      <NavLink to={`/${PATHS.SETTINGS}`}>Einstellungen</NavLink>
     {:else}
-      <NavLink to={`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}
-        >Anmelden mit Passwort</NavLink
+      <NavLink to={`/${PATHS.CREATE_USER}`}
+        >Ich möchte eine Karte erstellen</NavLink
       >
+      {#if $currentUser}
+        <Logout />
+      {:else}
+        <NavLink to={`/${PATHS.LOGIN_USER}`}
+          >Ich besitze bereits eine Karte (Anmelden)</NavLink
+        >
+      {/if}
     {/if}
-
-    <EmailAlert />
-    <PasswordAlert />
-    <NavLink to={`/${PATHS.SETTINGS}`}>Einstellungen</NavLink>
-  {:else}
-    <NavLink to={`/${PATHS.CREATE_USER}`}
-      >Ich möchte eine Karte erstellen</NavLink
-    >
-    {#if $currentUser}
-      <Logout />
-    {:else}
-      <NavLink to={`/${PATHS.LOGIN_USER}`}
-        >Ich besitze bereits eine Karte (Anmelden)</NavLink
-      >
-    {/if}
-  {/if}
-</nav>
+  </nav>
+</EmailAlert>

@@ -3,26 +3,26 @@
   import { BUTTON_TYPES, INPUT_TYPES, NAMES, PATHS } from '../lib/const'
   import NavLink from '../components/NavLink.svelte'
   import Logout from '../components/Logout.svelte'
-  import { passwordReset } from '../codegen'
+  import { resendTransfercode } from '../codegen'
   import { Wave } from 'svelte-loading-spinners'
   import NoteForValidatedMailAddress from '../components/NoteForValidatedMailAddress.svelte'
 
   let success = false
   let loading = false
 
-  async function resetPassword(event: SubmitEvent) {
+  async function resendTransfercodeHandler(event: SubmitEvent) {
     loading = true
     const forms = event.target as HTMLFormElement
     if (forms.checkValidity()) {
       const formData = new FormData(forms)
       const email = formData.get(NAMES.EMAIL)?.toString()
       try {
-        const { data } = await passwordReset({
+        const { data } = await resendTransfercode({
           variables: {
             email,
           },
         })
-        if (data && data.passwordReset) {
+        if (data && data.resendTransfercode) {
           success = true
         } else {
           alert('Error')
@@ -35,7 +35,7 @@
   }
 </script>
 
-<h1>Passwort vergessen</h1>
+<h1>Transfercode vergessen</h1>
 
 {#if $currentUser}
   <Logout />
@@ -49,7 +49,7 @@
     <Wave size="100" color="#FF3E00" unit="px" />
   {/if}
   <NoteForValidatedMailAddress />
-  <form on:submit|preventDefault={resetPassword}>
+  <form on:submit|preventDefault={resendTransfercodeHandler}>
     <label for={NAMES.EMAIL}>E-Mail</label>
     <input
       type={INPUT_TYPES.EMAIL}
@@ -58,11 +58,11 @@
       required
       value=""
     />
-    <button type={BUTTON_TYPES.SUBMIT}>Zurücsetzen</button>
+    <button type={BUTTON_TYPES.SUBMIT}>Anfragen</button>
   </form>
 {/if}
 
-<NavLink to={`/${PATHS.FORGOT_TRANSFERCODE}`}>Transfercode vergessen</NavLink>
+<NavLink to={`/${PATHS.FORGOT_PASSWORD}`}>Passwort vergessen</NavLink>
 <NavLink to={`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}>Anmelden</NavLink>
 <NavLink to={`/${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}
   >Benutzer erstellen</NavLink

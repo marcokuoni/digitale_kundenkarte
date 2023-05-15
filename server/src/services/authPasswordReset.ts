@@ -19,7 +19,7 @@ export const resetPassword = async (email: string) => {
   const user = await User.findOne({ email })
   let hasOldValidToken = false
 
-  if (user) {
+  if (user && user.email && user.emailValidatedAt) {
     if (user.passwordResetToken) {
       try {
         jwt.verify(

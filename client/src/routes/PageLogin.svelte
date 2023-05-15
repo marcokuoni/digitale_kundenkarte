@@ -98,6 +98,7 @@
       >Ich möchte eine Karte erstellen</NavLink
     >
   {/if}
+  <NavLink to={`/${PATHS.FORGOT_TRANSFERCODE}`}>Transfercode vergessen</NavLink>
 {/if}
 {#if withPassword !== ''}
   <NavLink to={`/${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}

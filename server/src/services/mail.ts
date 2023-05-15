@@ -35,6 +35,7 @@ interface MailTemplateData {
   ipAddress?: string
   userAgent?: string
   validateToken?: string
+  transfercode?: string
 }
 
 export const sendMailWithTemplate = async (
@@ -52,6 +53,23 @@ const _getMailTemplate = (template: string, data?: MailTemplateData) => {
     text: '',
   }
   switch (template) {
+    case MAIL_TEMPLATES.RESEND_TRANSFERCODE:
+      mailContent = {
+        subject: 'Transfercode',
+        text: `
+                Hallo ${data?.name},
+              
+                Dein Transfercode ist wie folgt: ${data?.transfercode}
+                
+                Falls du nicht einen Transfercode angefordert hast, melde dich über die App von allen Geräten ab und ändere bitte dein Passwort.
+
+                Von Geräten abmelden: ${process.env.CLIENT_URL}/${PATHS.SETTINGS}/${PATHS.CONNECTED}
+                Passwort ändern: ${process.env.CLIENT_URL}/${PATHS.SETTINGS}/${PATHS.PROFILE}
+              
+                Viele Grüße,
+                Dein Karte Team`,
+      }
+      break
     case MAIL_TEMPLATES.RESET_PASSWORD:
       mailContent = {
         subject: 'Passwort zurücksetzen',

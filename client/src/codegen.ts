@@ -45,6 +45,7 @@ export type Mutation = {
   honourCardFrom: Scalars['Boolean'];
   passwordReset: Scalars['Boolean'];
   refresh: Scalars['Boolean'];
+  resendTransfercode: Scalars['Boolean'];
   resetPassword: Scalars['Boolean'];
   revokeRefreshToken: Scalars['Boolean'];
   sendValidationMail: Scalars['Boolean'];
@@ -85,6 +86,11 @@ export type MutationHonourCardFromArgs = {
 
 
 export type MutationPasswordResetArgs = {
+  email: Scalars['String'];
+};
+
+
+export type MutationResendTransfercodeArgs = {
   email: Scalars['String'];
 };
 
@@ -331,6 +337,13 @@ export type ValidateEmailMutationVariables = Exact<{
 
 export type ValidateEmailMutation = { __typename?: 'Mutation', validateEmail: boolean };
 
+export type ResendTransfercodeMutationVariables = Exact<{
+  email: Scalars['String'];
+}>;
+
+
+export type ResendTransfercodeMutation = { __typename?: 'Mutation', resendTransfercode: boolean };
+
 export const UserFragmentFragmentDoc = gql`
     fragment UserFragment on User {
   _id
@@ -513,6 +526,11 @@ export const SendValidationMailDoc = gql`
 export const ValidateEmailDoc = gql`
     mutation validateEmail($token: String!) {
   validateEmail(token: $token)
+}
+    `;
+export const ResendTransfercodeDoc = gql`
+    mutation resendTransfercode($email: String!) {
+  resendTransfercode(email: $email)
 }
     `;
 export const getUsersWithPassword = (
@@ -879,6 +897,18 @@ export const validateEmail = (
           ) => {
             const m = client.mutate<ValidateEmailMutation, ValidateEmailMutationVariables>({
               mutation: ValidateEmailDoc,
+              ...options,
+            });
+            return m;
+          }
+export const resendTransfercode = (
+            options: Omit<
+              MutationOptions<any, ResendTransfercodeMutationVariables>, 
+              "mutation"
+            >
+          ) => {
+            const m = client.mutate<ResendTransfercodeMutation, ResendTransfercodeMutationVariables>({
+              mutation: ResendTransfercodeDoc,
               ...options,
             });
             return m;

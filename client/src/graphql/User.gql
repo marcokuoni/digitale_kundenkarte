@@ -173,3 +173,7 @@ mutation sendValidationMail {
 mutation validateEmail($token: String!) {
   validateEmail(token: $token)
 }
+
+mutation resendTransfercode($email: String!) {
+  resendTransfercode(email: $email)
+}

@@ -47,7 +47,6 @@
   {/if}
   {#if token === ''}
     <p>Token fehlt. Versuche es noch einmal</p>
-    <NavLink to={`/${PATHS.FORGOT_PASSWORD}`}>Passwort vergessen</NavLink>
   {:else}
     <form on:submit|preventDefault={savePassword}>
       <label for={NAMES.PASSWORD}>Passwort</label>
@@ -63,6 +62,7 @@
 {/if}
 
 <NavLink to={`/${PATHS.FORGOT_PASSWORD}`}>Passwort vergessen</NavLink>
+<NavLink to={`/${PATHS.FORGOT_TRANSFERCODE}`}>Transfercode vergessen</NavLink>
 <NavLink to={`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}>Anmelden</NavLink>
 <NavLink to={`/${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}
   >Benutzer erstellen</NavLink

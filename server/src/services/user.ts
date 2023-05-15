@@ -1,8 +1,10 @@
 import { iUpdateUser, iUser } from '../models/user'
 import User from '../models/user'
 import { randomTokenString } from '../lib/helpers'
-import { USER_ROLES } from '../lib/const'
+import { MAIL_TEMPLATES, USER_ROLES } from '../lib/const'
 import { changeEmail, changePasssword } from '../lib/userHelper'
+import { throwBadReuest } from '../lib/exceptions'
+import { sendMailWithTemplate } from './mail'
 
 export const updateUser = async (
   _id: string,
@@ -17,10 +19,7 @@ export const updateUser = async (
     await changePasssword(newValues, newValues.password)
   }
 
-  if (
-    newValues.email !== currentUser.email &&
-    (newValues.email)
-  ) {
+  if (newValues.email !== currentUser.email && newValues.email) {
     await changeEmail(newValues, newValues.email)
   }
 
@@ -62,6 +61,15 @@ export const createUser = async (values: iUpdateUser) => {
   return await User.create({
     ...newValues,
   })
+}
+
+export const resendTransfercode = async (email: string) => {
+  const user = await User.findOne({ email })
+  if (user && user.email && user.emailValidatedAt) {
+    await sendMailWithTemplate(user.email, MAIL_TEMPLATES.RESEND_TRANSFERCODE, {
+      transfercode: user.transfercode,
+    })
+  }
 }
 
 const _isTransfercodeExisting = async (transfercode: number) => {

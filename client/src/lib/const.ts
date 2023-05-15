@@ -15,6 +15,7 @@ export enum PATHS {
     FORGOT_PASSWORD = 'forgot-password',
     RESET_PASSWORD = 'reset-password',
     VERIFY_EMAIL = 'verify-email',
+    FORGOT_TRANSFERCODE = 'forgot-transfercode',
 }
 
 export enum USER_ROLES {
@@ -51,6 +52,7 @@ export enum PROCESS_ENV {
     BLOCKING_DURATION_MS = 'process.env.BLOCKING_DURATION_MS',
     CROWN_BAR_URL = 'process.env.CROWN_BAR_URL',
     CROWN_BAR_INSTA = 'process.env.CROWN_BAR_INSTA',
+    ADMIN_EMAIL_ADDRESS = 'process.env.ADMIN_EMAIL_ADDRESS',
 }
 
 export enum CODES {
@@ -130,3 +132,4 @@ export const RECEIVED_CODE_503 = 'Received status code 503'
 export const NOOPENER_NPREFERRER = 'noopener noreferrer'
 export const TRUE = 'true'
 export const PLACEHOLDER_IP = '::ffff:172.18.0.5'
+export const MAIL_TO = 'mailto:'

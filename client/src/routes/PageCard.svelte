@@ -9,6 +9,7 @@
   import { onDestroy } from 'svelte'
   import { navigate } from 'svelte-routing'
   import EmailAlert from '../components/EmailAlert.svelte'
+  import NoteForMailAddressTransfercode from '../components/NoteForMailAddressTransfercode.svelte'
 
   const stampsLength = parseInt(PROCESS_ENV.STAMPS_LENGTH || '8')
 
@@ -53,6 +54,7 @@
 </script>
 
 <main>
+  <EmailAlert>
   {#if !$currentUser}
     <!-- TODO: we need a way to communicate loading and alert states to the user? -->
     <span>Loading...</span>
@@ -66,9 +68,13 @@
 
     <section class="info-section">
       <div class="info-wrapper">
-        <p class="info-label">Name</p>
         {#if $currentUser && $currentUser.name}
+        <p class="info-label">Name</p>
           <p class="info-text">Hallo {$currentUser.name}</p>
+        {/if}
+        <p class="info-label">Transfercode</p>
+        {#if $currentUser}
+          <p class="info-text">{$currentUser.transfercode}</p>
         {/if}
 
         <div class="info-group">
@@ -108,7 +114,7 @@
 
     <section class="footer-section">
       <div class="footer">
-        <EmailAlert />
+        <NoteForMailAddressTransfercode />
         <NavLink to={`/${PATHS.SETTINGS}`}>Einstellungen</NavLink>
         <a href={PROCESS_ENV.CROWN_BAR_URL}>WEBSITE</a>
         <a href={PROCESS_ENV.CROWN_BAR_INSTA}>INSTAGRAM</a>
@@ -119,6 +125,7 @@
       </div>
     </section>
   {/if}
+</EmailAlert>
 </main>
 
 <style>

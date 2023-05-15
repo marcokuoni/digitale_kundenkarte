@@ -95,3 +95,5 @@
   {/if}
   <NavLink to={`/${PATHS.CARD}`}>Zu meiner Karte</NavLink>
 {/if}
+
+<NavLink to={`/${PATHS.FORGOT_TRANSFERCODE}`}>Transfercode vergessen</NavLink>

@@ -19,7 +19,7 @@ interface ValidateEmailPayloadInerface {
 export const sendValidationMail = async (email: string) => {
     let hasOldValidToken = false
     const user = await User.findOne({ email })
-    if (!user || !user.email || user.emailValidated) {
+    if (!user || !user.email || user.emailValidatedAt) {
       throwBadReuest('Bad Validation Request')
     }
   

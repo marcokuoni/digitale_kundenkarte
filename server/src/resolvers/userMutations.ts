@@ -15,7 +15,7 @@ import { checkAccessRights } from '../services/authHelper'
 import { resetPassword, setNewPassword } from '../services/authPasswordReset'
 import { addStamp, honourCardFrom } from '../services/card'
 import { generateUrlToken, getPaylodFromUrlToken } from '../services/stampToken'
-import { updateUser } from '../services/user'
+import { resendTransfercode, updateUser } from '../services/user'
 
 export const Mutation = {
   async updateUser(
@@ -61,6 +61,17 @@ export const Mutation = {
     }
   ) {
     await resetPassword(email)
+    return true
+  },
+  async resendTransfercode(
+    root: never,
+    {
+      email,
+    }: {
+      email: string
+    }
+  ) {
+    await resendTransfercode(email)
     return true
   },
   async resetPassword(
