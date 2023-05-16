@@ -25,6 +25,7 @@ export enum MAIL_TEMPLATES {
     MORE_THEN_ALLOWED_CONNECTED_DEVICES = 'more-then-allowed-connected-devices',
     VERIFY_EMAIL = 'verify-email',
     RESEND_TRANSFERCODE = 'resend-transfercode',
+    PASSWORD_CHANGED = 'password-changed',
 }
 
 export enum STATES {

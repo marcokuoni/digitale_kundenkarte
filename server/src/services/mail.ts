@@ -92,6 +92,24 @@ const _getMailTemplate = (template: string, data?: MailTemplateData) => {
                 Dein Karte Team`,
       }
       break
+      case MAIL_TEMPLATES.PASSWORD_CHANGED:
+      mailContent = {
+        subject: 'Passwort geändert',
+        text: `
+                Hallo ${data?.name},
+
+                Dein Passwort wurde geändert. 
+                
+                Falls du das nicht warst, melde dich über die App von allen Geräten ab und ändere bitte dein Passwort. Zudem wäre somit auch dein Mailkonto kompromittiert. Wechsle umbedingt auch das Passwort von deinem E-Mailkonto um sicher zu gehen, dass niemand anderes zugriff darauf hat.
+
+                Von Geräten abmelden: ${process.env.CLIENT_URL}/${PATHS.SETTINGS}/${PATHS.CONNECTED}
+                Passwort ändern: ${process.env.CLIENT_URL}/${PATHS.SETTINGS}/${PATHS.PROFILE}
+
+                Viele Grüße,
+                Dein Karte Team`,
+      }
+      break
+
     case MAIL_TEMPLATES.TOKEN_USED_TWICE:
       mailContent = {
         subject: 'Deine Verbindung wurde doppelt verwendet',

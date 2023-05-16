@@ -71,11 +71,15 @@ export const setNewPassword = async (token: string, password: string) => {
     user = await User.findById(payload.token)
   }
 
-  if (!user || !user.passwordResetToken || user.passwordResetToken !== token) {
+  if (!user || !user.passwordResetToken || !user.email || user.passwordResetToken !== token) {
     throwBadReuest('Bad Token')
   } else {
     await changePasssword(user, password)
 
     await user.save()
+
+    await sendMailWithTemplate(user.email, MAIL_TEMPLATES.PASSWORD_CHANGED, {
+      name: user.name,
+    })
   }
 }
