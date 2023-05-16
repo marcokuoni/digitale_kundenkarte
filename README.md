@@ -189,3 +189,7 @@ https://codeburst.io/highly-functional-offline-applications-using-apollo-client-
 
 
 WICHTIG: Letzter Stempfel muss transferiert sein, damit Karte eingelöst werden kann. Das heisst erst beim 9ten Besuch im Lokal. Mitarbeiter Konto muss Internet haben, um QR zu erzeugen, was er auch vorgängig machen könnte. Aber vor allem um Karten einzulösen. die Überprüfung, ob noch Karte offen sind muss auf dem Server passieren.
+
+
+Dependency on client:
+* rollup-plugin-workbox version 7 has still unsolved bugs: expl https://github.com/modernweb-dev/web/issues/2261
