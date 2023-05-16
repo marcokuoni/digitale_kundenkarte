@@ -76,16 +76,16 @@ Komponenten:
 
 Komponenten:
 * Abhängingkeiten
-    * "@apollo/client": "^3.7.10", API Connector Client
-    * "graphql": "^16.6.0", API Definitionen
-    * "workbox-window": "^6.5.4", Workbox von Google, Service Worker Bibliothek für Offline Funktionalität
-    * "apollo3-cache-persist": "^0.14.1", Cache Persist für offline Funktionalität
-    * "jwt-decode": "^3.1.2", JWT Token Decoder um signierte Token zu lesen
-    * "svelte": "^3.55.0", Frontend Framework
-    * "svelte-routing": "^1.6.0", Frontend Routing Framework (leider noch nicht ganz ausgereift aber leicht [Parameter, 404, forbidden]. Wechsel zu svelte-router-spa gäb mehr Funktionalität aber auch mehr Code und geringere Verbreitung)
+    * @apollo/client, API Connector Client
+    * graphql, API Definitionen
+    * workbox-window, Workbox von Google, Service Worker Bibliothek für Offline Funktionalität
+    * apollo3-cache-persist, Cache Persist für offline Funktionalität
+    * jwt-decode, JWT Token Decoder um signierte Token zu lesen
+    * svelte, Frontend Framework
+    * svelte-routing, Frontend Routing Framework (leider noch nicht ganz ausgereift aber leicht [Parameter, 404, forbidden]. Wechsel zu svelte-router-spa gäb mehr Funktionalität aber auch mehr Code und geringere Verbreitung)
     --> Abklären ob noch notwending
-    * "svelte-icons-pack": "^2.1.0",
-    * "svelte-loading-spinners": "^0.3.4"
+    * svelte-icons-pack
+    * svelte-loading-spinners
 * Abhängigkeiten zur Entwicklung
     * GraphQL Codegen, erzeugt aus Schnittstellendefintion auf der API und dem Frontend automatisch Typisierung und Requests
     * Rollup und Plugins: Typescript, CommonJs, Node Resolve, Terser, Svelte, Replace (ENV Variablen), CSS, Livereload, Workbox, Serve
