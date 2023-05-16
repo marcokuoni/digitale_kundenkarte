@@ -20,6 +20,7 @@ export default {
     name: 'app',
     file: 'public/build/bundle.js',
     inlineDynamicImports: true,
+    validate: true,
   },
   plugins: [
     replace({
@@ -65,10 +66,6 @@ export default {
       sourceMap: !production,
       inlineSources: !production,
     }),
-
-    // In dev mode, call `npm run start` once
-    // the bundle has been generated
-    // !production && serve(),
 
     // Watch the `public` directory and refresh the
     // browser on changes when not in production
