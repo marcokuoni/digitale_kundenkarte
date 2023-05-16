@@ -71,7 +71,7 @@ Komponenten:
 
 ## Stacks
 ### Frontend
-`npm install` -> added 757 packages, and audited 758 packages in 9s
+`npm install` -> added 756 packages, and audited 757 packages in 8s
 `npm audit` -> found 0 vulnerabilities
 
 Komponenten:

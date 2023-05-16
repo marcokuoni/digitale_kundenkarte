@@ -38,6 +38,7 @@ services:
       - traefik.enable=true
 
   client:
+    tty: true #otherwise rollup will not work and close process
     depends_on: 
       - server
     build: 
