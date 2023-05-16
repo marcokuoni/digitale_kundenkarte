@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-export const connectMongoDb = function () {
+export const connectMongoDb = async function () {
   const {
     MONGO_USERNAME,
     MONGO_PASSWORD,
@@ -10,12 +10,8 @@ export const connectMongoDb = function () {
   } = process.env
 
   const options = {
-    useFindAndModify: false,
     useNewUrlParser: true,
-    reconnectTries: Number.MAX_VALUE,
-    reconnectInterval: 500,
     connectTimeoutMS: 10000,
-    auto_reconnect: true,
     useUnifiedTopology: true,
   }
 
@@ -23,12 +19,10 @@ export const connectMongoDb = function () {
 
   mongoose.Promise = global.Promise
   mongoose.set('strictQuery', false)
-  mongoose
-    .connect(url, options)
-    .then(function () {
-      console.log('MongoDB is connected')
-    })
-    .catch(function (err) {
-      console.log(err)
-    })
+  try {
+    await mongoose.connect(url, options)
+  } catch (e) {
+    console.error(e)
+  }
+  console.log('MongoDB is connected')
 }

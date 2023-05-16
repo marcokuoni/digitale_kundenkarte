@@ -1,5 +1,7 @@
-import {startupServer} from './server'
-import {connectMongoDb} from "./db"
+import { startupServer } from './server'
+import { connectMongoDb } from './db'
 
-connectMongoDb() 
-startupServer()
+;(async () => {
+  await connectMongoDb()
+  startupServer()
+})()

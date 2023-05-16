@@ -14,7 +14,11 @@ export const revokeRefreshTokenById = async (
   userAgent: string
 ) => {
   const refreshToken = await RefreshToken.findOne({ _id })
-  await revokeRefreshToken(refreshToken.token, ipAddress, userAgent)
+  if (refreshToken) {
+    await revokeRefreshToken(refreshToken.token, ipAddress, userAgent)
+  } else {
+    throwBadReuest('Invalid token')
+  }
 }
 
 export const revokeRefreshToken = async (
@@ -23,25 +27,31 @@ export const revokeRefreshToken = async (
   userAgent: string
 ) => {
   const refreshToken = await getRefreshToken(token)
-  refreshToken.revoked = Date.now()
-  refreshToken.revokedByIp = ipAddress
-  refreshToken.revokedByUserAgent = userAgent
+  if (refreshToken) {
+    refreshToken.revoked = new Date()
+    refreshToken.revokedByIp = ipAddress
+    refreshToken.revokedByUserAgent = userAgent
 
-  await refreshToken.save()
+    await refreshToken.save()
 
-  if (
-    refreshToken.createdByIp !== ipAddress ||
-    refreshToken.createdByUserAgent !== userAgent
-  ) {
-    await sendMailWithTemplate(
-      refreshToken.user.email,
-      MAIL_TEMPLATES.DIFFERENT_DEVICE,
-      {
-        name: refreshToken.user.name,
-        ipAddress,
-        userAgent,
+    if (
+      refreshToken.createdByIp !== ipAddress ||
+      refreshToken.createdByUserAgent !== userAgent
+    ) {
+      if (refreshToken.user.email) {
+        await sendMailWithTemplate(
+          refreshToken.user.email,
+          MAIL_TEMPLATES.DIFFERENT_DEVICE,
+          {
+            name: refreshToken.user.name,
+            ipAddress,
+            userAgent,
+          }
+        )
       }
-    )
+    }
+  } else {
+    throwBadReuest('Invalid token')
   }
 }
 
@@ -51,96 +61,121 @@ export const refreshRefreshToken = async (
   userAgent: string
 ) => {
   const refreshToken = await getRefreshToken(token)
-  const { user } = refreshToken
+  if (refreshToken) {
+    const { user } = refreshToken
 
-  const newRefreshToken = await generateRefreshToken(
-    user._id,
-    ipAddress,
-    userAgent
-  )
-  refreshToken.revoked = Date.now()
-  refreshToken.revokedByIp = ipAddress
-  refreshToken.revokedByUserAgent = userAgent
-  refreshToken.replacedByToken = newRefreshToken.token
-  await refreshToken.save()
+    const newRefreshToken = await generateRefreshToken(
+      user._id,
+      ipAddress,
+      userAgent
+    )
+    refreshToken.revoked = new Date()
+    refreshToken.revokedByIp = ipAddress
+    refreshToken.revokedByUserAgent = userAgent
+    refreshToken.replacedByToken = newRefreshToken.token
+    await refreshToken.save()
 
-  return newRefreshToken
+    return newRefreshToken
+  } else {
+    throwBadReuest('Invalid token')
+  }
 }
 
 export const getTokenUser = async (token: string) => {
   const refreshToken = await RefreshToken.findOne({ token }).populate('user')
-  return refreshToken.user
+  if (refreshToken) {
+    return refreshToken.user
+  } else {
+    throwBadReuest('Invalid token')
+  }
 }
 
 export const getRefreshToken = async (token: string) => {
   const refreshToken = await RefreshToken.findOne({ token }).populate('user')
-  if (!refreshToken || refreshToken.revoked || refreshToken.isExpired) {
-    await sendMailWithTemplate(
-      refreshToken.user.email,
-      MAIL_TEMPLATES.TOKEN_USED_TWICE,
-      {
-        name: refreshToken.user.name,
+  if (refreshToken) {
+    if (
+      !refreshToken ||
+      refreshToken.revoked ||
+      refreshToken.expires < new Date()
+    ) {
+      if (refreshToken.user.email) {
+        await sendMailWithTemplate(
+          refreshToken.user.email,
+          MAIL_TEMPLATES.TOKEN_USED_TWICE,
+          {
+            name: refreshToken.user.name,
+          }
+        )
       }
-    )
-    
-    throwBadReuest('User is not authenticated')
+
+      throwBadReuest('User is not authenticated')
+    }
+    return refreshToken
+  } else {
+    throwBadReuest('Invalid token')
   }
-  return refreshToken
 }
 
 export const generateRefreshToken = async (
   _id: string,
   ipAddress: string,
   userAgent: string
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
 ): Promise<iRefreshToken> => {
   const user = await User.findOne({ _id })
-  if (!user) {
+  if (user) {
+    const oldRefreshToken = await RefreshToken.findOne({
+      createdByIp: ipAddress,
+      createdByUserAgent: userAgent,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
+      user: _id,
+    })
+
+    if (!oldRefreshToken) {
+      if (user.email) {
+        await sendMailWithTemplate(
+          user.email,
+          MAIL_TEMPLATES.CREATED_FROM_UNKNOWN_DEVICE,
+          {
+            name: user.name,
+            ipAddress,
+            userAgent,
+          }
+        )
+      }
+    }
+
+    const tokens = await getActiveRefreshTokens(user._id)
+    if (tokens.length > maxRefreshTokens) {
+      if (user.email) {
+        await sendMailWithTemplate(
+          user.email,
+          MAIL_TEMPLATES.MORE_THEN_ALLOWED_CONNECTED_DEVICES,
+          {
+            name: user.name,
+          }
+        )
+      }
+
+      const oldestToken = tokens.sort(
+        (a: iRefreshToken, b: iRefreshToken) =>
+          a.expires.getTime() - b.expires.getTime()
+      )[0]
+      await revokeRefreshToken(oldestToken.token, ipAddress, userAgent)
+    }
+
+    return await RefreshToken.create({
+      user: _id,
+      token: randomTokenString(),
+      expires: new Date(Date.now() + jwtRefreshExpiry * 1000),
+      createdByIp: ipAddress,
+      createdByUserAgent: userAgent,
+    })
+  } else {
     throwBadReuest('User is not existing')
   }
-  
-  const oldRefreshToken = await RefreshToken.findOne({
-    createdByIp: ipAddress,
-    createdByUserAgent: userAgent,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
-    user: _id,
-  })
-
-  if (!oldRefreshToken) {
-    await sendMailWithTemplate(
-      user.email,
-      MAIL_TEMPLATES.CREATED_FROM_UNKNOWN_DEVICE,
-      {
-        name: user.name,
-        ipAddress,
-        userAgent,
-      }
-    )
-  }
-
-  const tokens = await getActiveRefreshTokens(user._id)
-  if (tokens.length > maxRefreshTokens) {
-    await sendMailWithTemplate(
-      user.email,
-      MAIL_TEMPLATES.MORE_THEN_ALLOWED_CONNECTED_DEVICES,
-      {
-        name: user.name,
-      }
-    )
-
-    const oldestToken = tokens.sort(
-      (a: iRefreshToken, b: iRefreshToken) => a.expires.getTime() - b.expires.getTime()
-    )[0]
-    await revokeRefreshToken(oldestToken.token, ipAddress, userAgent)
-  }
-
-  return await RefreshToken.create({
-    user: _id,
-    token: randomTokenString(),
-    expires: new Date(Date.now() + jwtRefreshExpiry * 1000),
-    createdByIp: ipAddress,
-    createdByUserAgent: userAgent,
-  })
 }
 
 export const getActiveRefreshTokens = async (_id: string) => {

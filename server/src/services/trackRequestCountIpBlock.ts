@@ -22,7 +22,7 @@ async function _checkForExistingIpBlock(clientIP: string) {
   try {
     const blockedIP = await IpBlock.findOne({ ip: clientIP })
 
-    if (blockedIP && blockedIP.blockedUntil > Date.now()) {
+    if (blockedIP && blockedIP.blockedUntil > new Date()) {
       throwForbidden('IP got blocked')
     }
   } catch (error) {

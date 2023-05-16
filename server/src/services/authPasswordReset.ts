@@ -64,7 +64,7 @@ export const setNewPassword = async (token: string, password: string) => {
     throwBadReuest('Bad Token')
   }
 
-  let user: (iUser & { save: () => Promise<iUser> }) | undefined = undefined
+  let user: (iUser & { save: () => Promise<iUser> }) | null = null
   if (!payload || !payload.token) {
     throwBadReuest('Bad Token')
   } else {

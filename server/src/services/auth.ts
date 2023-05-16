@@ -10,12 +10,7 @@ import {
   revokeRefreshTokenById,
 } from '../services/authToken'
 import User, { iUpdateUser } from '../models/user'
-import {
-  AUTHORIZATION,
-  BEARER,
-  UNKNOWN,
-  USER_AGENT,
-} from '../lib/const'
+import { AUTHORIZATION, BEARER, UNKNOWN, USER_AGENT } from '../lib/const'
 import { randomTokenString } from '../lib/helpers'
 import {
   throwBadReuest,
@@ -82,37 +77,38 @@ export const signIn = async (
 ) => {
   const user = await User.findOne({ transfercode: transfercode })
 
-  if (!transfercode || !user) {
-    throwBadReuest('User is not authenticated')
-  }
-
-  if (password || user.password) {
-    const isMatch = password
-      ? await bcrypt.compare(password, user.password)
-      : false
-    if (!isMatch) {
-      throwBadReuest(
-        'User is not authenticated, more access function not done now'
-      )
+  if (user && transfercode) {
+    if (password || user.password) {
+      const isMatch =
+        password && user.password
+          ? await bcrypt.compare(password, user.password)
+          : false
+      if (!isMatch) {
+        throwBadReuest(
+          'User is not authenticated, more access function not done now'
+        )
+      }
     }
-  }
 
-  const refreshTokenDb = await generateRefreshToken(
-    user._id,
-    req.socket.remoteAddress || '0.0.0.0',
-    req.headers[USER_AGENT] || UNKNOWN
-  )
+    const refreshTokenDb = await generateRefreshToken(
+      user._id,
+      req.socket.remoteAddress || '0.0.0.0',
+      req.headers[USER_AGENT] || UNKNOWN
+    )
 
-  const userPayload: JwtUserPayloadInterface = {
-    token: refreshTokenDb.token,
-  }
+    const userPayload: JwtUserPayloadInterface = {
+      token: refreshTokenDb.token,
+    }
 
-  const token = _createTokensAndResponse(res, userPayload)
+    const token = _createTokensAndResponse(res, userPayload)
 
-  if (user) {
-    //We do a redirect after login so the client does not cache the login page datas
-    //We do this with a exception so the apollo server middleware does stop the request and the redirect can be done
-    throwRedirectError(successRedirect, token)
+    if (user) {
+      //We do a redirect after login so the client does not cache the login page datas
+      //We do this with a exception so the apollo server middleware does stop the request and the redirect can be done
+      throwRedirectError(successRedirect, token)
+    }
+  } else {
+    throwBadReuest('User is not authenticated')
   }
 }
 
@@ -130,12 +126,17 @@ export const refresh = async (req: Request, res: Response) => {
       req.socket.remoteAddress || '0.0.0.0',
       req.headers[USER_AGENT] || UNKNOWN
     )
-    const newUserPayload: JwtUserPayloadInterface = {
-      token: newRefreshTokenDb.token,
-    }
+    if (newRefreshTokenDb) {
+      const newUserPayload: JwtUserPayloadInterface = {
+        token: newRefreshTokenDb.token,
+      }
 
-    _createTokensAndResponse(res, newUserPayload)
-    return newUserPayload
+      _createTokensAndResponse(res, newUserPayload)
+      return newUserPayload
+    } else {
+      _clearTokensAndResponse(res)
+      throwBadReuest('User is not authenticated')
+    }
   } catch (error) {
     _clearTokensAndResponse(res)
     console.error(error)

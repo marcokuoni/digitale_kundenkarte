@@ -27,6 +27,6 @@ export const Query = {
     },
     async getIpBlocks(root: never, args: never, context: ServerContext) {
       checkAccessRights(context.user, [USER_ROLES.ADMIN])
-      return ipBlock.find()
+      return await ipBlock.find()
     },
   }

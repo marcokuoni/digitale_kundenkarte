@@ -11,52 +11,56 @@ export const addStamp = async (
   let card = null
   const userDb = await User.findOne({ _id: user._id })
 
-  if (userDb.cards && userDb.cards.length > 0) {
-    card = userDb.cards.sort(
-      (a: iCard, b: iCard) =>
-        b.creationDate.getTime() - a.creationDate.getTime()
-    )[0]
-  }
+  if (userDb) {
+    if (userDb.cards && userDb.cards.length > 0) {
+      card = userDb.cards.sort(
+        (a: iCard, b: iCard) =>
+          b.creationDate.getTime() - a.creationDate.getTime()
+      )[0]
+    }
 
-  if (card && card.blockedUntil > new Date()) {
-    throwBadReuest('Card is blocked')
-  }
+    if (card && card.blockedUntil > new Date()) {
+      throwBadReuest('Card is blocked')
+    }
 
-  if (!userDb.cards) {
-    userDb.cards = []
-  }
+    if (!userDb.cards) {
+      userDb.cards = []
+    }
 
-  const blockedUntil = new Date(
-    Date.now() + 1000 * 60 * urlTokenPayload.blockForMinutes
-  )
+    const blockedUntil = new Date(
+      Date.now() + 1000 * 60 * urlTokenPayload.blockForMinutes
+    )
 
-  if (!card) {
-    card = _createNewCard(blockedUntil)
-    userDb.cards = [card]
-    card = userDb.cards[0]
+    if (!card) {
+      card = _createNewCard(blockedUntil)
+      userDb.cards = [card]
+      card = userDb.cards[0]
+    } else {
+      card.blockedUntil = blockedUntil
+    }
+
+    if (card && card.stamps.length >= stampsLength) {
+      const newCard = _createNewCard(blockedUntil)
+      newCard.stamps = [
+        {
+          creationDate: new Date(),
+        },
+      ]
+      userDb.cards = [newCard, ...userDb.cards]
+    } else {
+      card.stamps = [
+        {
+          creationDate: new Date(),
+        },
+        ...card.stamps,
+      ]
+    }
+
+    await userDb.save()
+    return userDb
   } else {
-    card.blockedUntil = blockedUntil
+    throwBadReuest('User not found')
   }
-
-  if (card && card.stamps.length >= stampsLength) {
-    const newCard = _createNewCard(blockedUntil)
-    newCard.stamps = [
-      {
-        creationDate: new Date(),
-      },
-    ]
-    userDb.cards = [newCard, ...userDb.cards]
-  } else {
-    card.stamps = [
-      {
-        creationDate: new Date(),
-      },
-      ...card.stamps,
-    ]
-  }
-
-  await userDb.save()
-  return userDb
 }
 
 export const honourCardFrom = async (transfercode: string) => {

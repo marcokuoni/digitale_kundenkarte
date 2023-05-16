@@ -99,18 +99,18 @@ Komponenten:
 
 Komponenten:
 * Abhängingkeiten
-    * "@apollo/server": "^4.4.1", API Connector Server
-    * "@graphql-tools/graphql-file-loader": "^7.5.16", API Definitionen
-    * "@graphql-tools/load": "^7.8.13", API Definitionen
-    * "graphql": "^16.6.0", API Definitionen
-    * "bcrypt": "^5.1.0", Passwort hashing
-    * "cookie-parser": "^1.4.6", Express Middleware für Cookies
-    * "cors": "^2.8.5", Express Middleware für CORS
-    * "crypto": "^1.0.1", Crypto libary zur Erzeugung zufälliger Zeichenketten
-    * "express": "^4.18.2", Web Applikation Framework für NodeJs
-    * "jsonwebtoken": "^9.0.0", JSON Web Token für signierte Tokens
-    * "mongoose": "^5.4.10", MongoDB Connector
-    * "nodemailer": "^6.9.2", E-Mail Connector
+    * @apollo/server, API Connector Server
+    * @graphql-tools/graphql-file-loader": "^7.5.16", API Definitionen
+    * @graphql-tools/load": "^7.8.13", API Definitionen
+    * graphql": "^16.6.0", API Definitionen
+    * bcrypt": "^5.1.0", Passwort hashing
+    * cookie-parser": "^1.4.6", Express Middleware für Cookies
+    * cors": "^2.8.5", Express Middleware für CORS
+    * crypto": "^1.0.1", Crypto libary zur Erzeugung zufälliger Zeichenketten
+    * express": "^4.18.2", Web Applikation Framework für NodeJs
+    * jsonwebtoken": "^9.0.0", JSON Web Token für signierte Tokens
+    * mongoose": "^5.4.10", MongoDB Connector
+    * nodemailer": "^6.9.2", E-Mail Connector
 * Abhängigkeiten zur Entwicklung
     * GraphQL Codegen, erzeugt aus Schnittstellendefintion auf der API und dem Frontend automatisch Typisierung und Requests
     * Rollup und Plugins: Typescript, CommonJs, Node Resolve, Terser, Svelte, Replace (ENV Variablen), CSS, Livereload, Workbox, Serve
