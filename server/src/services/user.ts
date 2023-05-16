@@ -43,7 +43,7 @@ export const createUser = async (values: iUpdateUser) => {
   if (count === 0) {
     newValues.userRoles = [USER_ROLES.ADMIN]
     if (!newValues.password) {
-      newValues.password = randomTokenString()
+      newValues.password = await randomTokenString()
     }
   }
 

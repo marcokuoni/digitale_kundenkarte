@@ -40,12 +40,13 @@ export const sendValidationMail = async (email: string) => {
       token: user._id,
     }
 
+    const jwtid = await randomTokenString()
     const validateToken = jwt.sign(payload, emailValidateKey, {
       algorithm: 'HS256',
       expiresIn: jwtEmailValidateExpiry,
       issuer: process.env.SERVER_URL || 'https://karte.localhost',
       audience: process.env.CLIENT_URL || 'https://karte.localhost',
-      jwtid: randomTokenString(),
+      jwtid
     })
 
     user.emailValidateToken = validateToken

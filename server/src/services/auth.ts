@@ -100,7 +100,7 @@ export const signIn = async (
       token: refreshTokenDb.token,
     }
 
-    const token = _createTokensAndResponse(res, userPayload)
+    const token = await _createTokensAndResponse(res, userPayload)
 
     if (user) {
       //We do a redirect after login so the client does not cache the login page datas
@@ -131,7 +131,7 @@ export const refresh = async (req: Request, res: Response) => {
         token: newRefreshTokenDb.token,
       }
 
-      _createTokensAndResponse(res, newUserPayload)
+      await _createTokensAndResponse(res, newUserPayload)
       return newUserPayload
     } else {
       _clearTokensAndResponse(res)
@@ -167,23 +167,25 @@ const _clearTokensAndResponse = (res: Response) => {
   })
 }
 
-const _createTokensAndResponse = (
+const _createTokensAndResponse = async (
   res: Response,
   userPayload: JwtUserPayloadInterface
 ) => {
+  let jwtid = await randomTokenString()
   const token = jwt.sign(userPayload, jwtKey, {
     algorithm: 'HS256',
     expiresIn: jwtExpiry,
     issuer: process.env.SERVER_URL || 'https://karte.localhost',
     audience: process.env.CLIENT_URL || 'https://karte.localhost',
-    jwtid: randomTokenString(),
+    jwtid
   })
+  jwtid = await randomTokenString()
   const refreshToken = jwt.sign(userPayload, jwtRefreshKey, {
     algorithm: 'HS256',
     expiresIn: jwtRefreshExpiry,
     issuer: process.env.SERVER_URL || 'https://karte.localhost',
     audience: process.env.CLIENT_URL || 'https://karte.localhost',
-    jwtid: randomTokenString(),
+    jwtid
   })
   res
     .setHeader(AUTHORIZATION, `${BEARER} ${token}`)

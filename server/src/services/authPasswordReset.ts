@@ -36,12 +36,13 @@ export const resetPassword = async (email: string) => {
       token: user._id,
     }
 
+    const jwtid = await randomTokenString()
     const resetToken = jwt.sign(payload, emailResetKey, {
       algorithm: 'HS256',
       expiresIn: jwtEmailResetExpiry,
       issuer: process.env.SERVER_URL || 'https://karte.localhost',
       audience: process.env.CLIENT_URL || 'https://karte.localhost',
-      jwtid: randomTokenString(),
+      jwtid
     })
 
     user.passwordResetToken = resetToken

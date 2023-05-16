@@ -166,9 +166,10 @@ export const generateRefreshToken = async (
       await revokeRefreshToken(oldestToken.token, ipAddress, userAgent)
     }
 
+    const token = await randomTokenString()
     return await RefreshToken.create({
       user: _id,
-      token: randomTokenString(),
+      token,
       expires: new Date(Date.now() + jwtRefreshExpiry * 1000),
       createdByIp: ipAddress,
       createdByUserAgent: userAgent,

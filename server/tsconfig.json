@@ -5,7 +5,8 @@
     "checkJs": true,
     "outDir": "./dist",
     "moduleResolution": "node",
-    "types": ["node"]
+    "types": ["node"],
+    "lib": ["es5", "es2015.collection"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]

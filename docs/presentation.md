@@ -72,7 +72,16 @@ Komponenten:
 ## Stacks
 ### Frontend
 `npm install` -> added 756 packages, and audited 757 packages in 8s
+From 3rd Parties:
+* npm WARN deprecated rollup-plugin-terser@7.0.2: This package has been deprecated and is no longer maintained. Please use @rollup/plugin-terser
+* npm WARN deprecated rollup-plugin-terser@7.0.2: This package has been deprecated and is no longer maintained. Please use @rollup/plugin-terser
+* npm WARN deprecated sourcemap-codec@1.4.8: Please use @jridgewell/sourcemap-codec instead
 `npm audit` -> found 0 vulnerabilities
+`npm outdated` -> 
+| Package               | Current | Wanted | Latest | Location                           | Depended by |
+| --------------------- | --------| ------ | ------ | ---------------------------------- | ----------- |
+| rollup-plugin-workbox | 6.2.2   | 6.2.2  | 7.0.1  | node_modules/rollup-plugin-workbox | client      |
+* rollup-plugin-workbox version 7 has still unsolved bugs: expl https://github.com/modernweb-dev/web/issues/2261
 
 Komponenten:
 * Abhängingkeiten
@@ -94,23 +103,23 @@ Komponenten:
     * Typendefinitionen: Workbox window
 
 ### API
-`npm install` -> added 392 packages, and audited 393 packages in 3s
+`npm install` -> added 381 packages, and audited 382 packages in 3s
 `npm audit` -> found 0 vulnerabilities
+`npm outdated` -> no response
 
 Komponenten:
 * Abhängingkeiten
     * @apollo/server, API Connector Server
-    * @graphql-tools/graphql-file-loader": "^7.5.16", API Definitionen
-    * @graphql-tools/load": "^7.8.13", API Definitionen
-    * graphql": "^16.6.0", API Definitionen
-    * bcrypt": "^5.1.0", Passwort hashing
-    * cookie-parser": "^1.4.6", Express Middleware für Cookies
-    * cors": "^2.8.5", Express Middleware für CORS
-    * crypto": "^1.0.1", Crypto libary zur Erzeugung zufälliger Zeichenketten
-    * express": "^4.18.2", Web Applikation Framework für NodeJs
-    * jsonwebtoken": "^9.0.0", JSON Web Token für signierte Tokens
-    * mongoose": "^5.4.10", MongoDB Connector
-    * nodemailer": "^6.9.2", E-Mail Connector
+    * @graphql-tools/graphql-file-loader, API Definitionen
+    * @graphql-tools/load, API Definitionen
+    * graphql, API Definitionen
+    * bcrypt, Passwort hashing
+    * cookie-parser, Express Middleware für Cookies
+    * cors, Express Middleware für CORS
+    * express, Web Applikation Framework für NodeJs
+    * jsonwebtoken, JSON Web Token für signierte Tokens
+    * mongoose, MongoDB Connector
+    * nodemailer, E-Mail Connector
 * Abhängigkeiten zur Entwicklung
     * GraphQL Codegen, erzeugt aus Schnittstellendefintion auf der API und dem Frontend automatisch Typisierung und Requests
     * Rollup und Plugins: Typescript, CommonJs, Node Resolve, Terser, Svelte, Replace (ENV Variablen), CSS, Livereload, Workbox, Serve
