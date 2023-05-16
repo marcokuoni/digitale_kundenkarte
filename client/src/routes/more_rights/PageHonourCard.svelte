@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { honourCardFrom } from '../../codegen'
-  import MoreRightPage from '../../components/layouts/MoreRightPageLayout.svelte'
+  import MoreRightsPage from '../../components/layouts/MoreRightsPageLayout.svelte'
   import { BUTTON_TYPES, INPUT_TYPES, NAMES } from '../../lib/const'
   import { Wave } from 'svelte-loading-spinners'
 
@@ -46,7 +46,7 @@
   }
 </script>
 
-<MoreRightPage title="Karte Einlösen">
+<MoreRightsPage title="Karte Einlösen">
   {#if loading}
     <Wave size="100" color="#FF3E00" unit="px" />
   {/if}
@@ -66,4 +66,4 @@
       <span>Keine Karte konnte eingelöst werden</span>
     {/if}
   </p>
-</MoreRightPage>
+</MoreRightsPage>

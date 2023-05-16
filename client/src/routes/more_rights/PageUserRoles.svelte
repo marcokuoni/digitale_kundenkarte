@@ -1,5 +1,5 @@
 <script lang="ts">
-  import MoreRightPage from '../../components/layouts/MoreRightPageLayout.svelte'
+  import MoreRightsPage from '../../components/layouts/MoreRightsPageLayout.svelte'
   import { getUsersWithPassword, updateUserRoles } from '../../codegen'
   import { Wave } from 'svelte-loading-spinners'
   import { BUTTON_TYPES, FETCH_POLICY, INPUT_TYPES, NAMES, USER_ROLES } from '../../lib/const'
@@ -38,7 +38,7 @@
   }
 </script>
 
-<MoreRightPage title="Benutzer Gruppen verwalten">
+<MoreRightsPage title="Benutzer Gruppen verwalten">
   {#if loading}
     <Wave size="100" color="#FF3E00" unit="px" />
   {/if}
@@ -90,7 +90,7 @@
       {/each}
     </tbody>
   </table>
-</MoreRightPage>
+</MoreRightsPage>
 
 <style>
 </style>

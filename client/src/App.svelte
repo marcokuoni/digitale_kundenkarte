@@ -3,7 +3,6 @@
 
   import Online from './components/Online.svelte'
 
-  // Our routes from /src/routes/
   import PageCard from './routes/PageCard.svelte'
   import PageCreateUser from './routes/PageCreateUser.svelte'
   import PageAddStamp from './routes/PageAddStamp.svelte'
