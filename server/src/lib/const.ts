@@ -26,6 +26,7 @@ export enum MAIL_TEMPLATES {
     VERIFY_EMAIL = 'verify-email',
     RESEND_TRANSFERCODE = 'resend-transfercode',
     PASSWORD_CHANGED = 'password-changed',
+    EMAIL_CHANGED = 'email-changed',
 }
 
 export enum STATES {

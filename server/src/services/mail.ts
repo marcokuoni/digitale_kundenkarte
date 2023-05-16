@@ -36,6 +36,8 @@ interface MailTemplateData {
   userAgent?: string
   validateToken?: string
   transfercode?: string
+  oldEMail?: string
+  newEMail?: string
 }
 
 export const sendMailWithTemplate = async (
@@ -109,7 +111,23 @@ const _getMailTemplate = (template: string, data?: MailTemplateData) => {
                 Dein Karte Team`,
       }
       break
+      case MAIL_TEMPLATES.EMAIL_CHANGED:
+      mailContent = {
+        subject: 'E-Mailadresse geändert',
+        text: `
+                Hallo ${data?.name},
 
+                Deine E-Mailadresse wurde geändert von ${data?.oldEMail} zu ${data?.newEMail}. 
+                
+                Falls du das nicht warst, melde dich über die App von allen Geräten ab und ändere bitte deine E-Mailadresse zurück und passe dein PAsswort an.
+
+                Von Geräten abmelden: ${process.env.CLIENT_URL}/${PATHS.SETTINGS}/${PATHS.CONNECTED}
+                E-Mailadresse, Passwort ändern: ${process.env.CLIENT_URL}/${PATHS.SETTINGS}/${PATHS.PROFILE}
+
+                Viele Grüße,
+                Dein Karte Team`,
+      }
+      break
     case MAIL_TEMPLATES.TOKEN_USED_TWICE:
       mailContent = {
         subject: 'Deine Verbindung wurde doppelt verwendet',

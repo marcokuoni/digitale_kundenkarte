@@ -3,7 +3,6 @@ import User from '../models/user'
 import { randomTokenString } from '../lib/helpers'
 import { MAIL_TEMPLATES, USER_ROLES } from '../lib/const'
 import { changeEmail, changePasssword } from '../lib/userHelper'
-import { throwBadReuest } from '../lib/exceptions'
 import { sendMailWithTemplate } from './mail'
 
 export const updateUser = async (
@@ -19,9 +18,7 @@ export const updateUser = async (
     await changePasssword(newValues, newValues.password)
   }
 
-  if (newValues.email !== currentUser.email && newValues.email) {
-    await changeEmail(newValues, newValues.email)
-  }
+  await changeEmail(newValues, currentUser)
 
   return await User.findOneAndUpdate({ _id }, newValues, { new: true })
 }
@@ -54,9 +51,7 @@ export const createUser = async (values: iUpdateUser) => {
     await changePasssword(newValues, newValues.password)
   }
 
-  if (newValues.email) {
-    await changeEmail(newValues, newValues.email)
-  }
+  await changeEmail(newValues)
 
   return await User.create({
     ...newValues,
