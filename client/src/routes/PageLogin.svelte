@@ -13,6 +13,7 @@
   import Logout from '../components/Logout.svelte'
   import { formatRelativeTimeS } from '../lib/formater'
   import { Wave } from 'svelte-loading-spinners'
+  import Separator from '../components/Separator.svelte'
 
   export let withPassword: string = ''
 
@@ -62,49 +63,84 @@
   }
 </script>
 
-<h1>Anmelden</h1>
-{#if $currentUser}
-  <Logout />
-{:else}
-  {#if loading}
-    <Wave size="100" color="#FF3E00" unit="px" />
-  {/if}
-  <form on:submit|preventDefault={loginUser}>
-    <label for={NAMES.TRANSFERCODE}>Transfer Code</label>
-    <input
-      type={INPUT_TYPES.TEXT}
-      id={NAMES.TRANSFERCODE}
-      name={NAMES.TRANSFERCODE}
-      required
-      value=""
-    />
-    {#if withPassword !== ''}
-      <label for={NAMES.PASSWORD}>Passwort</label>
-      <input
-        type={INPUT_TYPES.PASSWORD}
-        id={NAMES.PASSWORD}
-        name={NAMES.PASSWORD}
-        required
-        value=""
-      />
-    {/if}
-    <button type={BUTTON_TYPES.SUBMIT}>Anmelden</button>
-  </form>
 
-  {#if withPassword !== ''}
-    <NavLink to={`/${PATHS.FORGOT_PASSWORD}`}>Passwort vergessen</NavLink>
-  {:else}
-    <NavLink to={`/${PATHS.CREATE_USER}`}
-      >Ich möchte eine Karte erstellen</NavLink
-    >
-  {/if}
-  <NavLink to={`/${PATHS.FORGOT_TRANSFERCODE}`}>Transfercode vergessen</NavLink>
-{/if}
-{#if withPassword !== ''}
-  <NavLink to={`/${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}
-    >Benutzer erstellen</NavLink
-  >
-  <NavLink to={`/${PATHS.HOME}`}>Startseite</NavLink>
-{:else}
-  <NavLink to={`/${PATHS.CARD}`}>Zu meiner Karte</NavLink>
-{/if}
+<main class="default-section">
+  <div class="default-wrapper">
+
+    <h1>Anmelden</h1>
+
+    {#if $currentUser}
+      <Logout />
+    {:else}
+
+      {#if loading} <Wave size="100" color="#FF3E00" unit="px"/> {/if}
+
+      <form on:submit|preventDefault={loginUser}>
+
+        <label for={NAMES.TRANSFERCODE}>Transfer Code:</label>
+        <input type={INPUT_TYPES.TEXT}
+               id={NAMES.TRANSFERCODE}
+               name={NAMES.TRANSFERCODE}
+               required
+               value=""/>
+
+        {#if withPassword !== ''}
+          <label for={NAMES.PASSWORD}>Passwort</label>
+          <input type={INPUT_TYPES.PASSWORD}
+                 id={NAMES.PASSWORD}
+                 name={NAMES.PASSWORD}
+                 required
+                 value=""/>
+        {/if}
+
+        <button type={BUTTON_TYPES.SUBMIT} class="default-button">Anmelden</button>
+
+      </form>
+
+      <Separator>oder</Separator>
+
+      {#if withPassword !== ''}
+        <NavLink to={`/${PATHS.FORGOT_PASSWORD}`}>Passwort vergessen</NavLink>
+      {:else}
+        <NavLink to={`/${PATHS.CREATE_USER}`}>Neue Karte erstellen</NavLink>
+      {/if}
+
+      <NavLink to={`/${PATHS.FORGOT_TRANSFERCODE}`}>Transfercode vergessen</NavLink>
+
+    {/if}
+
+    {#if withPassword !== ''}
+      <NavLink to={`/${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}>
+        Benutzer erstellen</NavLink>
+      <NavLink to={`/${PATHS.HOME}`}>Startseite</NavLink>
+    {:else}
+      <NavLink to={`/${PATHS.CARD}`}>Zu meiner Karte</NavLink>
+    {/if}
+
+  </div>
+</main>
+
+
+<style>
+
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  label {
+    font-size: 11pt;
+    font-weight: bold;
+  }
+
+  input {
+    color: var(--foreground-color);
+    background-color: var(--background-raised-color);
+
+    padding: 8px 12px;
+
+    border: none;
+    border-radius: 8px;
+  }
+
+</style>

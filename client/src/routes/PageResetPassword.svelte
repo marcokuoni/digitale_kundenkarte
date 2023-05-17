@@ -6,6 +6,7 @@
   import { resetPassword } from '../codegen'
   import { navigate } from 'svelte-routing'
   import { Wave } from 'svelte-loading-spinners'
+  import Separator from '../components/Separator.svelte'
 
   export let token = ''
 
@@ -37,34 +38,67 @@
   }
 </script>
 
-<h1>Passwort zürücksetzen</h1>
 
-{#if $currentUser}
-  <Logout />
-{:else}
-  {#if loading}
-    <Wave size="100" color="#FF3E00" unit="px" />
-  {/if}
-  {#if token === ''}
-    <p>Token fehlt. Versuche es noch einmal</p>
-  {:else}
-    <form on:submit|preventDefault={savePassword}>
-      <label for={NAMES.PASSWORD}>Passwort</label>
-      <input
-        type={INPUT_TYPES.PASSWORD}
-        id={NAMES.PASSWORD}
-        required
-        value=""
-      />
-      <button type={BUTTON_TYPES.SUBMIT}>Speichern</button>
-    </form>
-  {/if}
-{/if}
+<main class="default-section">
+  <div class="default-wrapper">
 
-<NavLink to={`/${PATHS.FORGOT_PASSWORD}`}>Passwort vergessen</NavLink>
-<NavLink to={`/${PATHS.FORGOT_TRANSFERCODE}`}>Transfercode vergessen</NavLink>
-<NavLink to={`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}>Anmelden</NavLink>
-<NavLink to={`/${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}
-  >Benutzer erstellen</NavLink
->
-<NavLink to={`/${PATHS.HOME}`}>Startseite</NavLink>
+    <h1>Passwort zurücksetzen</h1>
+
+    {#if $currentUser}
+      <Logout />
+    {:else}
+
+      {#if loading} <Wave size="100" color="#FF3E00" unit="px" /> {/if}
+
+      {#if token === ''}
+        <p>Token fehlt. Versuche es noch einmal</p>
+      {:else}
+        <form on:submit|preventDefault={savePassword}>
+
+          <label for={NAMES.PASSWORD}>Passwort</label>
+          <input type={INPUT_TYPES.PASSWORD}
+                 id={NAMES.PASSWORD}
+                 required
+                 value=""/>
+
+          <button type={BUTTON_TYPES.SUBMIT} class="default-button">Speichern</button>
+
+        </form>
+      {/if}
+    {/if}
+
+    <Separator>oder</Separator>
+
+    <NavLink to={`/${PATHS.FORGOT_PASSWORD}`}>Passwort vergessen</NavLink>
+    <NavLink to={`/${PATHS.FORGOT_TRANSFERCODE}`}>Transfercode vergessen</NavLink>
+    <NavLink to={`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}>Anmelden</NavLink>
+    <NavLink to={`/${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}>Benutzer erstellen</NavLink>
+    <NavLink to={`/${PATHS.HOME}`}>Startseite</NavLink>
+
+  </div>
+</main>
+
+
+<style>
+
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  label {
+    font-size: 11pt;
+    font-weight: bold;
+  }
+
+  input {
+    color: var(--foreground-color);
+    background-color: var(--background-raised-color);
+
+    padding: 8px 12px;
+
+    border: none;
+    border-radius: 8px;
+  }
+
+</style>

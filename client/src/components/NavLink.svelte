@@ -14,6 +14,8 @@
   }
 </script>
 
-<Link {to} {getProps}>
-  <slot />
-</Link>
+<div class="default-button">
+  <Link {to} {getProps}>
+    <slot />
+  </Link>
+</div>

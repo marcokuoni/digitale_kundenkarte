@@ -4,7 +4,7 @@
   import NavLink from './NavLink.svelte'
 </script>
 
-<p>Speichere dein Transfercode und Passwort in einen Passwort Manager.</p>
+<p>Tipp: Speichere dein Transfercode und Passwort in einen Passwort Manager.</p>
 
 {#if $currentUser && (!$currentUser.emailValidatedAt || !$currentUser.email)}
   <p>

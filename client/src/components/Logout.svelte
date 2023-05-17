@@ -41,4 +41,21 @@
   onDestroy(unsubscribe)
 </script>
 
-<button type={BUTTON_TYPES.BUTTON} on:click={logout}>Abmelden</button>
+<a type={BUTTON_TYPES.BUTTON} on:click={logout}>ABMELDEN</a>
+
+<style>
+
+    a {
+        cursor: pointer;
+        padding: 2px 4px;
+
+        font-size: 8pt;
+        font-weight: bold;
+        color: var(--secondary-color);
+        background-color: transparent;
+
+        border: none;
+        text-decoration: none;
+    }
+
+</style>
