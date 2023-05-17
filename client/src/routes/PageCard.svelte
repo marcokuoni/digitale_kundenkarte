@@ -1,7 +1,12 @@
 <script lang="ts">
   import Card from '../components/Card.svelte'
   import Logout from '../components/Logout.svelte'
-  import { NOOPENER_NPREFERRER, PATHS, PROCESS_ENV, TARGETS } from '../lib/const.js'
+  import {
+    NOOPENER_NPREFERRER,
+    PATHS,
+    PROCESS_ENV,
+    TARGETS,
+  } from '../lib/const.js'
   import currentUser from '../stores/currentUser'
   import HonourQrCode from '../components/HonourQrCode.svelte'
   import { formatRelativeTimeS } from '../lib/formater'
@@ -53,47 +58,50 @@
 
 <main>
   <EmailAlert>
-  {#if !$currentUser}
-    <!-- TODO: we need a way to communicate loading and alert states to the user? -->
-    <span>Loading...</span>
-    <Logout />
-  {:else}
-    <section class="card-section">
-      <div class="card-wrapper">
-        <Card {stamps} />
-      </div>
-    </section>
-
-    <section class="info-section">
-      <div class="info-wrapper">
-
-        {#if $currentUser && $currentUser.name}
-          <p class="info-label">Name</p>
-          <p class="info-text">{$currentUser.name}</p>
-        {/if}
-
-        <p class="info-label">Transfercode</p>
-        {#if $currentUser} <p class="info-text">{$currentUser.transfercode}</p> {/if}
-
-        <div class="info-group">
-          <div>
-            <p class="info-label">Stempel</p>
-            <p class="info-text">
-              {stampCount}<span class="stamps-secondary-text">/ 8</span>
-            </p>
-          </div>
-
-          <div>
-            <p class="info-label">Letzter</p>
-            {#if timeSpanToLastStamp !== 0}
-              <p class="info-text">
-                {timeSpanToLastStamp ? formatRelativeTimeS(timeSpanToLastStamp) : "-"}
-              </p>
-            {/if}
-          </div>
+    {#if !$currentUser}
+      <!-- TODO: we need a way to communicate loading and alert states to the user? -->
+      <span>Loading...</span>
+      <Logout />
+    {:else}
+      <section class="card-section">
+        <div class="card-wrapper">
+          <Card {stamps} />
         </div>
+      </section>
 
-        <!--
+      <section class="info-section">
+        <div class="info-wrapper">
+          {#if $currentUser && $currentUser.name}
+            <p class="info-label">Name</p>
+            <p class="info-text">{$currentUser.name}</p>
+          {/if}
+
+          <p class="info-label">Transfercode</p>
+          {#if $currentUser}
+            <p class="info-text">{$currentUser.transfercode}</p>
+          {/if}
+
+          <div class="info-group">
+            <div>
+              <p class="info-label">Stempel</p>
+              <p class="info-text">
+                {stampCount}<span class="stamps-secondary-text">/ 8</span>
+              </p>
+            </div>
+
+            <div>
+              <p class="info-label">Letzter</p>
+              {#if timeSpanToLastStamp !== 0}
+                <p class="info-text">
+                  {timeSpanToLastStamp
+                    ? formatRelativeTimeS(timeSpanToLastStamp)
+                    : '-'}
+                </p>
+              {/if}
+            </div>
+          </div>
+
+          <!--
         {#if $currentUser.cards.length > 0}
           <div class="info-group">
             <div>
@@ -110,25 +118,32 @@
           </div>
         {/if}
         -->
+        </div>
+      </section>
 
-      </div>
-    </section>
-
-    <section class="default-section footer">
-      <div class="default-wrapper">
-<!--        <NoteForMailAddressTransfercode />-->
-<!--        <NavLink to={`/${PATHS.SETTINGS}`}>Einstellungen</NavLink>-->
-        <a href={`/${PATHS.SETTINGS}`} target={TARGETS.SELF}>Settings</a>
-        <Logout />
-        <a href={PROCESS_ENV.CROWN_BAR_URL} target={TARGETS.BLANK} rel={NOOPENER_NPREFERRER}>Website</a>
-        <a href={PROCESS_ENV.CROWN_BAR_INSTA} target={TARGETS.BLANK} rel={NOOPENER_NPREFERRER}>Instagram</a>
-        {#if hasAFullCard}
-          <HonourQrCode transfercode={$currentUser.transfercode} />
-        {/if}
-      </div>
-    </section>
-  {/if}
-</EmailAlert>
+      <section class="default-section footer">
+        <div class="default-wrapper">
+          <!--        <NoteForMailAddressTransfercode />-->
+          <!--        <NavLink to={`/${PATHS.SETTINGS}`}>Einstellungen</NavLink>-->
+          <a href={`/${PATHS.SETTINGS}`} target={TARGETS.SELF}>Settings</a>
+          <Logout />
+          <a
+            href={PROCESS_ENV.CROWN_BAR_URL}
+            target={TARGETS.BLANK}
+            rel={NOOPENER_NPREFERRER}>Website</a
+          >
+          <a
+            href={PROCESS_ENV.CROWN_BAR_INSTA}
+            target={TARGETS.BLANK}
+            rel={NOOPENER_NPREFERRER}>Instagram</a
+          >
+          {#if hasAFullCard}
+            <HonourQrCode transfercode={$currentUser.transfercode} />
+          {/if}
+        </div>
+      </section>
+    {/if}
+  </EmailAlert>
 </main>
 
 <style>
@@ -216,5 +231,4 @@
 
     width: 100vw;
   }
-
 </style>

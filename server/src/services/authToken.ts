@@ -26,7 +26,12 @@ export const revokeRefreshToken = async (
   ipAddress: string,
   userAgent: string
 ) => {
-  const refreshToken = await getRefreshToken(token)
+  let refreshToken = null
+  try {
+    refreshToken = await getRefreshToken(token)
+  } catch (e) {
+    //Do nothing, token was already revoked
+  }
   if (refreshToken) {
     refreshToken.revoked = new Date()
     refreshToken.revokedByIp = ipAddress
@@ -50,8 +55,6 @@ export const revokeRefreshToken = async (
         )
       }
     }
-  } else {
-    throwBadReuest('Invalid token')
   }
 }
 
