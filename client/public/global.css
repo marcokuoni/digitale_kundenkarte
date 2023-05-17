@@ -51,6 +51,10 @@ body {
 	font-family: "Helvetica Now Display", "Helvetica Neue", "Helvetica", sans-serif;
 }
 
+input:focus {
+	outline: solid 1px var(--accent-color);
+}
+
 .default-section {
 	display: flex;
 	flex-direction: column;
