@@ -5,12 +5,15 @@
   export let title: string = ''
 </script>
 
-<main>
-  <h1>{title}</h1>
+<main class="default-section">
+  <div class="default-wrapper">
 
-  <NavLink to={`/${PATHS.HOME}`}>Home</NavLink>
+    <h1>{title}</h1>
 
-  <section>
     <slot />
-  </section>
+
+    <NavLink to={`/${PATHS.HOME}`}>Home</NavLink>
+
+  </div>
+
 </main>

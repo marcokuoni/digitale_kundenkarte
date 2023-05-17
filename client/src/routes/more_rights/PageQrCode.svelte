@@ -13,6 +13,7 @@
     TARGETS,
   } from '../../lib/const'
   import { Wave } from 'svelte-loading-spinners'
+  import Separator from '../../components/Separator.svelte'
 
   let currentDate = new Date()
 
@@ -106,6 +107,7 @@
 </script>
 
 <MoreRightsPage title="QR Code">
+
   {#if token === '' || validUntil <= currentDate}
     <p>Der QR Code ist abgelaufen. Bitte generiere einen neuen.</p>
   {:else}
@@ -122,47 +124,94 @@
       </div>
     </div>
   {/if}
-  {#if loading}
-    <Wave size="100" color="#FF3E00" unit="px" />
-  {/if}
+
+  {#if loading} <Wave size="100" color="#FF3E00" unit="px" /> {/if}
+
   <form on:submit|preventDefault={generateUrlTokenSubmit}>
+
     <p>
       Hinweis: Blocking Zeit sollte immer länger dauern als die Gültigkeit.
       Falls beim Scannen kein Internet vorhanden ist. Muss die Gültigkeit
       ausreichen, damit man in zwischen Zeit wieder Internet erlangen kann.
     </p>
-    <label for={NAMES.LONG_TIME_QR}>
-      <input
-        type="checkbox"
-        name={NAMES.LONG_TIME_QR}
-        id={NAMES.LONG_TIME_QR}
-        value={true}
-        bind:checked={longTimeQr}
-      />
-      QR Code für längere Zeit Gültig
-    </label>
+
+    <div class="form-input-wrapper">
+      <input type="checkbox"
+             name={NAMES.LONG_TIME_QR}
+             id={NAMES.LONG_TIME_QR}
+             value={true}
+             bind:checked={longTimeQr}/>
+      <label for={NAMES.LONG_TIME_QR}>
+        QR Code für längere Zeit Gültig
+      </label>
+    </div>
+
     {#if longTimeQr}
-      <label for={NAMES.VALID_UNTIL}>Gültig bis</label>
-      <input
-        type="datetime-local"
-        name={NAMES.VALID_UNTIL}
-        id={NAMES.VALID_UNTIL}
-        bind:value={validUntilInput}
-        required
-      />
+      <div class="form-input-wrapper">
+        <label for={NAMES.VALID_UNTIL}>Gültig bis</label>
+        <input
+                type="datetime-local"
+                name={NAMES.VALID_UNTIL}
+                id={NAMES.VALID_UNTIL}
+                bind:value={validUntilInput}
+                required
+        />
+      </div>
     {/if}
-    <label for={NAMES.BLOCK_FOR_MINUTES}
-      >QR Code blockieren für [Min] (Empfohlen > {_getMinTimeDiff(
-        validUntilInput
-      )})</label
-    >
-    <input
-      type="number"
-      name={NAMES.BLOCK_FOR_MINUTES}
-      id={NAMES.BLOCK_FOR_MINUTES}
-      bind:value={blockForMinutesInput}
-      required
-    />
-    <button type={BUTTON_TYPES.SUBMIT}>QR Code generieren</button>
+
+    <div class="form-input-wrapper">
+      <label for={NAMES.BLOCK_FOR_MINUTES}>
+        Blockieren in min (Empfohlen > {_getMinTimeDiff(validUntilInput)})
+      </label>
+      <input class="full-width-input"
+             type="number"
+             name={NAMES.BLOCK_FOR_MINUTES}
+             id={NAMES.BLOCK_FOR_MINUTES}
+             bind:value={blockForMinutesInput}
+             required/>
+
+      <button class="default-button full-width-button" type={BUTTON_TYPES.SUBMIT}>QR Code generieren</button>
+    </div>
+
   </form>
+
+  <Separator>oder</Separator>
+
 </MoreRightsPage>
+
+
+<style>
+
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .form-input-wrapper {
+    margin: 8px 0;
+  }
+
+  label {
+    font-size: 11pt;
+    font-weight: bold;
+  }
+
+  input {
+    color: var(--foreground-color);
+    background-color: var(--background-raised-color);
+
+    padding: 8px 12px;
+
+    border: none;
+    border-radius: 8px;
+  }
+
+  .full-width-input {
+    width: calc(100% - 24px);
+  }
+
+  .full-width-button {
+    width: 100%;
+  }
+
+</style>
