@@ -3,6 +3,7 @@
   import NavLink from '../../components/NavLink.svelte'
   import { PATHS } from '../../lib/const'
   import currentUser from '../../stores/currentUser'
+  import Separator from '../../components/Separator.svelte'
 
   let hasMoreRights = false
   const unsubscribe = currentUser.subscribe((currentUser) => {
@@ -22,18 +23,20 @@
   <div class="default-wrapper">
 
     <h1>Einstellungen</h1>
-    <div>
-      {#if hasMoreRights}
-        <NavLink to={`/${PATHS.HOME}`}>Startseite</NavLink>
-      {:else}
-        <NavLink to={`/${PATHS.CARD}`}>Zu meiner Karte</NavLink>
-      {/if}
-    </div>
+
     <div>
       <NavLink to={`/${PATHS.SETTINGS}/${PATHS.PROFILE}`}>Profil</NavLink>
-      <NavLink to={`/${PATHS.SETTINGS}/${PATHS.CONNECTED}`}
-      >Verbundene Geräte</NavLink
-      >
+      <NavLink to={`/${PATHS.SETTINGS}/${PATHS.CONNECTED}`}>Verbundene Geräte</NavLink>
+    </div>
+
+    <Separator>oder</Separator>
+
+    <div>
+      {#if hasMoreRights}
+        <NavLink to={`/${PATHS.HOME}`}>Zurück zur Startseite</NavLink>
+      {:else}
+        <NavLink to={`/${PATHS.CARD}`}>Zurück zu meiner Karte</NavLink>
+      {/if}
     </div>
 
   </div>
