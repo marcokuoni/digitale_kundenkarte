@@ -39,58 +39,103 @@
 </script>
 
 <MoreRightsPage title="Benutzer Gruppen verwalten">
-  {#if loading}
-    <Wave size="100" color="#FF3E00" unit="px" />
-  {/if}
-  {#if $query.error || error}
-    <span>{$query?.error?.message || error}</span>
-  {/if}
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>E-Mail</th>
-        <th>Name</th>
-        <th>Benutzergruppen</th>
-      </tr>
-    </thead>
-    <tbody>
-      {#each $query.data?.getUsersWithPassword || [] as user}
-        <tr>
-          <td>{user._id}</td>
-          <td>{user.email}</td>
-          <td>{user.name}</td>
-          <td>
-            <form on:submit|preventDefault={submitUpdateUser}>
-              <input type={INPUT_TYPES.HIDDEN} id={NAMES.ID} name={NAMES.ID} value={user._id} />
-              <label>
-                <input
-                  type={INPUT_TYPES.CHECKBOX}
-                  id={USER_ROLES.ADMIN}
-                  name={NAMES.USER_ROLES}
-                  value={USER_ROLES.ADMIN}
-                  checked={user.userRoles.includes(USER_ROLES.ADMIN)}
-                />
-                Administrator
-              </label>
-              <label>
-                <input
-                type={INPUT_TYPES.CHECKBOX}
-                  id={USER_ROLES.EMPLOYEE}
-                  name={NAMES.USER_ROLES}
-                  value={USER_ROLES.EMPLOYEE}
-                  checked={user.userRoles.includes(USER_ROLES.EMPLOYEE)}
-                />
-                Mitarbeiter
-              </label>
-              <button type={BUTTON_TYPES.SUBMIT}>Benutzer aktuallisieren</button>
-            </form>
-          </td>
-        </tr>
-      {/each}
-    </tbody>
-  </table>
+
+  {#if loading} <Wave size="100" color="#FF3E00" unit="px" /> {/if}
+
+  {#if $query.error || error} <span>{$query?.error?.message || error}</span> {/if}
+
+  <div class="user-groups-list">
+
+    {#each $query.data?.getUsersWithPassword || [] as user}
+      <div class="user-group-block">
+
+        <div class="user-group-item">
+          <p>ID:</p>
+          <p>{user._id || "–"}</p>
+        </div>
+
+        <div class="user-group-item">
+          <p>E-Mail:</p>
+          <p>{user.email || "–"}</p>
+        </div>
+
+        <div class="user-group-item">
+          <p>Gruppenname:</p>
+          <p>{user.name || "–"}</p>
+        </div>
+
+        <div class="user-group-item">
+          <form on:submit|preventDefault={submitUpdateUser}>
+
+            <input type={INPUT_TYPES.HIDDEN} id={NAMES.ID} name={NAMES.ID} value={user._id} />
+
+            <label>
+              <input type={INPUT_TYPES.CHECKBOX}
+                     id={USER_ROLES.ADMIN}
+                     name={NAMES.USER_ROLES}
+                     value={USER_ROLES.ADMIN}
+                     checked={user.userRoles.includes(USER_ROLES.ADMIN)}/>
+              Administrator
+            </label>
+
+            <label >
+              <input type={INPUT_TYPES.CHECKBOX}
+                     id={USER_ROLES.EMPLOYEE}
+                     name={NAMES.USER_ROLES}
+                     value={USER_ROLES.EMPLOYEE}
+                     checked={user.userRoles.includes(USER_ROLES.EMPLOYEE)}/>
+              Mitarbeiter
+            </label>
+
+
+
+            <button class="default-button" type={BUTTON_TYPES.SUBMIT}>Benutzer aktualisieren</button>
+
+          </form>
+        </div>
+
+      </div>
+    {/each}
+
+  </div>
+
 </MoreRightsPage>
 
+
 <style>
+
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  label {
+    font-size: 11pt;
+    font-weight: bold;
+  }
+
+  input {
+    color: var(--foreground-color);
+    background-color: var(--background-raised-color);
+
+    padding: 8px 12px;
+
+    border: none;
+    border-radius: 8px;
+  }
+
+  .user-group-block {
+    border: 1px solid var(--background-raised-color);
+    border-radius: 8px;
+    padding: 12px;
+  }
+
+  .user-group-item {
+    margin: 8px 0;
+  }
+
+  .user-group-item p:nth-child(1) {
+    opacity: 0.5;
+  }
+
 </style>
