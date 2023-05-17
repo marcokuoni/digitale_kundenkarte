@@ -6,6 +6,7 @@
   import { resendTransfercode } from '../codegen'
   import { Wave } from 'svelte-loading-spinners'
   import NoteForValidatedMailAddress from '../components/NoteForValidatedMailAddress.svelte'
+  import Separator from '../components/Separator.svelte'
 
   let success = false
   let loading = false
@@ -35,36 +36,69 @@
   }
 </script>
 
-<h1>Transfercode vergessen</h1>
+<main class="default-section">
+  <div class="default-wrapper">
 
-{#if $currentUser}
-  <Logout />
-{:else if success}
-  <p>
-    Bitte prüfe dein E-Mail Postfach und folge den Anweisungen darin. Im
-    Ausnahme Fall kann es auch im Spam Ordner landen.
-  </p>
-{:else}
-  {#if loading}
-    <Wave size="100" color="#FF3E00" unit="px" />
-  {/if}
-  <NoteForValidatedMailAddress />
-  <form on:submit|preventDefault={resendTransfercodeHandler}>
-    <label for={NAMES.EMAIL}>E-Mail</label>
-    <input
-      type={INPUT_TYPES.EMAIL}
-      id={NAMES.EMAIL}
-      name={NAMES.EMAIL}
-      required
-      value=""
-    />
-    <button type={BUTTON_TYPES.SUBMIT}>Anfragen</button>
-  </form>
-{/if}
+    <h1>Transfercode vergessen</h1>
 
-<NavLink to={`/${PATHS.FORGOT_PASSWORD}`}>Passwort vergessen</NavLink>
-<NavLink to={`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}>Anmelden</NavLink>
-<NavLink to={`/${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}
-  >Benutzer erstellen</NavLink
->
-<NavLink to={`/${PATHS.HOME}`}>Startseite</NavLink>
+    {#if $currentUser}
+      <Logout />
+    {:else if success}
+      <p>
+        Bitte prüfe dein E-Mail Postfach und folge den Anweisungen darin. Im
+        Ausnahme Fall kann es auch im Spam Ordner landen.
+      </p>
+    {:else}
+
+      {#if loading} <Wave size="100" color="#FF3E00" unit="px" /> {/if}
+
+      <NoteForValidatedMailAddress />
+
+      <form on:submit|preventDefault={resendTransfercodeHandler}>
+        <label for={NAMES.EMAIL}>E-Mail</label>
+        <input type={INPUT_TYPES.EMAIL}
+               id={NAMES.EMAIL}
+               name={NAMES.EMAIL}
+               required
+               value=""/>
+
+        <button type={BUTTON_TYPES.SUBMIT} class="default-button">Anfragen</button>
+      </form>
+
+    {/if}
+
+    <Separator>oder</Separator>
+
+    <NavLink to={`/${PATHS.FORGOT_PASSWORD}`}>Passwort vergessen</NavLink>
+<!--    <NavLink to={`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}>Anmelden</NavLink>-->
+<!--    <NavLink to={`/${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}>Benutzer erstellen</NavLink>-->
+    <NavLink to={`/${PATHS.HOME}`}>Startseite</NavLink>
+
+  </div>
+</main>
+
+
+<style>
+
+  form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 12px;
+  }
+
+  label {
+    font-size: 11pt;
+    font-weight: bold;
+  }
+
+  input {
+    color: var(--foreground-color);
+    background-color: var(--background-raised-color);
+
+    padding: 8px 12px;
+
+    border: none;
+    border-radius: 8px;
+  }
+
+</style>
