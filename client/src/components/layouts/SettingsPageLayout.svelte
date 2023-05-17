@@ -5,13 +5,14 @@
   export let title: string = ''
 </script>
 
-<main>
-  <h1>{title}</h1>
+<main class="default-section">
+  <div class="default-wrapper">
 
-  <NavLink to={`/${PATHS.SETTINGS}`}>Einstellungen</NavLink>
-  <NavLink to={`/${PATHS.CARD}`}>Zu meiner Karte</NavLink>
+    <h1>{title}</h1>
 
-  <section>
     <slot />
-  </section>
+
+    <NavLink to={`/${PATHS.SETTINGS}`}>Zurück</NavLink>
+
+  </div>
 </main>

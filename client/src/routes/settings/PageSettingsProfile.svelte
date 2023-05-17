@@ -61,55 +61,111 @@
   {#if loading}
     <Wave size="100" color="#FF3E00" unit="px" />
   {/if}
-  {#if !$currentUser}
-    <h2>Kein Profil gefunden</h2>
-  {:else}
-    <h2>Dein Transfercode: {$currentUser && $currentUser.transfercode}</h2>
-    <form on:submit|preventDefault={submitUpdateUser}>
-      <input
-        type={INPUT_TYPES.HIDDEN}
-        id={NAMES.ID}
-        name={NAMES.ID}
-        value={$currentUser && $currentUser._id}
-      />
-      <label for={NAMES.NAME}>Name</label>
-      <input
-        type={INPUT_TYPES.TEXT}
-        id={NAMES.NAME}
-        name={NAMES.NAME}
-        value={$currentUser && $currentUser.name}
-      />
 
-      <EmailAlert />
-      <label for={NAMES.EMAIL}>E-Mail {$currentUser.emailValidatedAt ? (`(Validiert am: ${new Date(
-        $currentUser.emailValidatedAt
-      ).toLocaleString(DE_CH)})`) : ''}</label>
-      <input
-        type={INPUT_TYPES.EMAIL}
-        id={NAMES.EMAIL}
-        name={NAMES.EMAIL}
-        required={$currentUser?.userRoles && $currentUser.userRoles.length > 0}
-        value={$currentUser && $currentUser.email}
-      />
-      <label for={NAMES.NEWSLETTER}
-        ><input
-          type={INPUT_TYPES.CHECKBOX}
-          id={NAMES.NEWSLETTER}
-          name={NAMES.NEWSLETTER}
-          value={TRUE}
-          checked={$currentUser && $currentUser.newsletter}
-        /> Will Newsletter</label
-      >
+  {#if !$currentUser}
+    <h3>Kein Profil gefunden</h3>
+  {:else}
+
+    <h3>Dein Transfercode: {$currentUser && $currentUser.transfercode}</h3>
+
+    <form on:submit|preventDefault={submitUpdateUser}>
+      <input type={INPUT_TYPES.HIDDEN}
+             id={NAMES.ID}
+             name={NAMES.ID}
+             value={$currentUser && $currentUser._id}/>
+
+      <div class="form-input-wrapper">
+        <label for={NAMES.NAME}>Name</label>
+        <input type={INPUT_TYPES.TEXT}
+               id={NAMES.NAME}
+               name={NAMES.NAME}
+               value={$currentUser && $currentUser.name}/>
+      </div>
+
+      <div class="form-input-wrapper">
+        <EmailAlert/>
+        <label for={NAMES.EMAIL}>
+          E-Mail {$currentUser.emailValidatedAt ? (`(Validiert am: ${new Date($currentUser.emailValidatedAt)
+                .toLocaleString(DE_CH)})`) : ''}
+        </label>
+        <input type={INPUT_TYPES.EMAIL}
+               id={NAMES.EMAIL}
+               name={NAMES.EMAIL}
+               required={$currentUser?.userRoles && $currentUser.userRoles.length > 0}
+               value={$currentUser && $currentUser.email}/>
+      </div>
+
+      <div class="form-input-wrapper form-input-wrapper-checkbox">
+        <input type={INPUT_TYPES.CHECKBOX}
+               id={NAMES.NEWSLETTER}
+               name={NAMES.NEWSLETTER}
+               value={TRUE}
+               checked={$currentUser && $currentUser.newsletter}/>
+        <label for={NAMES.NEWSLETTER}>Newsletter</label>
+      </div>
+
       {#if $currentUser?.userRoles && $currentUser.userRoles.length > 0}
         <PasswordAlert />
-        <label for={NAMES.PASSWORD}
-          >Passwort {$currentUser.passwordChangedAt ? `(letzte Änderung am: ${new Date(
-            $currentUser.passwordChangedAt
-          ).toLocaleString(DE_CH)})` : ''}</label
-        >
-        <input type={INPUT_TYPES.PASSWORD} id={NAMES.PASSWORD} name={NAMES.PASSWORD} value={''} />
+
+
+        <div class="form-input-wrapper">
+          <label for={NAMES.PASSWORD}>
+            Passwort {$currentUser.passwordChangedAt ? `(letzte Änderung am: ${new Date($currentUser.passwordChangedAt)
+                .toLocaleString(DE_CH)})` : ''}
+          </label>
+          <input type={INPUT_TYPES.PASSWORD}
+                 id={NAMES.PASSWORD}
+                 name={NAMES.PASSWORD}
+                 value={''}/>
+        </div>
       {/if}
-      <button type={BUTTON_TYPES.SUBMIT}>Profil aktuallisieren</button>
+
+      <button class="default-button form-submit-button" type={BUTTON_TYPES.SUBMIT}>Profil aktualisieren</button>
+
     </form>
   {/if}
+
 </SettingsPage>
+
+
+<style>
+
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .form-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin: 8px 0;
+  }
+
+  .form-input-wrapper-checkbox {
+    flex-direction: row;
+  }
+
+  .form-input-wrapper-checkbox > input {
+    margin-right: 8px;
+  }
+
+  .form-submit-button {
+    margin-bottom: 0;
+  }
+
+  label {
+    font-size: 11pt;
+    font-weight: bold;
+  }
+
+  input {
+    color: var(--foreground-color);
+    background-color: var(--background-raised-color);
+
+    padding: 8px 12px;
+
+    border: none;
+    border-radius: 8px;
+  }
+
+</style>
