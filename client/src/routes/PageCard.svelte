@@ -112,13 +112,15 @@
       </div>
     </section>
 
-    <section class="footer-section">
-      <div class="footer">
-        <NoteForMailAddressTransfercode />
-        <NavLink to={`/${PATHS.SETTINGS}`}>Einstellungen</NavLink>
-        <a href={PROCESS_ENV.CROWN_BAR_URL}>WEBSITE</a>
-        <a href={PROCESS_ENV.CROWN_BAR_INSTA}>INSTAGRAM</a>
+    <section class="default-section footer">
+      <div class="default-wrapper">
+<!--        <NoteForMailAddressTransfercode />-->
+<!--        <NavLink to={`/${PATHS.SETTINGS}`}>Einstellungen</NavLink>-->
+
+        <a href="/settings">SETTINGS</a>
         <Logout />
+        <a href="https://thecrownbar.ch">WEBSITE</a>
+        <a href="https://instagram.com/thecrownbarrappi">INSTAGRAM</a>
         {#if hasAFullCard}
           <HonourQrCode transfercode={$currentUser.transfercode} />
         {/if}
@@ -205,18 +207,12 @@
 
   /* footer */
 
-  .footer-section {
+  .footer {
     position: absolute;
     bottom: 40px;
+
     width: 100vw;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    /*align-items: flex-start;*/
   }
 
-  .footer {
-    width: 70vw;
-    max-width: 400px;
-  }
 </style>
