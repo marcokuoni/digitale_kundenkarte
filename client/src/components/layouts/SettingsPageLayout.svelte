@@ -13,6 +13,7 @@
     <slot />
 
     <NavLink to={`/${PATHS.SETTINGS}`}>Zurück</NavLink>
+    <!-- <NavLink to={`/${PATHS.CARD}`}>Zu meiner Karte</NavLink> -->
 
   </div>
 </main>

@@ -1,7 +1,7 @@
 <script lang="ts">
   import Card from '../components/Card.svelte'
   import Logout from '../components/Logout.svelte'
-  import { PATHS, PROCESS_ENV } from '../lib/const.js'
+  import { NOOPENER_NPREFERRER, PATHS, PROCESS_ENV, TARGETS } from '../lib/const.js'
   import currentUser from '../stores/currentUser'
   import HonourQrCode from '../components/HonourQrCode.svelte'
   import { formatRelativeTimeS } from '../lib/formater'
@@ -118,10 +118,10 @@
       <div class="default-wrapper">
 <!--        <NoteForMailAddressTransfercode />-->
 <!--        <NavLink to={`/${PATHS.SETTINGS}`}>Einstellungen</NavLink>-->
-        <a href="/settings">SETTINGS</a>
+        <a href={`/${PATHS.SETTINGS}`} target={TARGETS.SELF}>Settings</a>
         <Logout />
-        <a href="https://thecrownbar.ch">WEBSITE</a>
-        <a href="https://instagram.com/thecrownbarrappi">INSTAGRAM</a>
+        <a href={PROCESS_ENV.CROWN_BAR_URL} target={TARGETS.BLANK} rel={NOOPENER_NPREFERRER}>Website</a>
+        <a href={PROCESS_ENV.CROWN_BAR_INSTA} target={TARGETS.BLANK} rel={NOOPENER_NPREFERRER}>Instagram</a>
         {#if hasAFullCard}
           <HonourQrCode transfercode={$currentUser.transfercode} />
         {/if}
@@ -152,6 +152,7 @@
   }
 
   a {
+    text-transform: uppercase;
     cursor: pointer;
     padding: 2px 4px;
 

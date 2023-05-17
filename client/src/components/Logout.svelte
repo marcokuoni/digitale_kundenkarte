@@ -17,16 +17,15 @@
       client.resetStore()
       currentUser.reset()
 
-      if(hasMoreRights) {
-      navigate(`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`)
+      if (hasMoreRights) {
+        navigate(`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`)
       } else {
-      navigate(`/${PATHS.LOGIN_USER}`)
+        navigate(`/${PATHS.LOGIN_USER}`)
       }
     } else {
       alert('Error')
     }
   }
-
 
   const unsubscribe = currentUser.subscribe((currentUser) => {
     if (
@@ -41,21 +40,20 @@
   onDestroy(unsubscribe)
 </script>
 
-<a type={BUTTON_TYPES.BUTTON} on:click={logout}>ABMELDEN</a>
+<button type={BUTTON_TYPES.BUTTON} on:click={logout}>Abmelden</button>
 
 <style>
+  button {
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 2px 4px;
 
-    a {
-        cursor: pointer;
-        padding: 2px 4px;
+    font-size: 8pt;
+    font-weight: bold;
+    color: var(--secondary-color);
+    background-color: transparent;
 
-        font-size: 8pt;
-        font-weight: bold;
-        color: var(--secondary-color);
-        background-color: transparent;
-
-        border: none;
-        text-decoration: none;
-    }
-
+    border: none;
+    text-decoration: none;
+  }
 </style>

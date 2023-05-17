@@ -77,6 +77,7 @@ export enum INPUT_TYPES {
 
 export enum TARGETS {
     BLANK = '_blank',
+    SELF = '_self',
 }
 
 export enum KEYS {
