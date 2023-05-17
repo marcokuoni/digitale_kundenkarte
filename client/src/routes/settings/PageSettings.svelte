@@ -18,22 +18,34 @@
   onDestroy(unsubscribe)
 </script>
 
-<main>
-  <h1>Einstellungen</h1>
-  <div>
-    {#if hasMoreRights}
-      <NavLink to={`/${PATHS.HOME}`}>Startseite</NavLink>
-    {:else}
-      <NavLink to={`/${PATHS.CARD}`}>Zu meiner Karte</NavLink>
-    {/if}
-  </div>
-  <div>
-    <NavLink to={`/${PATHS.SETTINGS}/${PATHS.PROFILE}`}>Profil</NavLink>
-    <NavLink to={`/${PATHS.SETTINGS}/${PATHS.CONNECTED}`}
+<main class="default-section">
+  <div class="default-wrapper">
+
+    <h1>Einstellungen</h1>
+    <div>
+      {#if hasMoreRights}
+        <NavLink to={`/${PATHS.HOME}`}>Startseite</NavLink>
+      {:else}
+        <NavLink to={`/${PATHS.CARD}`}>Zu meiner Karte</NavLink>
+      {/if}
+    </div>
+    <div>
+      <NavLink to={`/${PATHS.SETTINGS}/${PATHS.PROFILE}`}>Profil</NavLink>
+      <NavLink to={`/${PATHS.SETTINGS}/${PATHS.CONNECTED}`}
       >Verbundene Geräte</NavLink
-    >
+      >
+    </div>
+
   </div>
 </main>
 
 <style>
+
+  main {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-height: 80vh;
+  }
+
 </style>
