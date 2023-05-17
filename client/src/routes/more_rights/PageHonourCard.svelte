@@ -83,10 +83,6 @@
     flex-direction: column;
   }
 
-  .form-input-wrapper {
-    margin: 8px 0;
-  }
-
   label {
     font-size: 11pt;
     font-weight: bold;
@@ -100,14 +96,6 @@
 
     border: none;
     border-radius: 8px;
-  }
-
-  .full-width-input {
-    width: calc(100% - 24px);
-  }
-
-  .full-width-button {
-    width: 100%;
   }
 
 </style>
