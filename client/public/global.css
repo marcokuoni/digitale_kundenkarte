@@ -84,6 +84,11 @@ input:focus {
 }
 
 .default-button a {
+	display: block;
+
 	color: var(--background-color);
 	text-decoration: none;
+
+	margin: -12px -16px;
+	padding: 12px 16px;
 }
