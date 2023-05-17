@@ -116,7 +116,6 @@
       <div class="default-wrapper">
 <!--        <NoteForMailAddressTransfercode />-->
 <!--        <NavLink to={`/${PATHS.SETTINGS}`}>Einstellungen</NavLink>-->
-
         <a href="/settings">SETTINGS</a>
         <Logout />
         <a href="https://thecrownbar.ch">WEBSITE</a>
@@ -212,7 +211,6 @@
     bottom: 40px;
 
     width: 100vw;
-    /*align-items: flex-start;*/
   }
 
 </style>
