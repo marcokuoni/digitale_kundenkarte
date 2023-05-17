@@ -4,6 +4,7 @@
   import MoreRightsPage from '../../components/layouts/MoreRightsPageLayout.svelte'
   import { BUTTON_TYPES, INPUT_TYPES, NAMES } from '../../lib/const'
   import { Wave } from 'svelte-loading-spinners'
+  import Separator from '../../components/Separator.svelte'
 
   export let transfercode: string = ''
 
@@ -46,19 +47,22 @@
   }
 </script>
 
+
 <MoreRightsPage title="Karte Einlösen">
-  {#if loading}
-    <Wave size="100" color="#FF3E00" unit="px" />
-  {/if}
+
+  {#if loading} <Wave size="100" color="#FF3E00" unit="px" /> {/if}
+
   <form on:submit|preventDefault={honourCard}>
+
     <label for={NAMES.TRANSFERCODE}>Transfer Code</label>
-    <input
-      type={INPUT_TYPES.TEXT}
-      id={NAMES.TRANSFERCODE}
-      value={transfercode}
-    />
-    <button type={BUTTON_TYPES.BUTTON}>Einlösen</button>
+    <input type={INPUT_TYPES.TEXT}
+           id={NAMES.TRANSFERCODE}
+           value={transfercode}/>
+
+    <button class="default-button" type={BUTTON_TYPES.BUTTON}>Einlösen</button>
+
   </form>
+
   <p>
     {#if successfully === true}
       <span>Eine Karte wurde erfolgreich eingelöst</span>
@@ -66,4 +70,44 @@
       <span>Keine Karte konnte eingelöst werden</span>
     {/if}
   </p>
+
+  <Separator>oder</Separator>
+
 </MoreRightsPage>
+
+
+<style>
+
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .form-input-wrapper {
+    margin: 8px 0;
+  }
+
+  label {
+    font-size: 11pt;
+    font-weight: bold;
+  }
+
+  input {
+    color: var(--foreground-color);
+    background-color: var(--background-raised-color);
+
+    padding: 8px 12px;
+
+    border: none;
+    border-radius: 8px;
+  }
+
+  .full-width-input {
+    width: calc(100% - 24px);
+  }
+
+  .full-width-button {
+    width: 100%;
+  }
+
+</style>
