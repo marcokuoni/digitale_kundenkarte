@@ -13,3 +13,12 @@
   </p>
   <NavLink to={`/${PATHS.SETTINGS}/${PATHS.PROFILE}`}>Profil</NavLink>
 {/if}
+
+
+<style>
+
+  p {
+    opacity: 0.5;
+  }
+
+</style>
