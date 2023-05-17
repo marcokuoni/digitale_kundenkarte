@@ -13,7 +13,7 @@
   import Logout from '../components/Logout.svelte'
   import { formatRelativeTimeS } from '../lib/formater'
   import { Wave } from 'svelte-loading-spinners'
-  import Seperator from '../components/Separator.svelte'
+  import Separator from '../components/Separator.svelte'
 
   export let withPassword: string = ''
 
@@ -97,7 +97,7 @@
 
       </form>
 
-      <Seperator>oder</Seperator>
+      <Separator>oder</Separator>
 
       {#if withPassword !== ''}
         <NavLink to={`/${PATHS.FORGOT_PASSWORD}`}>Passwort vergessen</NavLink>
