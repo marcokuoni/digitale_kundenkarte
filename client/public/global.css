@@ -64,3 +64,17 @@ body {
 .top-margin {
 	margin-top: 40px;
 }
+
+.default-button {
+	background-color: var(--accent-color);
+	padding: 16px 12px;
+	border-radius: 8px;
+	text-align: center;
+	margin: 8px 0;
+}
+
+.default-button a {
+	color: var(--background-color);
+	text-decoration: none;
+	font-weight: bold;
+}
