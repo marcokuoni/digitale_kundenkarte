@@ -58,6 +58,8 @@ services:
       - CHECK_FOR_HOW_MANY_CYCLES=$CHECK_FOR_HOW_MANY_CYCLES
       - BLOCKING_DURATION_MS=$BLOCKING_DURATION_MS
       - ADMIN_EMAIL_ADDRESS=$ADMIN_EMAIL_ADDRESS
+      - CROWN_BAR_URL=$CROWN_BAR_URL
+      - CROWN_BAR_INSTA=$CROWN_BAR_INSTA
     restart: always
     volumes:
       - ./client:/usr/src/app
@@ -119,8 +121,6 @@ services:
       - TIME_WINDOW_MS=$TIME_WINDOW_MS
       - MAX_REQUESTS=$MAX_REQUESTS
       - BLOCKING_DURATION_MS=$BLOCKING_DURATION_MS
-      - CROWN_BAR_URL=$CROWN_BAR_URL
-      - CROWN_BAR_INSTA=$CROWN_BAR_INSTA
     volumes:
       - ./server:/usr/src/app
     restart: always
