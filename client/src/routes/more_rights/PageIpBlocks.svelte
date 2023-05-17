@@ -60,62 +60,125 @@
   }
 </script>
 
-<MoreRightsPage title="Geblockte IPs">
+<MoreRightsPage title="IPs Blockieren">
   <form on:submit|preventDefault={addIpBlockSubmit}>
-    <label for={NAMES.IP}>IP</label>
-    <input
-      type={INPUT_TYPES.TEXT}
-      id={NAMES.IP}
-      name={NAMES.IP}
-      required
-      placeholder={PLACEHOLDER_IP}
-      value=""
-    />
-    <label for={NAMES.BLOCKED_UNTIL}>Blockieren bis</label>
-    <input
-      type={INPUT_TYPES.DATETIME_LOCAL}
-      id={NAMES.BLOCKED_UNTIL}
-      name={NAMES.BLOCKED_UNTIL}
-      required
-      value=""
-    />
-    <button type={BUTTON_TYPES.SUBMIT}>Block IP</button>
+
+    <div class="form-input-wrapper">
+      <label for={NAMES.IP}>IP Adresse</label>
+      <input type={INPUT_TYPES.TEXT}
+             id={NAMES.IP}
+             name={NAMES.IP}
+             required
+             placeholder={PLACEHOLDER_IP}
+             value=""/>
+    </div>
+
+    <div class="form-input-wrapper">
+      <label for={NAMES.BLOCKED_UNTIL}>Blockieren bis</label>
+      <input type={INPUT_TYPES.DATETIME_LOCAL}
+             id={NAMES.BLOCKED_UNTIL}
+             name={NAMES.BLOCKED_UNTIL}
+             required
+             value=""/>
+    </div>
+
+    <button class="default-button" type={BUTTON_TYPES.SUBMIT}>Block IP</button>
+
   </form>
-  {#if loading}
-    <Wave size="100" color="#FF3E00" unit="px" />
-  {/if}
+
+  {#if loading} <Wave size="100" color="#FF3E00" unit="px" />{/if}
+
   {#if $query.error || error}
     <span>{$query.error.message || error}</span>
   {/if}
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>IP</th>
-        <th>Geblockt bis</th>
-        <th>Erstellt am</th>
-        <th>Funktionen</th>
-      </tr>
-    </thead>
-    <tbody>
-      {#each $query.data?.getIpBlocks || [] as ipBlock}
-        <tr>
-          <td>{ipBlock._id}</td>
-          <td>{ipBlock.ip}</td>
-          <td>{new Date(ipBlock.blockedUntil).toLocaleString(DE_CH)}</td>
-          <td>{new Date(ipBlock.createdAt).toLocaleString(DE_CH)}</td>
-          <td
-            ><button
-              type={BUTTON_TYPES.BUTTON}
-              on:click={deleteClickHandler}
-              data-_id={ipBlock._id}>Löschen</button
-            ></td
-          >
-        </tr>
-      {/each}
-    </tbody>
-  </table>
+
+  <h3>Geblockte IPs</h3>
+
+  <div class="blocked-list">
+
+    {#each $query.data?.getIpBlocks || [] as ipBlock}
+      <div class="ip-block">
+
+        <div class="ip-block-group">
+          <p>ID:</p>
+          <p>{ipBlock._id}</p>
+        </div>
+
+        <div class="ip-block-group">
+          <p>IP Address:</p>
+          <p>{ipBlock.ip}</p>
+        </div>
+
+        <div class="ip-block-group">
+          <p>Blocked until:</p>
+          <p>{new Date(ipBlock.blockedUntil).toLocaleString(DE_CH)}</p>
+        </div>
+
+        <div class="ip-block-group">
+          <p>Created at:</p>
+          <p>{new Date(ipBlock.createdAt).toLocaleString(DE_CH)}</p>
+        </div>
+
+        <button class="default-button"
+                type="{BUTTON_TYPES.BUTTON}"
+                on:click={deleteClickHandler}
+                data-_id="{ipBlock._id}">
+          Löschen
+        </button>
+
+      </div>
+
+    {/each}
+
+  </div>
+
 </MoreRightsPage>
 
+
 <style>
+
+  h3 {
+    margin-top: 12px;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .form-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin: 8px 0;
+  }
+
+  label {
+    font-size: 11pt;
+    font-weight: bold;
+  }
+
+  input {
+    color: var(--foreground-color);
+    background-color: var(--background-raised-color);
+
+    padding: 8px 12px;
+
+    border: none;
+    border-radius: 8px;
+  }
+
+  .ip-block {
+    border: 1px solid var(--background-raised-color);
+    border-radius: 8px;
+    padding: 12px;
+  }
+
+  .ip-block-group {
+    margin: 8px 0;
+  }
+
+  .ip-block-group p:nth-child(1) {
+    opacity: 0.5;
+  }
+
 </style>
