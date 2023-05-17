@@ -2,14 +2,12 @@
   import Card from '../components/Card.svelte'
   import Logout from '../components/Logout.svelte'
   import { PATHS, PROCESS_ENV } from '../lib/const.js'
-  import NavLink from '../components/NavLink.svelte'
   import currentUser from '../stores/currentUser'
   import HonourQrCode from '../components/HonourQrCode.svelte'
   import { formatRelativeTimeS } from '../lib/formater'
   import { onDestroy } from 'svelte'
   import { navigate } from 'svelte-routing'
   import EmailAlert from '../components/EmailAlert.svelte'
-  import NoteForMailAddressTransfercode from '../components/NoteForMailAddressTransfercode.svelte'
 
   const stampsLength = parseInt(PROCESS_ENV.STAMPS_LENGTH || '8')
 
@@ -68,14 +66,14 @@
 
     <section class="info-section">
       <div class="info-wrapper">
+
         {#if $currentUser && $currentUser.name}
-        <p class="info-label">Name</p>
-          <p class="info-text">Hallo {$currentUser.name}</p>
+          <p class="info-label">Name</p>
+          <p class="info-text">{$currentUser.name}</p>
         {/if}
+
         <p class="info-label">Transfercode</p>
-        {#if $currentUser}
-          <p class="info-text">{$currentUser.transfercode}</p>
-        {/if}
+        {#if $currentUser} <p class="info-text">{$currentUser.transfercode}</p> {/if}
 
         <div class="info-group">
           <div>
@@ -84,16 +82,18 @@
               {stampCount}<span class="stamps-secondary-text">/ 8</span>
             </p>
           </div>
+
           <div>
             <p class="info-label">Letzter</p>
             {#if timeSpanToLastStamp !== 0}
               <p class="info-text">
-                {formatRelativeTimeS(timeSpanToLastStamp)}
+                {timeSpanToLastStamp ? formatRelativeTimeS(timeSpanToLastStamp) : "-"}
               </p>
             {/if}
           </div>
         </div>
 
+        <!--
         {#if $currentUser.cards.length > 0}
           <div class="info-group">
             <div>
@@ -109,6 +109,8 @@
             </div>
           </div>
         {/if}
+        -->
+
       </div>
     </section>
 
@@ -178,7 +180,7 @@
 
   .info-group {
     display: flex;
-    margin-top: 20px;
+    /*margin-top: 20px;*/
   }
 
   .info-group div {
@@ -190,6 +192,7 @@
     font-weight: bold;
     text-transform: uppercase;
     color: var(--accent-color);
+    margin-top: 20px;
   }
 
   .info-text {
