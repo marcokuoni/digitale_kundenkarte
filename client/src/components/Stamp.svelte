@@ -8,15 +8,15 @@
 <div
   class="stamp"
   class:active-stamp={status}
-  class:provision-stamp-image={!!stamp?.validUntilDate}
->
-  <!-- TODO: Inline Vektor verwenden damit dies besser cached -->
-  <img
-    src="/images/CRN%20Logo%20Light.svg"
-    class="stamp-image"
-    class:hide-stamp-image={!status}
-    alt="A white crown bar logo"
-  />
+  class:provision-stamp-image={!!stamp?.validUntilDate}>
+
+  <svg class="stamp-image" class:hide-stamp-image={!status}
+       width="21" height="14" viewBox="0 0 21 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M8.48936 14H0V3.87234L8.48936 14Z" fill="white"/>
+    <path d="M12.5106 14H21V3.87234L12.5106 14Z" fill="white"/>
+    <path d="M10.4383 0L4.66207 6.85315L10.4383 13.7063L16.2145 6.85315L10.4383 0Z" fill="white"/>
+  </svg>
+
   {#if stamp?.validUntilDate}
     <span>{stamp?.validUntilDate}</span>
   {/if}
@@ -31,7 +31,7 @@
 
     display: flex;
     justify-content: center;
-    align-content: center;
+    align-items: center;
 
     border: 1px dashed var(--accent-color);
     border-radius: 100%;

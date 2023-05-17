@@ -63,6 +63,7 @@
       <span>Loading...</span>
       <Logout />
     {:else}
+
       <section class="card-section">
         <div class="card-wrapper">
           <Card {stamps} />
