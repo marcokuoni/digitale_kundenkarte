@@ -61,21 +61,22 @@ sudo cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
 
 
 # TODO
-* Kevin: Stempelkrone dur es richtigs svg ersetzä -> Denn chani das inline machä und lauft den offline stabiler
-* Kevin: Den es svg icon für Wifi und WifiOff -> denn chani svelte libary usä neh
-* Button all area clickable und immer pointer cursor, vielleicht besser vereinheitlichen
-* eigener loader und somit libary entfernen, was globales zum beispiel line die open durchläuft
-* Eigene Alerts (success, error), Fenster die unten rechts reinfahren und per click oder automatisch verschwinden
-* schauen dass alle requests loader, success und error message haben
+- [x] ~~Stempelkrone dur es richtigs svg ersetzä -> Denn chani das inline machä und lauft den offline stabiler~~
+- [ ] ~~Icon für connected / not connected~~ -> Svelte Icon Library entferne
+- [x] ~~Button all area clickable und immer pointer cursor, vielleicht besser vereinheitlichen~~
+- [ ] Eigener loader und somit libary entfernen, was globales zum beispiel line die open durchläuft
+- [ ] Eigene Alerts (success, error), Fenster die unten rechts reinfahren und per click oder automatisch verschwinden 
+- [ ] Schauen dass alle requests loader, success und error message haben
 
-* QR-Code generiärä für Stämpfel
-* QR-Code generiärä fürs ilösä
-* Chartä iilösä
-* Benutzergruppäverwaltä
-* Blockiärti IPs
+- [ ] 404 page, forbidden page (i think not possible with the current router) -> sonst später mit SvelteKit
+- [ ] Couldnt find a way to stop executing default redirections on fetch and just do the custom one
 
-* 404 page, forbidden page (i think not possible with the current router)
-* couldnt find a way to stop executing default redirections on fetch and just do the custom one.
+### Nice to have
+- [ ] QR-Code generiärä für Stämpfel 
+- [ ] QR-Code generiärä fürs ilösä 
+- [ ] Chartä iilösä 
+- [ ] Benutzergruppäverwaltä 
+- [ ] Blockiärti IPs
 
 
 ## Notes
