@@ -22,10 +22,9 @@ export const resetPassword = async (email: string) => {
   if (user && user.email && user.emailValidatedAt) {
     if (user.passwordResetToken) {
       try {
-        jwt.verify(
-          user.passwordResetToken,
-          emailResetKey
-        ) as ResetPasswordPayloadInerface
+        jwt.verify(user.passwordResetToken, emailResetKey, {
+          algorithms: ['HS256'],
+        }) as ResetPasswordPayloadInerface
         hasOldValidToken = true
       } catch (e) {
         console.error(e)
@@ -42,7 +41,7 @@ export const resetPassword = async (email: string) => {
       expiresIn: jwtEmailResetExpiry,
       issuer: process.env.SERVER_URL || 'https://karte.localhost',
       audience: process.env.CLIENT_URL || 'https://karte.localhost',
-      jwtid
+      jwtid,
     })
 
     user.passwordResetToken = resetToken
@@ -59,7 +58,9 @@ export const resetPassword = async (email: string) => {
 export const setNewPassword = async (token: string, password: string) => {
   let payload: ResetPasswordPayloadInerface | undefined = undefined
   try {
-    payload = jwt.verify(token, emailResetKey) as ResetPasswordPayloadInerface
+    payload = jwt.verify(token, emailResetKey, {
+      algorithms: ['HS256'],
+    }) as ResetPasswordPayloadInerface
   } catch (e) {
     console.error(e)
     throwBadReuest('Bad Token')
@@ -72,7 +73,12 @@ export const setNewPassword = async (token: string, password: string) => {
     user = await User.findById(payload.token)
   }
 
-  if (!user || !user.passwordResetToken || !user.email || user.passwordResetToken !== token) {
+  if (
+    !user ||
+    !user.passwordResetToken ||
+    !user.email ||
+    user.passwordResetToken !== token
+  ) {
     throwBadReuest('Bad Token')
   } else {
     await changePasssword(user, password)

@@ -41,7 +41,8 @@ export const signOut = async (req: Request, res: Response) => {
     try {
       const userPayload = jwt.verify(
         refreshToken,
-        jwtRefreshKey
+        jwtRefreshKey,
+        { algorithms: ['HS256'] },
       ) as JwtUserPayloadInterface
 
       await revokeRefreshToken(
@@ -118,7 +119,8 @@ export const refresh = async (req: Request, res: Response) => {
   try {
     const userPayload = jwt.verify(
       refreshToken,
-      jwtRefreshKey
+      jwtRefreshKey,
+      { algorithms: ['HS256'] },
     ) as JwtUserPayloadInterface
 
     const newRefreshTokenDb = await refreshRefreshToken(

@@ -28,7 +28,8 @@ export const sendValidationMail = async (email: string) => {
       try {
         jwt.verify(
           user.emailValidateToken,
-          emailValidateKey
+          emailValidateKey,
+          { algorithms: ['HS256'] },
         ) as ValidateEmailPayloadInerface
         hasOldValidToken = true
       } catch (e) {
@@ -67,7 +68,8 @@ export const validateEmail = async (token: string) => {
   try {
     payload = jwt.verify(
       token,
-      emailValidateKey
+      emailValidateKey,
+      { algorithms: ['HS256'] },
     ) as ValidateEmailPayloadInerface
   } catch (e) {
     console.error(e)
