@@ -62,7 +62,7 @@ sudo cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
 
 # TODO
 - [x] ~~Stempelkrone dur es richtigs svg ersetzä -> Denn chani das inline machä und lauft den offline stabiler~~
-- [ ] ~~Icon für connected / not connected~~ -> Svelte Icon Library entferne
+- [ ] ~~Icon für connected / not connected~~, icon für modal schliessen ;) -> Svelte Icon Library entferne
 - [x] ~~Button all area clickable und immer pointer cursor, vielleicht besser vereinheitlichen~~
 - [ ] Eigener loader und somit libary entfernen, was globales zum beispiel line die open durchläuft
 - [ ] Eigene Alerts (success, error), Fenster die unten rechts reinfahren und per click oder automatisch verschwinden 

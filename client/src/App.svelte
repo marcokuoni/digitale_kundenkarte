@@ -23,6 +23,8 @@
   import PageResetPassword from './routes/PageResetPassword.svelte'
   import PageValidateEmail from './routes/PageValidateEmail.svelte'
   import PageForgotTransfercode from './routes/PageForgotTransfercode.svelte'
+  import Loader from './components/Loader.svelte'
+  import loader from './stores/loader'
 
   export let url = ''
 
@@ -32,6 +34,9 @@
 </script>
 
 <main>
+  {#if $loader}
+    <Loader />
+  {/if}
   <header>
     <Online />
   </header>
@@ -50,28 +55,31 @@
           <PageCreateUser />
         </Route>
 
-        <Route path={`${PATHS.CREATE_USER}/:${PARAMS.WITH_PASSWORD}`} let:params>
+        <Route
+          path={`${PATHS.CREATE_USER}/:${PARAMS.WITH_PASSWORD}`}
+          let:params
+        >
           <PageCreateUser withPassword={params.withPassword} />
         </Route>
 
-        <Route path={`${PATHS.LOGIN_USER}`} >
+        <Route path={`${PATHS.LOGIN_USER}`}>
           <PageLogin />
         </Route>
 
-        <Route path={`${PATHS.FORGOT_TRANSFERCODE}`} >
+        <Route path={`${PATHS.FORGOT_TRANSFERCODE}`}>
           <PageForgotTransfercode />
         </Route>
 
-        <Route path={`${PATHS.FORGOT_PASSWORD}`} >
+        <Route path={`${PATHS.FORGOT_PASSWORD}`}>
           <PageForgotPassword />
         </Route>
 
-        <Route path={`${PATHS.RESET_PASSWORD}/:${PARAMS.TOKEN}`} let:params >
-          <PageResetPassword token={params.token}/>
+        <Route path={`${PATHS.RESET_PASSWORD}/:${PARAMS.TOKEN}`} let:params>
+          <PageResetPassword token={params.token} />
         </Route>
 
-        <Route path={`${PATHS.VERIFY_EMAIL}/:${PARAMS.TOKEN}`} let:params >
-          <PageValidateEmail token={params.token}/>
+        <Route path={`${PATHS.VERIFY_EMAIL}/:${PARAMS.TOKEN}`} let:params>
+          <PageValidateEmail token={params.token} />
         </Route>
 
         <Route path={`${PATHS.LOGIN_USER}/:${PARAMS.WITH_PASSWORD}`} let:params>
@@ -94,10 +102,7 @@
           <PageSettingsConnected />
         </Route>
 
-        <SecuredRoute
-          path={PATHS.IP_BLOCKS}
-          requiredRoles={[USER_ROLES.ADMIN]}
-        >
+        <SecuredRoute path={PATHS.IP_BLOCKS} requiredRoles={[USER_ROLES.ADMIN]}>
           <PageIpBlocks />
         </SecuredRoute>
 
