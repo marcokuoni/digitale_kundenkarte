@@ -1,17 +1,16 @@
 <script lang="ts">
   import MoreRightsPage from '../../components/layouts/MoreRightsPageLayout.svelte'
   import { getUsersWithPassword, updateUserRoles } from '../../codegen'
-  import { Wave } from 'svelte-loading-spinners'
   import { BUTTON_TYPES, FETCH_POLICY, INPUT_TYPES, NAMES, USER_ROLES } from '../../lib/const'
+  import loader from '../../stores/loader'
 
-  let loading = false
   let error = ''
   $: query = getUsersWithPassword({
     fetchPolicy: FETCH_POLICY.NETWORK_ONLY,
   })
 
   async function submitUpdateUser(event: SubmitEvent) {
-    loading = true
+    loader.setLoader(updateUserRoles.name, true)
     const forms = event.target as HTMLFormElement
     if (forms.checkValidity()) {
       const formData = new FormData(forms)
@@ -30,18 +29,13 @@
         alert('Success')
       } catch (err) {
         error = err.message
-      } finally {
-        loading = false
       }
     }
-    loading = false
+    loader.setLoader(updateUserRoles.name, false)
   }
 </script>
 
 <MoreRightsPage title="Benutzer Gruppen verwalten">
-
-  {#if loading} <Wave size="100" color="#FF3E00" unit="px" /> {/if}
-
   {#if $query.error || error} <span>{$query?.error?.message || error}</span> {/if}
 
   <div class="user-groups-list">

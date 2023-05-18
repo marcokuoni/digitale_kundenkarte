@@ -6,10 +6,12 @@
   import { BUTTON_TYPES, PATHS, PROCESS_ENV } from '../lib/const'
   import currentUser from '../stores/currentUser'
   import { onDestroy } from 'svelte'
+  import loader from '../stores/loader'
 
   let hasMoreRights = false
 
   async function logout() {
+    loader.setLoader(signOut.name, true)
     const { data } = await signOut({})
     if (data && data.signOut) {
       localStorage.removeItem(PROCESS_ENV.JWT_COOKIE_NAME)
@@ -25,6 +27,7 @@
     } else {
       alert('Error')
     }
+    loader.setLoader(signOut.name, false)
   }
 
   const unsubscribe = currentUser.subscribe((currentUser) => {

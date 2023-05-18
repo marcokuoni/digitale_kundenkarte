@@ -3,16 +3,15 @@
   import { honourCardFrom } from '../../codegen'
   import MoreRightsPage from '../../components/layouts/MoreRightsPageLayout.svelte'
   import { BUTTON_TYPES, INPUT_TYPES, NAMES } from '../../lib/const'
-  import { Wave } from 'svelte-loading-spinners'
   import Separator from '../../components/Separator.svelte'
+  import loader from '../../stores/loader'
 
   export let transfercode: string = ''
 
   let successfully: boolean | null = null
-  let loading = false
 
   const honourCard = async (event: SubmitEvent) => {
-    loading = true
+    loader.setLoader(honourCardFrom.name, true)
     const forms = event.target as HTMLFormElement
     if (forms.checkValidity()) {
       const formData = new FormData(forms)
@@ -20,14 +19,14 @@
       const transfercode = formData.get(NAMES.TRANSFERCODE)?.toString()
       await _honourCard(transfercode)
     }
-    loading = false
+    loader.setLoader(honourCardFrom.name, false)
   }
   onMount(async () => {
+    loader.setLoader(honourCardFrom.name, true)
     if (transfercode !== '') {
-      loading = true
       await _honourCard(transfercode)
-      loading = false
     }
+    loader.setLoader(honourCardFrom.name, false)
   })
 
   const _honourCard = async (transfercode: string) => {
@@ -49,9 +48,6 @@
 
 
 <MoreRightsPage title="Karte Einlösen">
-
-  {#if loading} <Wave size="100" color="#FF3E00" unit="px" /> {/if}
-
   <form on:submit|preventDefault={honourCard}>
 
     <label for={NAMES.TRANSFERCODE}>Transfer Code</label>

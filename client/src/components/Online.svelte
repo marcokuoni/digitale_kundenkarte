@@ -1,7 +1,4 @@
 <script lang="ts">
-  import Icon from 'svelte-icons-pack/Icon.svelte'
-  import Wifi from 'svelte-icons-pack/bi/BiWifi'
-  import WifiOff from 'svelte-icons-pack/bi/BiWifiOff'
   import { onDestroy, onMount } from 'svelte'
   import Modal, { getModal } from './Modal.svelte'
   import { EVENTS, PROCESS_ENV } from '../lib/const'

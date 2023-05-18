@@ -12,8 +12,9 @@
     QR_CODE_API_URL,
     TARGETS,
   } from '../../lib/const'
-  import { Wave } from 'svelte-loading-spinners'
   import Separator from '../../components/Separator.svelte'
+  import loader from '../../stores/loader'
+
 
   let currentDate = new Date()
 
@@ -24,7 +25,6 @@
   let longTimeQr = false
   let token = ''
   let validUntilInput = ''
-  let loading = false
 
   let blockForMinutesInput = parseInt(
     PROCESS_ENV.DEFAULT_URL_TOKEN_BLOCK_FOR_MINUTES
@@ -65,12 +65,12 @@
   }
 
   async function generateUrlTokenSubmit(event: SubmitEvent) {
-    loading = true
+    loader.setLoader(generateUrlToken.name, true)
     const forms = event.target as HTMLFormElement
     if (forms.checkValidity()) {
       await _generateQrCode(new Date(validUntilInput), blockForMinutesInput)
     }
-    loading = false
+    loader.setLoader(generateUrlToken.name, false)
   }
 
   onMount(() => {
@@ -80,13 +80,13 @@
     const interval = setInterval(async () => {
       currentDate = new Date()
       if (token !== '' && validUntil <= currentDate) {
-        loading = true
+    loader.setLoader(generateUrlToken.name, true)
         token = ''
         validUntilInput = _getValidUntil(defaultValidForMinutes)
           .toISOString()
           .slice(0, 16)
         await _generateQrCode(new Date(validUntilInput), blockForMinutesInput)
-        loading = false
+    loader.setLoader(generateUrlToken.name, false)
       }
     }, 1000)
 
@@ -124,9 +124,6 @@
       </div>
     </div>
   {/if}
-
-  {#if loading} <Wave size="100" color="#FF3E00" unit="px" /> {/if}
-
   <form on:submit|preventDefault={generateUrlTokenSubmit}>
 
     <p>

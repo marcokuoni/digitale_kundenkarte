@@ -4,10 +4,12 @@
   import { BUTTON_TYPES, PATHS } from '../lib/const'
   import NavLink from './NavLink.svelte'
   import Logout from './Logout.svelte'
+  import loader from '../stores/loader'
 
   let success = false
 
   async function sendValidationMailHandler() {
+    loader.setLoader(sendValidationMail.name, true)
     try {
       const { data } = await sendValidationMail({})
       if (data && data.sendValidationMail) {
@@ -18,6 +20,7 @@
     } catch (e) {
       console.error(e)
     }
+    loader.setLoader(sendValidationMail.name, false)
   }
 </script>
 

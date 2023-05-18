@@ -8,6 +8,7 @@
   import jwt_decode from 'jwt-decode'
   import { navigateToWithoutHistory } from '../services/navigate'
   import { updatePersistCache } from '../services/apollo/persistor'
+  import loader from '../stores/loader'
 
   export let urlToken: string = ''
 
@@ -16,6 +17,7 @@
   const validUntilDate = new Date(exp * 1000)
   
   onMount(async () => {
+      loader.setLoader(AsyncgetCurrentUser.name, true)
       const {data:cacheData} = await AsyncgetCurrentUser({
         fetchPolicy: FETCH_POLICY.CACHE_ONLY,
       })
@@ -56,6 +58,7 @@
       } else {
         console.error('Error')
       }
+      loader.setLoader(AsyncgetCurrentUser.name, false)
   })
 
   const _createNewCard = () => {

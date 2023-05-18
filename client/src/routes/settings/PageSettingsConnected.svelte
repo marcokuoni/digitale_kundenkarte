@@ -1,26 +1,31 @@
 <script lang="ts">
   import { getActiveRefreshTokens, revokeRefreshToken } from '../../codegen'
-  import { Wave } from 'svelte-loading-spinners'
   import SettingsPage from '../../components/layouts/SettingsPageLayout.svelte'
   import { FETCH_POLICY } from '../../lib/const'
   import SettingsConnectedDevice from '../../components/SettingsConnectedDevice.svelte'
+  import loader from '../../stores/loader'
 
-  let loading = false
   let error = ''
-  $: query = getActiveRefreshTokens({
+  const query = getActiveRefreshTokens({
     fetchPolicy: FETCH_POLICY.NETWORK_ONLY,
     //needed cause fast changing properties here :) if refresh token gets exchanged in meantime the _id will already been outdated.
     pollInterval: 100,
   })
 
+  query.subscribe(data => {
+    if(data.error) {
+      console.error(data.error)
+    }
+    if(data.loading) {
+      loader.setLoader(getActiveRefreshTokens.name, true)
+    } else {
+      loader.setLoader(getActiveRefreshTokens.name, false)
+    }
+  })
+
 </script>
 
 <SettingsPage title="Verbundene Geräte">
-
-  {#if loading}
-    <Wave size="100" color="#FF3E00" unit="px" />
-  {/if}
-
   {#if $query.error || error}
     <span>{$query.error.message || error}</span>
   {/if}

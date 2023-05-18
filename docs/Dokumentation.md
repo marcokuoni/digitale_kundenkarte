@@ -85,7 +85,7 @@ Komponenten:
 
 ### Frontend
 
-`npm install` -> added 756 packages, and audited 757 packages in 8s
+`npm install` -> added 754 packages, and audited 755 packages in 11s
 From 3rd Parties:
 
 - npm WARN deprecated rollup-plugin-terser@7.0.2: This package has been deprecated and is no longer maintained. Please use @rollup/plugin-terser
@@ -108,9 +108,6 @@ Komponenten:
   - jwt-decode, JWT Token Decoder um signierte Token zu lesen
   - svelte, Frontend Framework
   - svelte-routing, Frontend Routing Framework (leider noch nicht ganz ausgereift aber leicht [Parameter, 404, forbidden]. Wechsel zu svelte-router-spa gäb mehr Funktionalität aber auch mehr Code und geringere Verbreitung)
-    --> Abklären ob noch notwending
-  - svelte-icons-pack
-  - svelte-loading-spinners
 - Abhängigkeiten zur Entwicklung
   - GraphQL Codegen, erzeugt aus Schnittstellendefintion auf der API und dem Frontend automatisch Typisierung und Requests
   - Rollup und Plugins: Typescript, CommonJs, Node Resolve, Terser, Svelte, Replace (ENV Variablen), CSS, Livereload, Workbox, Serve

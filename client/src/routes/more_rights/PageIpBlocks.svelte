@@ -1,7 +1,6 @@
 <script lang="ts">
   import MoreRightsPage from '../../components/layouts/MoreRightsPageLayout.svelte'
   import { getIpBlocks, addIpBlock, deleteIpBlock } from '../../codegen'
-  import { Wave } from 'svelte-loading-spinners'
   import {
     BUTTON_TYPES,
     DE_CH,
@@ -10,15 +9,15 @@
     NAMES,
     PLACEHOLDER_IP,
   } from '../../lib/const'
+  import loader from '../../stores/loader'
 
-  let loading = false
   let error = ''
   $: query = getIpBlocks({
     fetchPolicy: FETCH_POLICY.NETWORK_ONLY,
   })
 
   async function addIpBlockSubmit(event: SubmitEvent) {
-    loading = true
+    loader.setLoader(addIpBlock.name, true)
     const forms = event.target as HTMLFormElement
     if (forms.checkValidity()) {
       const formData = new FormData(forms)
@@ -38,12 +37,12 @@
         alert('Error')
       }
     }
-    loading = false
+    loader.setLoader(addIpBlock.name, false)
   }
 
   const deleteClickHandler = async (e: MouseEvent) => {
+    loader.setLoader(deleteIpBlock.name, true)
     const button = e.currentTarget as HTMLButtonElement
-    loading = true
     try {
       await deleteIpBlock({
         variables: {
@@ -54,9 +53,9 @@
       alert('Success')
     } catch (err) {
       error = err.message
-    } finally {
-      loading = false
     }
+
+    loader.setLoader(deleteIpBlock.name, false)
   }
 </script>
 
@@ -85,9 +84,6 @@
     <button class="default-button" type={BUTTON_TYPES.SUBMIT}>Block IP</button>
 
   </form>
-
-  {#if loading} <Wave size="100" color="#FF3E00" unit="px" />{/if}
-
   {#if $query.error || error}
     <span>{$query.error.message || error}</span>
   {/if}

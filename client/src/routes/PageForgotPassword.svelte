@@ -4,15 +4,14 @@
   import NavLink from '../components/NavLink.svelte'
   import Logout from '../components/Logout.svelte'
   import { passwordReset } from '../codegen'
-  import { Wave } from 'svelte-loading-spinners'
   import NoteForValidatedMailAddress from '../components/NoteForValidatedMailAddress.svelte'
   import Separator from '../components/Separator.svelte'
+  import loader from '../stores/loader'
 
   let success = false
-  let loading = false
 
   async function resetPassword(event: SubmitEvent) {
-    loading = true
+    loader.setLoader(passwordReset.name, true)
     const forms = event.target as HTMLFormElement
     if (forms.checkValidity()) {
       const formData = new FormData(forms)
@@ -32,7 +31,7 @@
         console.error(e)
       }
     }
-    loading = false
+    loader.setLoader(passwordReset.name, false)
   }
 </script>
 
@@ -50,11 +49,6 @@
         Ausnahme Fall kann es auch im Spam Ordner landen.
       </p>
     {:else}
-
-      {#if loading}
-        <Wave size="100" color="#FF3E00" unit="px" />
-      {/if}
-
       <NoteForValidatedMailAddress />
 
       <form on:submit|preventDefault={resetPassword}>

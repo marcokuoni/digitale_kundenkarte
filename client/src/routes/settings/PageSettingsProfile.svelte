@@ -2,15 +2,13 @@
   import { updateUser, type UpdateUserMutationVariables } from '../../codegen'
   import currentUser from '../../stores/currentUser'
   import SettingsPage from '../../components/layouts/SettingsPageLayout.svelte'
-  import { Wave } from 'svelte-loading-spinners'
   import PasswordAlert from '../../components/PasswordAlert.svelte'
   import EmailAlert from '../../components/EmailAlert.svelte'
   import { BUTTON_TYPES, DE_CH, INPUT_TYPES, NAMES, TRUE } from '../../lib/const'
-
-  let loading = false
+  import loader from '../../stores/loader'
 
   async function submitUpdateUser(event: SubmitEvent) {
-    loading = true
+    loader.setLoader(updateUser.name, true)
     const forms = event.target as HTMLFormElement
     if (forms.checkValidity()) {
       const formData = new FormData(forms)
@@ -53,15 +51,11 @@
         console.error('Error')
       }
     }
-    loading = false
+    loader.setLoader(updateUser.name, false)
   }
 </script>
 
 <SettingsPage title="Profil">
-  {#if loading}
-    <Wave size="100" color="#FF3E00" unit="px" />
-  {/if}
-
   {#if !$currentUser}
     <h3>Kein Profil gefunden</h3>
   {:else}

@@ -4,15 +4,13 @@
   import NavLink from '../components/NavLink.svelte'
   import currentUser from '../stores/currentUser'
   import Logout from '../components/Logout.svelte'
-  import { Wave } from 'svelte-loading-spinners'
   import Separator from '../components/Separator.svelte'
+  import loader from '../stores/loader'
 
   export let withPassword: string = ''
 
-  let loading = false
-
   async function createUser(event: SubmitEvent) {
-    loading = true
+    loader.setLoader(signUp.name, true)
     const forms = event.target as HTMLFormElement
     if (forms.checkValidity()) {
       const formData = new FormData(forms)
@@ -38,7 +36,7 @@
         alert('Error')
       }
     }
-    loading = false
+    loader.setLoader(signUp.name, false)
   }
 </script>
 
@@ -46,8 +44,6 @@
   <div class="default-wrapper">
 
     <h1>Benutzer erstellen</h1>
-
-    {#if loading} <Wave size="100" color="#FF3E00" unit="px" /> {/if}
 
     <form on:submit|preventDefault={createUser}>
 

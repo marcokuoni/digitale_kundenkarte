@@ -12,8 +12,8 @@
   import currentUser from '../stores/currentUser'
   import Logout from '../components/Logout.svelte'
   import { formatRelativeTimeS } from '../lib/formater'
-  import { Wave } from 'svelte-loading-spinners'
   import Separator from '../components/Separator.svelte'
+  import loader from '../stores/loader'
 
   export let withPassword: string = ''
 
@@ -22,10 +22,8 @@
       ? Math.ceil(parseInt(PROCESS_ENV.BLOCKING_DURATION_MS) / 1000)
       : 0
 
-  let loading = false
-
   async function loginUser(event: SubmitEvent) {
-    loading = true
+    loader.setLoader(signIn.name, true)
     const forms = event.target as HTMLFormElement
     if (forms.checkValidity()) {
       const formData = new FormData(forms)
@@ -59,7 +57,7 @@
         console.error(e)
       }
     }
-    loading = false
+    loader.setLoader(signIn.name, false)
   }
 </script>
 
@@ -72,9 +70,6 @@
     {#if $currentUser}
       <Logout />
     {:else}
-
-      {#if loading} <Wave size="100" color="#FF3E00" unit="px"/> {/if}
-
       <form on:submit|preventDefault={loginUser}>
 
         <label for={NAMES.TRANSFERCODE}>Transfer Code:</label>

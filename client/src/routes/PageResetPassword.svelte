@@ -5,15 +5,13 @@
   import Logout from '../components/Logout.svelte'
   import { resetPassword } from '../codegen'
   import { navigate } from 'svelte-routing'
-  import { Wave } from 'svelte-loading-spinners'
   import Separator from '../components/Separator.svelte'
+  import loader from '../stores/loader'
 
   export let token = ''
 
-  let loading = false
-
   async function savePassword(event: SubmitEvent) {
-    loading = true
+    loader.setLoader(resetPassword.name, true)
     const forms = event.target as HTMLFormElement
     if (forms.checkValidity()) {
       const formData = new FormData(forms)
@@ -34,7 +32,7 @@
         console.error(e)
       }
     }
-    loading = false
+    loader.setLoader(resetPassword.name, false)
   }
 </script>
 
@@ -47,9 +45,6 @@
     {#if $currentUser}
       <Logout />
     {:else}
-
-      {#if loading} <Wave size="100" color="#FF3E00" unit="px" /> {/if}
-
       {#if token === ''}
         <p>Token fehlt. Versuche es noch einmal</p>
       {:else}
