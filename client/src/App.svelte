@@ -138,7 +138,7 @@
         </SecuredRoute>
 
         <SecuredRoute
-          path={`${PATHS.HONOUR_CARD}/:${PARAMS.TRANSFERCODE}}`}
+          path={`${PATHS.HONOUR_CARD}/:${PARAMS.TRANSFERCODE}`}
           let:params
           requiredRoles={[USER_ROLES.EMPLOYEE]}
         >
