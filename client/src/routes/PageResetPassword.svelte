@@ -1,14 +1,24 @@
 <script lang="ts">
   import currentUser from '../stores/currentUser'
-  import { BUTTON_TYPES, INPUT_TYPES, NAMES, PATHS } from '../lib/const'
+  import {
+    BUTTON_TYPES,
+    INPUT_TYPES,
+    KIND,
+    NAMES,
+    PATHS,
+    PROCESS_ENV,
+    PRODUCTION,
+  } from '../lib/const'
   import NavLink from '../components/NavLink.svelte'
   import Logout from '../components/Logout.svelte'
   import { resetPassword } from '../codegen'
   import { navigate } from 'svelte-routing'
   import Separator from '../components/Separator.svelte'
   import loader from '../stores/loader'
+  import alerts from '../stores/alerts'
 
   export let token = ''
+  const production = PROCESS_ENV.NODE_ENV.toString() === PRODUCTION
 
   async function savePassword(event: SubmitEvent) {
     loader.setLoader(resetPassword.name, true)
@@ -24,58 +34,67 @@
           },
         })
         if (data && data.resetPassword) {
+          alerts.addAlert(KIND.POSITIVE, 'Das Passwort wurde zurück gesetzt')
           navigate(`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`)
         } else {
-          alert('Error')
+          alerts.addAlert(
+            KIND.WARNING,
+            'Etwas ist schief gelaufen. Bitte versuche es erneut'
+          )
         }
       } catch (e) {
-        console.error(e)
+        alerts.addAlert(
+          KIND.WARNING,
+          'Etwas ist schief gelaufen. Bitte versuche es erneut'
+        )
+        !production && console.error(e)
       }
     }
     loader.setLoader(resetPassword.name, false)
   }
 </script>
 
-
 <main class="default-section">
   <div class="default-wrapper">
-
     <h1>Passwort zurücksetzen</h1>
 
     {#if $currentUser}
       <Logout />
+    {:else if token === ''}
+      <p>Token fehlt. Versuche es noch einmal</p>
     {:else}
-      {#if token === ''}
-        <p>Token fehlt. Versuche es noch einmal</p>
-      {:else}
-        <form on:submit|preventDefault={savePassword}>
+      <form on:submit|preventDefault={savePassword}>
+        <label for={NAMES.PASSWORD}>Passwort</label>
+        <input
+          type={INPUT_TYPES.PASSWORD}
+          id={NAMES.PASSWORD}
+          required
+          value=""
+        />
 
-          <label for={NAMES.PASSWORD}>Passwort</label>
-          <input type={INPUT_TYPES.PASSWORD}
-                 id={NAMES.PASSWORD}
-                 required
-                 value=""/>
-
-          <button type={BUTTON_TYPES.SUBMIT} class="default-button">Speichern</button>
-
-        </form>
-      {/if}
+        <button type={BUTTON_TYPES.SUBMIT} class="default-button"
+          >Speichern</button
+        >
+      </form>
     {/if}
 
     <Separator>oder</Separator>
 
     <NavLink to={`/${PATHS.FORGOT_PASSWORD}`}>Passwort vergessen</NavLink>
-    <NavLink to={`/${PATHS.FORGOT_TRANSFERCODE}`}>Transfercode vergessen</NavLink>
-    <NavLink to={`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}>Anmelden</NavLink>
-    <NavLink to={`/${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}>Benutzer erstellen</NavLink>
+    <NavLink to={`/${PATHS.FORGOT_TRANSFERCODE}`}
+      >Transfercode vergessen</NavLink
+    >
+    <NavLink to={`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}
+      >Anmelden</NavLink
+    >
+    <NavLink to={`/${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}
+      >Benutzer erstellen</NavLink
+    >
     <NavLink to={`/${PATHS.HOME}`}>Startseite</NavLink>
-
   </div>
 </main>
 
-
 <style>
-
   form {
     display: flex;
     flex-direction: column;
@@ -95,5 +114,4 @@
     border: none;
     border-radius: 8px;
   }
-
 </style>

@@ -3,9 +3,11 @@
   import {
     BUTTON_TYPES,
     INPUT_TYPES,
+    KIND,
     NAMES,
     PATHS,
     PROCESS_ENV,
+    PRODUCTION,
     RECEIVED_CODE_503,
   } from '../lib/const'
   import NavLink from '../components/NavLink.svelte'
@@ -14,9 +16,11 @@
   import { formatRelativeTimeS } from '../lib/formater'
   import Separator from '../components/Separator.svelte'
   import loader from '../stores/loader'
+  import alerts from '../stores/alerts'
 
   export let withPassword: string = ''
 
+  const production = PROCESS_ENV.NODE_ENV.toString() === PRODUCTION
   const blockinDurationInMs =
     parseInt(PROCESS_ENV.BLOCKING_DURATION_MS) > 0
       ? Math.ceil(parseInt(PROCESS_ENV.BLOCKING_DURATION_MS) / 1000)
@@ -38,23 +42,21 @@
           },
         })
         if (data && data.signIn) {
-          console.error(
+          !production && console.error(
             'This should not happen otherwise the browser will cache the input data'
           )
         } else {
-          alert('Error')
+          alerts.addAlert(KIND.WARNING, 'Etwas ist schief gelaufen. Bitte versuche es erneut')
         }
       } catch (e) {
         if (e.message.indexOf(RECEIVED_CODE_503) >= 0) {
-          alert(
-            `Der Server ist gerade nicht erreichbar. Vermutlich wurdest du für ${formatRelativeTimeS(
+          alerts.addAlert(KIND.NEGATIVE, `Der Server ist gerade nicht erreichbar. Vermutlich wurdest du für ${formatRelativeTimeS(
               blockinDurationInMs
-            )} gesperrt.`
-          )
+            )} gesperrt`)
         } else {
-          console.error('wrong transfercode or password')
+          alerts.addAlert(KIND.NEGATIVE, 'Transfercode oder Passwort ist falsch')
         }
-        console.error(e)
+        !production && console.error(e)
       }
     }
     loader.setLoader(signIn.name, false)

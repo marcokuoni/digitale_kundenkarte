@@ -11,22 +11,8 @@
   import PasswordAlert from '../components/PasswordAlert.svelte'
   import EmailAlert from '../components/EmailAlert.svelte'
   import NoteForMailAddressTransfercode from '../components/NoteForMailAddressTransfercode.svelte'
-  import loader from '../stores/loader'
-
 
   let hasMoreRights = false
-
-  onMount(async () => {
-    loader.setLoader(refresh.name, true)
-    if (localStorage.getItem(PROCESS_ENV.JWT_COOKIE_NAME)) {
-      try {
-        await refresh({})
-      } catch (e) {
-        console.error(e.message)
-      }
-    }
-    loader.setLoader(refresh.name, false)
-  })
 
   const unsubscribe = currentUser.subscribe((currentUser) => {
     if (

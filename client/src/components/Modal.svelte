@@ -9,7 +9,7 @@
 
 <script lang="ts">
   import { onDestroy } from 'svelte'
-  import { EVENTS, KEYS, OVERFLOW } from '../lib/const'
+  import { EVENTS, KEYS, OVERFLOW, ROLES } from '../lib/const'
 
   let topDiv
   let visible = false
@@ -64,11 +64,17 @@
 >
   <div id="modal" on:click|stopPropagation={() => {}} on:keydown={keyPress}>
     <button class="btn" id="close" on:click={() => close()}>
-      <svg viewBox="0 0 12 12">
-        <circle cx="6" cy="6" r="6" />
-        <line x1="3" y1="3" x2="9" y2="9" />
-        <line x1="9" y1="3" x2="3" y2="9" />
-      </svg>
+      <svg
+        data-baseweb="icon"
+        viewBox="0 0 24 24"
+        role={ROLES.BUTTON}
+        class="dd de df l9 la cr jm ck"
+        ><title>Close</title><path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M7.29289 7.29289C7.68342 6.90237 8.31658 6.90237 8.70711 7.29289L12 10.5858L15.2929 7.29289C15.6834 6.90237 16.3166 6.90237 16.7071 7.29289C17.0976 7.68342 17.0976 8.31658 16.7071 8.70711L13.4142 12L16.7071 15.2929C17.0976 15.6834 17.0976 16.3166 16.7071 16.7071C16.3166 17.0976 15.6834 17.0976 15.2929 16.7071L12 13.4142L8.70711 16.7071C8.31658 17.0976 7.68342 17.0976 7.29289 16.7071C6.90237 16.3166 6.90237 15.6834 7.29289 15.2929L10.5858 12L7.29289 8.70711C6.90237 8.31658 6.90237 7.68342 7.29289 7.29289Z"
+        /></svg
+      >
     </button>
     <div id="modal-content">
       <slot />

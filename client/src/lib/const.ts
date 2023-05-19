@@ -53,6 +53,8 @@ export enum PROCESS_ENV {
     CROWN_BAR_URL = 'process.env.CROWN_BAR_URL',
     CROWN_BAR_INSTA = 'process.env.CROWN_BAR_INSTA',
     ADMIN_EMAIL_ADDRESS = 'process.env.ADMIN_EMAIL_ADDRESS',
+    TOAST_AUTO_HIDE_DURATION = 'process.env.TOAST_AUTO_HIDE_DURATION',
+    NODE_ENV = 'process.env.NODE_ENV',
 }
 
 export enum CODES {
@@ -124,6 +126,18 @@ export enum TIME_UNIT {
     DAY = 'day',
 }
 
+export enum KIND {
+    DEFAULT = 'default',
+    POSITIVE = 'positive',
+    WARNING = 'warning',
+    NEGATIVE = 'negative',
+}
+
+export enum ROLES {
+    ALERT = 'alert',
+    BUTTON = 'button',
+}
+
 export const AUTHORIZATION = 'authorization'
 export const BEARER = 'Bearer'
 export const AUTH_TOKEN_SEPERATOR = `?${AUTHORIZATION}=`
@@ -134,3 +148,4 @@ export const NOOPENER_NPREFERRER = 'noopener noreferrer'
 export const TRUE = 'true'
 export const PLACEHOLDER_IP = '::ffff:172.18.0.5'
 export const MAIL_TO = 'mailto:'
+export const PRODUCTION = 'production'

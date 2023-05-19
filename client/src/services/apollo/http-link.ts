@@ -1,5 +1,7 @@
 import { HttpLink } from '@apollo/client'
-import { AUTH_TOKEN_SEPERATOR, PROCESS_ENV } from '../../lib/const'
+import { AUTH_TOKEN_SEPERATOR, PROCESS_ENV, PRODUCTION } from '../../lib/const'
+
+const production = PROCESS_ENV.NODE_ENV.toString() === PRODUCTION
 
 const _customFetch = async (uri, options) => {
   try {
@@ -17,9 +19,9 @@ const _customFetch = async (uri, options) => {
 
     return response
 
-  } catch (err) {
-    console.error('error in custom fetch:')
-    console.error(err)
+  } catch (e) {
+    !production && console.error('error in custom fetch:')
+    !production && console.error(e)
   }
 }
 

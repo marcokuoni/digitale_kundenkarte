@@ -1,12 +1,14 @@
 <script lang="ts">
   import currentUser from '../stores/currentUser'
   import { sendValidationMail } from '../codegen'
-  import { BUTTON_TYPES, PATHS } from '../lib/const'
+  import { BUTTON_TYPES, KIND, PATHS, PROCESS_ENV, PRODUCTION } from '../lib/const'
   import NavLink from './NavLink.svelte'
   import Logout from './Logout.svelte'
   import loader from '../stores/loader'
+  import alerts from '../stores/alerts'
 
   let success = false
+  const production = PROCESS_ENV.NODE_ENV.toString() === PRODUCTION
 
   async function sendValidationMailHandler() {
     loader.setLoader(sendValidationMail.name, true)
@@ -14,11 +16,13 @@
       const { data } = await sendValidationMail({})
       if (data && data.sendValidationMail) {
         success = true
+        alerts.addAlert(KIND.POSITIVE, 'E-Mail wurde erfolgreich versendet')
       } else {
-        alert('Error')
+        alerts.addAlert(KIND.WARNING, 'Etwas ist schief gelaufen. Bitte versuche es erneut')
       }
     } catch (e) {
-      console.error(e)
+        alerts.addAlert(KIND.WARNING, 'Etwas ist schief gelaufen. Bitte versuche es erneut')
+      !production && console.error(e)
     }
     loader.setLoader(sendValidationMail.name, false)
   }

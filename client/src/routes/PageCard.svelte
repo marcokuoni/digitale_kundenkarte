@@ -59,11 +59,9 @@
 <main>
   <EmailAlert>
     {#if !$currentUser}
-      <!-- TODO: we need a way to communicate loading and alert states to the user? -->
-      <span>Loading...</span>
+      <span>Kein Benutzer gefunden</span>
       <Logout />
     {:else}
-
       <section class="card-section">
         <div class="card-wrapper">
           <Card {stamps} />

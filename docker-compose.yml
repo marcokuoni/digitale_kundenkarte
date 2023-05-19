@@ -46,6 +46,7 @@ services:
       args:
         - CLIENT_PORT=$CLIENT_PORT
     environment:
+      - NODE_ENV=$NODE_ENV
       - SERVER_URL=$CLIENT_URL:$SERVER_ENTRY_PORT
       - SCHEMA_VERSION_KEY=$SCHEMA_VERSION_KEY
       - SCHEMA_VERSION=$SCHEMA_VERSION
@@ -60,6 +61,7 @@ services:
       - ADMIN_EMAIL_ADDRESS=$ADMIN_EMAIL_ADDRESS
       - CROWN_BAR_URL=$CROWN_BAR_URL
       - CROWN_BAR_INSTA=$CROWN_BAR_INSTA
+      - TOAST_AUTO_HIDE_DURATION=$TOAST_AUTO_HIDE_DURATION
     restart: always
     volumes:
       - ./client:/usr/src/app

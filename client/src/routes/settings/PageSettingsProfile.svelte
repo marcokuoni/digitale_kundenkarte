@@ -4,8 +4,20 @@
   import SettingsPage from '../../components/layouts/SettingsPageLayout.svelte'
   import PasswordAlert from '../../components/PasswordAlert.svelte'
   import EmailAlert from '../../components/EmailAlert.svelte'
-  import { BUTTON_TYPES, DE_CH, INPUT_TYPES, NAMES, TRUE } from '../../lib/const'
+  import {
+    BUTTON_TYPES,
+    DE_CH,
+    INPUT_TYPES,
+    KIND,
+    NAMES,
+    PROCESS_ENV,
+    PRODUCTION,
+    TRUE,
+  } from '../../lib/const'
   import loader from '../../stores/loader'
+  import alerts from '../../stores/alerts'
+
+  const production = PROCESS_ENV.NODE_ENV.toString() === PRODUCTION
 
   async function submitUpdateUser(event: SubmitEvent) {
     loader.setLoader(updateUser.name, true)
@@ -30,25 +42,36 @@
         variables.password = password
       }
 
-      const { data } = await updateUser({
-        variables,
-        optimisticResponse: {
-          updateUser: {
-            ...$currentUser,
-            _id,
-            name,
-            email,
-            newsletter,
-            updatedAt: Date.now(),
+      try {
+        const { data } = await updateUser({
+          variables,
+          optimisticResponse: {
+            updateUser: {
+              ...$currentUser,
+              _id,
+              name,
+              email,
+              newsletter,
+              updatedAt: Date.now(),
+            },
           },
-        },
-      })
+        })
 
-      if (data && data.updateUser) {
-        currentUser.set(data.updateUser)
-        console.log('User updated')
-      } else {
-        console.error('Error')
+        if (data && data.updateUser) {
+          alerts.addAlert(KIND.POSITIVE, 'Benurzer erfolgreich aktualisiert')
+          currentUser.set(data.updateUser)
+        } else {
+          alerts.addAlert(
+            KIND.WARNING,
+            'Etwas ist schief gelaufen. Bitte versuche es erneut'
+          )
+        }
+      } catch (e) {
+        alerts.addAlert(
+          KIND.WARNING,
+          'Etwas ist schief gelaufen. Bitte versuche es erneut'
+        )
+        !production && console.error(e)
       }
     }
     loader.setLoader(updateUser.name, false)
@@ -59,71 +82,85 @@
   {#if !$currentUser}
     <h3>Kein Profil gefunden</h3>
   {:else}
-
     <h3>Dein Transfercode: {$currentUser && $currentUser.transfercode}</h3>
 
     <form on:submit|preventDefault={submitUpdateUser}>
-      <input type={INPUT_TYPES.HIDDEN}
-             id={NAMES.ID}
-             name={NAMES.ID}
-             value={$currentUser && $currentUser._id}/>
+      <input
+        type={INPUT_TYPES.HIDDEN}
+        id={NAMES.ID}
+        name={NAMES.ID}
+        value={$currentUser && $currentUser._id}
+      />
 
       <div class="form-input-wrapper">
         <label for={NAMES.NAME}>Name</label>
-        <input type={INPUT_TYPES.TEXT}
-               id={NAMES.NAME}
-               name={NAMES.NAME}
-               value={$currentUser && $currentUser.name}/>
+        <input
+          type={INPUT_TYPES.TEXT}
+          id={NAMES.NAME}
+          name={NAMES.NAME}
+          value={$currentUser && $currentUser.name}
+        />
       </div>
 
       <div class="form-input-wrapper">
-        <EmailAlert/>
+        <EmailAlert />
         <label for={NAMES.EMAIL}>
-          E-Mail {$currentUser.emailValidatedAt ? (`(Validiert am: ${new Date($currentUser.emailValidatedAt)
-                .toLocaleString(DE_CH)})`) : ''}
+          E-Mail {$currentUser.emailValidatedAt
+            ? `(Validiert am: ${new Date(
+                $currentUser.emailValidatedAt
+              ).toLocaleString(DE_CH)})`
+            : ''}
         </label>
-        <input type={INPUT_TYPES.EMAIL}
-               id={NAMES.EMAIL}
-               name={NAMES.EMAIL}
-               required={$currentUser?.userRoles && $currentUser.userRoles.length > 0}
-               value={$currentUser && $currentUser.email}/>
+        <input
+          type={INPUT_TYPES.EMAIL}
+          id={NAMES.EMAIL}
+          name={NAMES.EMAIL}
+          required={$currentUser?.userRoles &&
+            $currentUser.userRoles.length > 0}
+          value={$currentUser && $currentUser.email}
+        />
       </div>
 
       <div class="form-input-wrapper form-input-wrapper-checkbox">
-        <input type={INPUT_TYPES.CHECKBOX}
-               id={NAMES.NEWSLETTER}
-               name={NAMES.NEWSLETTER}
-               value={TRUE}
-               checked={$currentUser && $currentUser.newsletter}/>
+        <input
+          type={INPUT_TYPES.CHECKBOX}
+          id={NAMES.NEWSLETTER}
+          name={NAMES.NEWSLETTER}
+          value={TRUE}
+          checked={$currentUser && $currentUser.newsletter}
+        />
         <label for={NAMES.NEWSLETTER}>Newsletter</label>
       </div>
 
       {#if $currentUser?.userRoles && $currentUser.userRoles.length > 0}
         <PasswordAlert />
 
-
         <div class="form-input-wrapper">
           <label for={NAMES.PASSWORD}>
-            Passwort {$currentUser.passwordChangedAt ? `(letzte Änderung am: ${new Date($currentUser.passwordChangedAt)
-                .toLocaleString(DE_CH)})` : ''}
+            Passwort {$currentUser.passwordChangedAt
+              ? `(letzte Änderung am: ${new Date(
+                  $currentUser.passwordChangedAt
+                ).toLocaleString(DE_CH)})`
+              : ''}
           </label>
-          <input type={INPUT_TYPES.PASSWORD}
-                 id={NAMES.PASSWORD}
-                 name={NAMES.PASSWORD}
-                 value={''}/>
+          <input
+            type={INPUT_TYPES.PASSWORD}
+            id={NAMES.PASSWORD}
+            name={NAMES.PASSWORD}
+            value={''}
+          />
         </div>
       {/if}
 
-      <button class="default-button form-submit-button" type={BUTTON_TYPES.SUBMIT}>Profil aktualisieren</button>
-
+      <button
+        class="default-button form-submit-button"
+        type={BUTTON_TYPES.SUBMIT}>Profil aktualisieren</button
+      >
     </form>
   {/if}
-
 </SettingsPage>
 
-
 <style>
-
   form {
     display: flex;
     flex-direction: column;
@@ -161,5 +198,4 @@
     border: none;
     border-radius: 8px;
   }
-
 </style>

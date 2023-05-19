@@ -1,6 +1,6 @@
 import { ApolloLink, Observable } from '@apollo/client'
 import gql from 'graphql-tag'
-import { EVENTS } from '../../lib/const'
+import { EVENTS, PROCESS_ENV, PRODUCTION } from '../../lib/const'
 
 const syncStatusQuery = gql`
   query syncStatus {
@@ -8,6 +8,7 @@ const syncStatusQuery = gql`
     inflight
   }
 `
+const production = PROCESS_ENV.NODE_ENV.toString() === PRODUCTION
 
 export default class OfflineLink extends ApolloLink {
   request(operation, forward) {
@@ -24,10 +25,10 @@ export default class OfflineLink extends ApolloLink {
           observer.next(result)
         },
 
-        error: async (error) => {
+        error: async (e) => {
           const errorEvent = new CustomEvent(EVENTS.APOLLO_ERROR)
           window.dispatchEvent(errorEvent)
-          console.error(error)
+          !production && console.error(e)
           // Resolve the mutation with the optimistic response so the UI can be updated
           observer.next({
             data: context.optimisticResponse,

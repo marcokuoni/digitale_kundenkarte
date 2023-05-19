@@ -39,6 +39,8 @@ export default {
       'process.env.CROWN_BAR_URL': process.env.CROWN_BAR_URL,   
       'process.env.CROWN_BAR_INSTA': process.env.CROWN_BAR_INSTA,   
       'process.env.ADMIN_EMAIL_ADDRESS': process.env.ADMIN_EMAIL_ADDRESS,   
+      'process.env.TOAST_AUTO_HIDE_DURATION': process.env.TOAST_AUTO_HIDE_DURATION,
+      'process.env.NODE_ENV': process.env.NODE_ENV,
     }),
     svelte({
       preprocess: sveltePreprocess({ sourceMap: !production }),

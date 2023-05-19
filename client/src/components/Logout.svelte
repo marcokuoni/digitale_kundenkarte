@@ -3,31 +3,52 @@
   import { purge } from '../services/apollo/persistor'
   import { signOut } from '../codegen'
   import { navigate } from 'svelte-routing'
-  import { BUTTON_TYPES, PATHS, PROCESS_ENV } from '../lib/const'
+  import {
+    BUTTON_TYPES,
+    KIND,
+    PATHS,
+    PROCESS_ENV,
+    PRODUCTION,
+  } from '../lib/const'
   import currentUser from '../stores/currentUser'
   import { onDestroy } from 'svelte'
   import loader from '../stores/loader'
+  import alerts from '../stores/alerts'
 
   let hasMoreRights = false
+  const production = PROCESS_ENV.NODE_ENV.toString() === PRODUCTION
 
   async function logout() {
     loader.setLoader(signOut.name, true)
-    const { data } = await signOut({})
-    if (data && data.signOut) {
-      localStorage.removeItem(PROCESS_ENV.JWT_COOKIE_NAME)
-      await purge()
-      client.resetStore()
-      currentUser.reset()
+    try {
+      const { data } = await signOut({})
+      if (data && data.signOut) {
+        localStorage.removeItem(PROCESS_ENV.JWT_COOKIE_NAME)
+        await purge()
+        client.resetStore()
+        currentUser.reset()
+        alerts.addAlert(KIND.POSITIVE, 'Du wurdest erfolgreich abgemeldet')
 
-      if (hasMoreRights) {
-        navigate(`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`)
+        if (hasMoreRights) {
+          navigate(`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`)
+        } else {
+          navigate(`/${PATHS.LOGIN_USER}`)
+        }
       } else {
-        navigate(`/${PATHS.LOGIN_USER}`)
+        alerts.addAlert(
+          KIND.WARNING,
+          'Etwas ist schief gelaufen. Bitte versuche es erneut'
+        )
       }
-    } else {
-      alert('Error')
+    } catch (e) {
+      alerts.addAlert(
+        KIND.WARNING,
+        'Etwas ist schief gelaufen. Bitte versuche es erneut'
+      )
+      !production && console.error(e)
     }
     loader.setLoader(signOut.name, false)
+    loader.resetLoader()
   }
 
   const unsubscribe = currentUser.subscribe((currentUser) => {

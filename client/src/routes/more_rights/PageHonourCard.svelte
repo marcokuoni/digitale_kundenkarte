@@ -2,13 +2,22 @@
   import { onMount } from 'svelte'
   import { honourCardFrom } from '../../codegen'
   import MoreRightsPage from '../../components/layouts/MoreRightsPageLayout.svelte'
-  import { BUTTON_TYPES, INPUT_TYPES, NAMES } from '../../lib/const'
+  import {
+    BUTTON_TYPES,
+    INPUT_TYPES,
+    KIND,
+    NAMES,
+    PROCESS_ENV,
+    PRODUCTION,
+  } from '../../lib/const'
   import Separator from '../../components/Separator.svelte'
   import loader from '../../stores/loader'
+  import alerts from '../../stores/alerts'
 
   export let transfercode: string = ''
 
   let successfully: boolean | null = null
+  const production = PROCESS_ENV.NODE_ENV.toString() === PRODUCTION
 
   const honourCard = async (event: SubmitEvent) => {
     loader.setLoader(honourCardFrom.name, true)
@@ -30,33 +39,51 @@
   })
 
   const _honourCard = async (transfercode: string) => {
-    const { data } = await honourCardFrom({
-      variables: {
-        transfercode,
-      },
-    })
+    try {
+      const { data } = await honourCardFrom({
+        variables: {
+          transfercode,
+        },
+      })
 
-    successfully = false
+      successfully = false
 
-    if (data) {
-      successfully = !!data.honourCardFrom
-    } else {
-      console.error('Error')
+      if (data) {
+        successfully = !!data.honourCardFrom
+        if (successfully) {
+          alerts.addAlert(
+            KIND.POSITIVE,
+            'Eine Karte wurde erfolgreich eingelöst'
+          )
+        } else {
+          alerts.addAlert(KIND.NEGATIVE, 'Keine Karte konnte eingelöst werden')
+        }
+      } else {
+        alerts.addAlert(
+          KIND.WARNING,
+          'Etwas ist schief gelaufen. Bitte versuche es erneut'
+        )
+      }
+    } catch (e) {
+      alerts.addAlert(
+        KIND.WARNING,
+        'Etwas ist schief gelaufen. Bitte versuche es erneut'
+      )
+      !production && console.error(e)
     }
   }
 </script>
 
-
 <MoreRightsPage title="Karte Einlösen">
   <form on:submit|preventDefault={honourCard}>
-
     <label for={NAMES.TRANSFERCODE}>Transfer Code</label>
-    <input type={INPUT_TYPES.TEXT}
-           id={NAMES.TRANSFERCODE}
-           value={transfercode}/>
+    <input
+      type={INPUT_TYPES.TEXT}
+      id={NAMES.TRANSFERCODE}
+      value={transfercode}
+    />
 
     <button class="default-button" type={BUTTON_TYPES.BUTTON}>Einlösen</button>
-
   </form>
 
   <p>
@@ -68,12 +95,9 @@
   </p>
 
   <Separator>oder</Separator>
-
 </MoreRightsPage>
 
-
 <style>
-
   form {
     display: flex;
     flex-direction: column;
@@ -93,5 +117,4 @@
     border: none;
     border-radius: 8px;
   }
-
 </style>

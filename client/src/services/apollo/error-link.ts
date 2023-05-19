@@ -45,8 +45,8 @@ const _getNewToken = async () => {
 
 const errorLink = onError(({ graphQLErrors, operation, forward }) => {
   if (graphQLErrors) {
-    for (const err of graphQLErrors) {
-      switch (err.extensions.code) {
+    for (const e of graphQLErrors) {
+      switch (e.extensions.code) {
         case CODES.UNAUTHENTICATED:
           if (!isRefreshing && localStorage.getItem(PROCESS_ENV.JWT_COOKIE_NAME)) {
             _setIsRefreshing(true)

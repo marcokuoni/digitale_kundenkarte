@@ -7,7 +7,11 @@
 	--background-raised-color: #333333;
 	--black: #000;
 	--background-color-transparent: rgba(0, 0, 0, 0.8);
-	--box-shadow: rgba(255, 91, 80, 0.33)
+	--box-shadow: rgba(255, 91, 80, 0.33);
+	--default-color: rgb(39, 110, 241);
+	--positive-color: rgb(4, 136, 72);
+	--warning-color: rgb(255, 192, 67);
+	--negative-color: rgb(225, 25, 0);
 }
 
 /* FONTS */

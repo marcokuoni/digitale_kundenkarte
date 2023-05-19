@@ -10,7 +10,6 @@
 </script>
 
 {#if !$currentUser}
-  <!-- TODO: we need a way to communicate loading and alert states to the user? -->
   <span>Kein Benutzer gefunden</span>
   <NavLink to={`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}
     >Anmelden mit Passwort</NavLink

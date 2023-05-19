@@ -25,11 +25,14 @@
   import PageForgotTransfercode from './routes/PageForgotTransfercode.svelte'
   import Loader from './components/Loader.svelte'
   import loader from './stores/loader'
+  import ToastContainer from './components/ToastContainer.svelte'
 
   export let url = ''
 
   onMount(() => {
+    loader.setLoader(currentUser.fetchCurrentUser.name, true)
     currentUser.fetchCurrentUser()
+    loader.setLoader(currentUser.fetchCurrentUser.name, false)
   })
 </script>
 
@@ -138,9 +141,14 @@
     </Router>
   </section>
   <footer />
+  <ToastContainer />
 </main>
 
 <style>
+  main {
+    height: 100%;
+  }
+
   main header {
     padding: 5px 10px;
     display: flex;

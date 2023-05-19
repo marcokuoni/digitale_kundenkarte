@@ -16,7 +16,6 @@
 </script>
 
 <div class="card">
-  <!--<p class="subtitle">THE CROWN BAR</p>-->
   <h1 class="title">Ehrenkarte</h1>
   <div class="stamp-wrapper">
     {#each Array(stampsLength) as _, i}

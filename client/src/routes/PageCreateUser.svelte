@@ -1,13 +1,15 @@
 <script lang="ts">
   import { signUp } from '../codegen'
-  import { BUTTON_TYPES, INPUT_TYPES, NAMES, PATHS, TRUE } from '../lib/const'
+  import { BUTTON_TYPES, INPUT_TYPES, KIND, NAMES, PATHS, PROCESS_ENV, PRODUCTION, TRUE } from '../lib/const'
   import NavLink from '../components/NavLink.svelte'
   import currentUser from '../stores/currentUser'
   import Logout from '../components/Logout.svelte'
   import Separator from '../components/Separator.svelte'
   import loader from '../stores/loader'
+  import alerts from '../stores/alerts'
 
   export let withPassword: string = ''
+  const production = PROCESS_ENV.NODE_ENV.toString() === PRODUCTION
 
   async function createUser(event: SubmitEvent) {
     loader.setLoader(signUp.name, true)
@@ -19,6 +21,7 @@
       const email = formData.get(NAMES.EMAIL)?.toString()
       const newsletter = formData.get(NAMES.NEWSLETTER)?.toString() === TRUE
       const password = formData.get(NAMES.PASSWORD)?.toString()
+      try {
       const { data } = await signUp({
         variables: {
           name,
@@ -29,12 +32,22 @@
         },
       })
       if (data && data.signUp) {
-        console.error(
+        !production && console.error(
           'This should not happen otherwise the browser will cache the input data'
         )
       } else {
-        alert('Error')
+        alerts.addAlert(
+          KIND.WARNING,
+          'Etwas ist schief gelaufen. Bitte versuche es erneut'
+        )
       }
+    } catch(e) {
+        alerts.addAlert(
+          KIND.WARNING,
+          'Etwas ist schief gelaufen. Bitte versuche es erneut'
+        )
+        !production && console.error(e)
+    }
     }
     loader.setLoader(signUp.name, false)
   }
