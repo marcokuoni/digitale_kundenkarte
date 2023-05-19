@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { PROCESS_ENV } from '../lib/const'
+  import { DE_CH, PROCESS_ENV } from '../lib/const'
   import Stamp from './Stamp.svelte'
   const stampsLength = parseInt(PROCESS_ENV.STAMPS_LENGTH || '8')
 
@@ -39,8 +39,8 @@
       <p>Ehrenhafte<br />Überraschung</p>
     </div>
     {#if stamps.length > 0 && lastVaildUntilDate}
-      <p class="subtitle">
-        Suche Internet bis spätestens {lastVaildUntilDate}
+      <p class="note">
+        <i>Suche Internet bis spätestens {new Date(lastVaildUntilDate).toLocaleString(DE_CH)} damit dein Stempel nicht ausläuft</i>
       </p>
     {/if}
   </div>
@@ -57,6 +57,11 @@
   .title {
     margin-bottom: 0;
     padding-bottom: 20px;
+  }
+
+  .note {
+    font-size: 0.8rem;
+    color: var(--secondary-color);
   }
 
   .stamp-wrapper {

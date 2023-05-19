@@ -111,7 +111,7 @@
 </script>
 
 <button class="status-button" on:click={() => getModal().open()}>
-  {#if clientOffline && serverOffline}
+  {#if clientOffline || serverOffline}
     <svg
       class="online-indicator-icon"
       width="25"

@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Stamp } from '../codegen'
+  import { DE_CH } from '../lib/const'
 
   export let status = false
   export let stamp: Stamp | null = null
@@ -8,17 +9,29 @@
 <div
   class="stamp"
   class:active-stamp={status}
-  class:provision-stamp-image={!!stamp?.validUntilDate}>
-
-  <svg class="stamp-image" class:hide-stamp-image={!status}
-       width="21" height="14" viewBox="0 0 21 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M8.48936 14H0V3.87234L8.48936 14Z" fill="white"/>
-    <path d="M12.5106 14H21V3.87234L12.5106 14Z" fill="white"/>
-    <path d="M10.4383 0L4.66207 6.85315L10.4383 13.7063L16.2145 6.85315L10.4383 0Z" fill="white"/>
-  </svg>
-
+  class:provision-stamp-image={!!stamp?.validUntilDate}
+>
   {#if stamp?.validUntilDate}
-    <span>{stamp?.validUntilDate}</span>
+    <span class="note"
+      >{new Date(stamp.validUntilDate).toLocaleString(DE_CH)}</span
+    >
+  {:else}
+    <svg
+      class="stamp-image"
+      class:hide-stamp-image={!status}
+      width="21"
+      height="14"
+      viewBox="0 0 21 14"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M8.48936 14H0V3.87234L8.48936 14Z" fill="white" />
+      <path d="M12.5106 14H21V3.87234L12.5106 14Z" fill="white" />
+      <path
+        d="M10.4383 0L4.66207 6.85315L10.4383 13.7063L16.2145 6.85315L10.4383 0Z"
+        fill="white"
+      />
+    </svg>
   {/if}
 </div>
 
@@ -52,5 +65,10 @@
 
   .provision-stamp-image {
     filter: grayscale(100%);
+  }
+
+  .note {
+    font-size: 0.5rem;
+    text-align: center;
   }
 </style>

@@ -60,7 +60,7 @@
 
         alerts.addAlert(
           KIND.POSITIVE,
-          `QR Code wurde erneuert, gültig bis: ${new Date(validUntil).toLocaleString(DE_CH)}`
+          `QR Code wurde erstellt, gültig bis: ${new Date(validUntil).toLocaleString(DE_CH)}`
         )
       } else {
         alerts.addAlert(
