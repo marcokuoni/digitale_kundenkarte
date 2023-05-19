@@ -39,7 +39,7 @@
 
     <EmailAlert>
       {#if $currentUser}
-        <p class="info-text">Transfercode: {$currentUser.transfercode}</p>
+        <p class="info-text">Dein Transfercode: {$currentUser.transfercode}</p>
 
         <NoteForMailAddressTransfercode />
       {/if}

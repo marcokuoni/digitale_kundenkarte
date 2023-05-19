@@ -76,7 +76,7 @@
             <p class="info-text">{$currentUser.name}</p>
           {/if}
 
-          <h4 class="info-label">Transfercode</h4>
+          <h4 class="info-label">Dein Transfercode</h4>
           {#if $currentUser}
             <p class="info-text">{$currentUser.transfercode}</p>
           {/if}

@@ -91,24 +91,28 @@
       {/if}
     {:else}
       <form on:submit|preventDefault={loginUser}>
-        <label for={NAMES.TRANSFERCODE}>Transfer Code:</label>
-        <input
-          type={INPUT_TYPES.TEXT}
-          id={NAMES.TRANSFERCODE}
-          name={NAMES.TRANSFERCODE}
-          required
-          value=""
-        />
-
-        {#if withPassword !== ''}
-          <label for={NAMES.PASSWORD}>Passwort</label>
+        <div class="form-input-wrapper">
+          <label for={NAMES.TRANSFERCODE}>Transfer Code:</label>
           <input
-            type={INPUT_TYPES.PASSWORD}
-            id={NAMES.PASSWORD}
-            name={NAMES.PASSWORD}
+            type={INPUT_TYPES.TEXT}
+            id={NAMES.TRANSFERCODE}
+            name={NAMES.TRANSFERCODE}
             required
             value=""
           />
+        </div>
+
+        {#if withPassword !== ''}
+          <div class="form-input-wrapper">
+            <label for={NAMES.PASSWORD}>Passwort</label>
+            <input
+              type={INPUT_TYPES.PASSWORD}
+              id={NAMES.PASSWORD}
+              name={NAMES.PASSWORD}
+              required
+              value=""
+            />
+          </div>
         {/if}
 
         <button type={BUTTON_TYPES.SUBMIT} class="default-button">
@@ -144,6 +148,12 @@
   form {
     display: flex;
     flex-direction: column;
+  }
+
+  .form-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin: 8px 0;
   }
 
   label {

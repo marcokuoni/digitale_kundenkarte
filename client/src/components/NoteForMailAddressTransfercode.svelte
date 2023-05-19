@@ -26,16 +26,19 @@
 <style>
   ul {
     padding-left: 12px;
+    margin-bottom: 15px;
   }
   li {
     padding: 0;
   }
-  ul, li {
+
+  li p {
+    margin: 0;
   }
 
   h3, ul {
     opacity: 0.5;
-    font-size: 0.5rem;
+    font-size: 0.75rem;
     font-style: italic;
   }
   
