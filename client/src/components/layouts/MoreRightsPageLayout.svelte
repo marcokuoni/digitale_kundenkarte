@@ -1,5 +1,6 @@
 <script lang="ts">
   import { PATHS } from '../../lib/const'
+  import Logout from '../Logout.svelte'
   import NavLink from '../NavLink.svelte'
 
   export let title: string = ''
@@ -13,7 +14,7 @@
     <slot />
 
     <NavLink to={`/${PATHS.HOME}`}>Home</NavLink>
-
+    <Logout />
   </div>
 
 </main>
