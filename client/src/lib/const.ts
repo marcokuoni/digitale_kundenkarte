@@ -55,6 +55,7 @@ export enum PROCESS_ENV {
     ADMIN_EMAIL_ADDRESS = 'process.env.ADMIN_EMAIL_ADDRESS',
     TOAST_AUTO_HIDE_DURATION = 'process.env.TOAST_AUTO_HIDE_DURATION',
     NODE_ENV = 'process.env.NODE_ENV',
+    JWT_EXPIRES_IN = 'process.env.JWT_EXPIRES_IN',
 }
 
 export enum CODES {
@@ -142,7 +143,7 @@ export const AUTHORIZATION = 'authorization'
 export const BEARER = 'Bearer'
 export const AUTH_TOKEN_SEPERATOR = `?${AUTHORIZATION}=`
 export const DE_CH = 'de-CH'
-export const QR_CODE_API_URL = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='
+export const QR_CODE_API_URL = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data='
 export const RECEIVED_CODE_503 = 'Received status code 503'
 export const NOOPENER_NPREFERRER = 'noopener noreferrer'
 export const TRUE = 'true'

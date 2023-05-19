@@ -1,6 +1,15 @@
 <script lang="ts">
   import { signUp } from '../codegen'
-  import { BUTTON_TYPES, INPUT_TYPES, KIND, NAMES, PATHS, PROCESS_ENV, PRODUCTION, TRUE } from '../lib/const'
+  import {
+    BUTTON_TYPES,
+    INPUT_TYPES,
+    KIND,
+    NAMES,
+    PATHS,
+    PROCESS_ENV,
+    PRODUCTION,
+    TRUE,
+  } from '../lib/const'
   import NavLink from '../components/NavLink.svelte'
   import currentUser from '../stores/currentUser'
   import Logout from '../components/Logout.svelte'
@@ -22,32 +31,33 @@
       const newsletter = formData.get(NAMES.NEWSLETTER)?.toString() === TRUE
       const password = formData.get(NAMES.PASSWORD)?.toString()
       try {
-      const { data } = await signUp({
-        variables: {
-          name,
-          email,
-          newsletter,
-          password,
-          successRedirect: `/${PATHS.CARD}`,
-        },
-      })
-      if (data && data.signUp) {
-        !production && console.error(
-          'This should not happen otherwise the browser will cache the input data'
-        )
-      } else {
-        alerts.addAlert(
-          KIND.WARNING,
-          'Etwas ist schief gelaufen. Bitte versuche es erneut'
-        )
-      }
-    } catch(e) {
+        const { data } = await signUp({
+          variables: {
+            name,
+            email,
+            newsletter,
+            password,
+            successRedirect: `/${PATHS.CARD}`,
+          },
+        })
+        if (data && data.signUp) {
+          !production &&
+            console.error(
+              'This should not happen otherwise the browser will cache the input data'
+            )
+        } else {
+          alerts.addAlert(
+            KIND.WARNING,
+            'Etwas ist schief gelaufen. Bitte versuche es erneut'
+          )
+        }
+      } catch (e) {
         alerts.addAlert(
           KIND.WARNING,
           'Etwas ist schief gelaufen. Bitte versuche es erneut'
         )
         !production && console.error(e)
-    }
+      }
     }
     loader.setLoader(signUp.name, false)
   }
@@ -55,85 +65,109 @@
 
 <main class="default-section">
   <div class="default-wrapper">
-
-    <h1>Benutzer erstellen</h1>
-
+    <h1>
+      {#if withPassword !== ''}
+        Benutzer erstellen
+      {:else}
+        Karte erstellen
+      {/if}
+    </h1>
     <form on:submit|preventDefault={createUser}>
-
       <div class="input-wrapper">
         <label for={NAMES.NAME}>Name</label>
-        <input type={INPUT_TYPES.TEXT} id={NAMES.NAME} name={NAMES.NAME} value=''/>
+        <input
+          type={INPUT_TYPES.TEXT}
+          id={NAMES.NAME}
+          name={NAMES.NAME}
+          value=""
+        />
       </div>
-
 
       <div class="input-wrapper">
         <label for={NAMES.EMAIL}>E-Mail</label>
-        <input type={INPUT_TYPES.EMAIL}
-               required={withPassword !== ''}
-               id={NAMES.EMAIL}
-               name={NAMES.EMAIL}
-               value=''/>
+        <input
+          type={INPUT_TYPES.EMAIL}
+          required={withPassword !== ''}
+          id={NAMES.EMAIL}
+          name={NAMES.EMAIL}
+          value=""
+        />
       </div>
 
       <div class="input-wrapper checkbox-wrapper">
-        <input type={INPUT_TYPES.CHECKBOX}
-               id={NAMES.NEWSLETTER}
-               name={NAMES.NEWSLETTER}
-               value={TRUE}
-               checked={false}/>
+        <input
+          type={INPUT_TYPES.CHECKBOX}
+          id={NAMES.NEWSLETTER}
+          name={NAMES.NEWSLETTER}
+          value={TRUE}
+          checked={false}
+        />
         <label for={NAMES.NEWSLETTER}>Newsletter</label>
       </div>
 
       {#if withPassword !== ''}
         <div class="input-wrapper">
           <label for={NAMES.PASSWORD}>Passwort</label>
-          <input type={INPUT_TYPES.PASSWORD}
-                 id={NAMES.PASSWORD}
-                 name={NAMES.PASSWORD}
-                 required
-                 value=''/>
+          <input
+            type={INPUT_TYPES.PASSWORD}
+            id={NAMES.PASSWORD}
+            name={NAMES.PASSWORD}
+            required
+            value=""
+          />
         </div>
       {/if}
 
-      <button type={BUTTON_TYPES.SUBMIT} class="default-button">Benutzer erstellen</button>
-
+      <button type={BUTTON_TYPES.SUBMIT} class="default-button">
+        {#if withPassword !== ''}
+          Benutzer erstellen
+        {:else}
+          Karte erstellen
+        {/if}
+      </button>
     </form>
 
     <Separator>oder</Separator>
 
     {#if withPassword !== ''}
-      <NavLink to={`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}>Anmelden</NavLink>
       {#if $currentUser}
         <Logout />
         <NavLink to={`/${PATHS.HOME}`}>Startseite</NavLink>
       {:else}
+        <NavLink to={`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}
+          >Anmelden</NavLink
+        >
         <NavLink to={`/${PATHS.FORGOT_PASSWORD}`}>Passwort vergessen</NavLink>
       {/if}
-    {:else}
-      {#if $currentUser}
-        <Logout />
-      {:else}
-        <NavLink to={`/${PATHS.LOGIN_USER}`}>Ich besitze bereits eine Karte</NavLink
-        >
-      {/if}
+    {:else if $currentUser}
+      <Logout />
       <NavLink to={`/${PATHS.CARD}`}>Zu meiner Karte</NavLink>
+    {:else}
+      <NavLink to={`/${PATHS.LOGIN_USER}`}
+        >Ich besitze bereits eine Karte</NavLink
+      >
     {/if}
 
-    <NavLink to={`/${PATHS.FORGOT_TRANSFERCODE}`}>Transfercode vergessen</NavLink>
-
+    {#if withPassword !== ''}
+      <NavLink to={`/${PATHS.FORGOT_TRANSFERCODE}/${PATHS.WITH_PASSWORD}`}
+        >Transfercode vergessen</NavLink
+      >
+    {:else}
+      <NavLink to={`/${PATHS.FORGOT_TRANSFERCODE}`}
+        >Transfercode vergessen</NavLink
+      >
+    {/if}
   </div>
 </main>
 
-
 <style>
-
   form {
     display: flex;
     flex-direction: column;
   }
 
   label {
-    font-size: 11pt;
+    font-size: 1rem;
     font-weight: bold;
   }
 
@@ -160,5 +194,4 @@
   .checkbox-wrapper > input {
     margin-right: 8px;
   }
-
 </style>

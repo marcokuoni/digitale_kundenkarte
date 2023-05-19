@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte'
   import { PROCESS_ENV } from '../lib/const'
   import alerts from '../stores/alerts'
   import Toast from './Toast.svelte'
@@ -9,13 +10,15 @@
 
   $: toastEntries = []
 
-  alerts.subscribe((alertMap) => {
+  const unsubscribe = alerts.subscribe((alertMap) => {
     toastEntries = Array.from(alertMap.entries())
   })
 
   function handleClose(event) {
     alerts.removeAlert(event.detail.id)
   }
+
+  onDestroy(unsubscribe)
 </script>
 
 <div class="toast-container">
@@ -34,7 +37,6 @@
     justify-content: flex-start;
 
     position: fixed;
-    top: 0;
     right: 0;
     bottom: 0;
     margin-right: 16px;

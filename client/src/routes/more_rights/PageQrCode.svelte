@@ -17,7 +17,9 @@
   import Separator from '../../components/Separator.svelte'
   import loader from '../../stores/loader'
   import alerts from '../../stores/alerts'
+  import Modal, { getModal } from '../../components/Modal.svelte'
 
+  const QR_CODE = 'qr-code'
   const production = PROCESS_ENV.NODE_ENV.toString() === PRODUCTION
   let currentDate = new Date()
   let createStampUrl = `${window.location.origin}/${PATHS.ADD_STAMP}`
@@ -54,9 +56,11 @@
         blockForMinutes = data.generateUrlToken.blockForMinutes
         token = data.generateUrlToken.token
 
+        getModal(QR_CODE).open()
+
         alerts.addAlert(
           KIND.POSITIVE,
-          `QR Code wurde erneuert, gültig bis: ${validUntil}`
+          `QR Code wurde erneuert, gültig bis: ${new Date(validUntil).toLocaleString(DE_CH)}`
         )
       } else {
         alerts.addAlert(
@@ -123,27 +127,42 @@
 </script>
 
 <MoreRightsPage title="QR Code">
-  {#if token === '' || validUntil <= currentDate}
-    <p>Der QR Code ist abgelaufen. Bitte generiere einen neuen.</p>
-  {:else}
-    <div>
-      <a href={createStampUrl} target={TARGETS.BLANK} rel={NOOPENER_NPREFERRER}
-        >{createStampUrl}</a
-      >
-      <img src={createQRCodeUrl} alt="QR Code" />
-      <div>
-        <i>Läuft ab um: {new Date(validUntil).toLocaleString(DE_CH)}</i>
-      </div>
-      <div>
-        <i>Blockiert für {blockForMinutes} Minuten</i>
-      </div>
+  <Modal id={QR_CODE}>
+    <div class="content">
+      <h2>Scannen um zu stempeln</h2>
+      {#if token === '' || validUntil <= currentDate}
+        <p>Der QR Code ist abgelaufen. Bitte generiere einen neuen.</p>
+      {:else}
+        <div>
+          <img src={createQRCodeUrl} alt="QR Code" />
+          <div class="link-container">
+            <a
+              href={createStampUrl}
+              target={TARGETS.BLANK}
+              rel={NOOPENER_NPREFERRER}>{createStampUrl}</a
+            >
+          </div>
+          <div>
+            <i
+              ><strong>Läuft ab um:</strong>
+              {new Date(validUntil).toLocaleString(DE_CH)}</i
+            >
+          </div>
+          <div>
+            <i><strong>Blockiert für:</strong> {blockForMinutes} Minuten</i>
+          </div>
+        </div>
+      {/if}
     </div>
-  {/if}
+  </Modal>
+
   <form on:submit|preventDefault={generateUrlTokenSubmit}>
     <p>
-      Hinweis: Blocking Zeit sollte immer länger dauern als die Gültigkeit.
-      Falls beim Scannen kein Internet vorhanden ist. Muss die Gültigkeit
-      ausreichen, damit man in zwischen Zeit wieder Internet erlangen kann.
+      <i>
+        Hinweis: Blocking Zeit sollte immer länger dauern als die Gültigkeit.
+        Falls beim Scannen kein Internet vorhanden ist. Muss die Gültigkeit
+        ausreichen, damit man in zwischen Zeit wieder Internet erlangen kann.
+      </i>
     </p>
 
     <div class="form-input-wrapper">
@@ -154,13 +173,14 @@
         value={true}
         bind:checked={longTimeQr}
       />
-      <label for={NAMES.LONG_TIME_QR}> QR Code für längere Zeit Gültig </label>
+      <label for={NAMES.LONG_TIME_QR}> Manuelle Gültigkeit (Default: {new Date(validUntilInput).toLocaleString(DE_CH)}) </label>
     </div>
 
     {#if longTimeQr}
       <div class="form-input-wrapper">
         <label for={NAMES.VALID_UNTIL}>Gültig bis</label>
         <input
+          class="full-width-input"
           type="datetime-local"
           name={NAMES.VALID_UNTIL}
           id={NAMES.VALID_UNTIL}
@@ -204,7 +224,7 @@
   }
 
   label {
-    font-size: 11pt;
+    font-size: 1rem;
     font-weight: bold;
   }
 
@@ -224,5 +244,40 @@
 
   .full-width-button {
     width: 100%;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .content .link-container {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: var(--qr-width);
+    margin: 0 auto;
+    margin-bottom: 30px;
+  }
+
+  .content a,
+  .content a:visited,
+  .content a:hover,
+  .content a:active {
+    color: var(--white);
+    word-wrap: anywhere;
+    font-size: 0.75rem;
+    line-height: 1;
+  }
+
+  .content img {
+    margin: 0 auto;
+    margin-bottom: 5px;
+  }
+
+  .content img,
+  .content a {
+    margin-top: 15px;
   }
 </style>

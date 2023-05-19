@@ -28,9 +28,9 @@
   import ToastContainer from './components/ToastContainer.svelte'
 
   export let url = ''
+  loader.setLoader(currentUser.fetchCurrentUser.name, true)
 
   onMount(() => {
-    loader.setLoader(currentUser.fetchCurrentUser.name, true)
     currentUser.fetchCurrentUser()
     loader.setLoader(currentUser.fetchCurrentUser.name, false)
   })
@@ -71,6 +71,13 @@
 
         <Route path={`${PATHS.FORGOT_TRANSFERCODE}`}>
           <PageForgotTransfercode />
+        </Route>
+
+        <Route
+          path={`${PATHS.FORGOT_TRANSFERCODE}/:${PARAMS.WITH_PASSWORD}`}
+          let:params
+        >
+          <PageForgotTransfercode withPassword={params.withPassword} />
         </Route>
 
         <Route path={`${PATHS.FORGOT_PASSWORD}`}>
@@ -145,13 +152,24 @@
 </main>
 
 <style>
-  main {
-    height: 100%;
+  main,
+  main > section,
+  main > section > div {
+    min-height: calc(100vh - 40px);
   }
 
-  main header {
+  main > section > div {
+    padding: 20px;
+  }
+
+  main > header {
     padding: 5px 10px;
     display: flex;
     justify-content: right;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
   }
 </style>

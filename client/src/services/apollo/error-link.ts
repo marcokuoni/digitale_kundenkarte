@@ -43,41 +43,60 @@ const _getNewToken = async () => {
   })
 }
 
+const _navigateToLogin = async () => {
+  localStorage.removeItem(PROCESS_ENV.JWT_COOKIE_NAME)
+  await purge()
+  refreshTokenApiClient.resetStore()
+  
+  if (
+    window.location.pathname.indexOf(PATHS.LOGIN_USER) < 0 &&
+    window.location.pathname.indexOf(PATHS.RESET_PASSWORD) < 0 &&
+    window.location.pathname.indexOf(PATHS.FORGOT_PASSWORD) < 0
+  ) {
+    navigate(`/${PATHS.LOGIN_USER}`)
+  }
+}
+
 const errorLink = onError(({ graphQLErrors, operation, forward }) => {
   if (graphQLErrors) {
     for (const e of graphQLErrors) {
       switch (e.extensions.code) {
         case CODES.UNAUTHENTICATED:
-          if (!isRefreshing && localStorage.getItem(PROCESS_ENV.JWT_COOKIE_NAME)) {
-            _setIsRefreshing(true)
+          if (localStorage.getItem(PROCESS_ENV.JWT_COOKIE_NAME)) {
+            if (!isRefreshing) {
+              _setIsRefreshing(true)
 
-            return fromPromise(
-              _getNewToken().catch(async () => {
+              return fromPromise(
+                _getNewToken().catch(async () => {
+                  _resolvePendingRequests()
+                  _setIsRefreshing(false)
+
+                  await _navigateToLogin()
+
+                  return forward(operation)
+                })
+              ).flatMap(() => {
                 _resolvePendingRequests()
                 _setIsRefreshing(false)
 
-                localStorage.removeItem(PROCESS_ENV.JWT_COOKIE_NAME)
-                await purge()
-                refreshTokenApiClient.resetStore()
-
-                if (window.location.pathname.indexOf(PATHS.LOGIN_USER) < 0 &&
-                window.location.pathname.indexOf(PATHS.RESET_PASSWORD) < 0 && 
-                window.location.pathname.indexOf(PATHS.FORGOT_PASSWORD) < 0) {
-                  navigate(`/${PATHS.LOGIN_USER}`)
-                }
-
                 return forward(operation)
               })
-            ).flatMap(() => {
-              _resolvePendingRequests()
-              _setIsRefreshing(false)
-
-              return forward(operation)
-            })
+            } else {
+              return fromPromise(
+                new Promise((resolve) => {
+                  _addPendingRequest(() => resolve(true))
+                })
+              ).flatMap(() => {
+                return forward(operation)
+              })
+            }
           } else {
             return fromPromise(
               new Promise((resolve) => {
-                _addPendingRequest(() => resolve(true))
+                (async () => {
+                  await _navigateToLogin()
+                  resolve(true)
+                })()
               })
             ).flatMap(() => {
               return forward(operation)

@@ -39,7 +39,7 @@ type RefreshToken {
 type IpBlock {
   _id: ID!
   ip: String!
-  blockedUntil: Date!
+  blockedUntil: Date
   createdAt: Date!
   updatedAt: Date!
 
@@ -86,7 +86,7 @@ type Mutation {
   signOut: Boolean!
   revokeRefreshToken(_id: ID!): Boolean!
   deleteIpBlock(_id: ID!): Boolean!
-  addIpBlock(ip: String!, blockedUntil: Date!): Boolean!
+  addIpBlock(ip: String!, blockedUntil: Date): Boolean!
   generateUrlToken(validUntil: Date!, blockForMinutes: Int!): UrlToken!
   addStamp(urlToken:String!): User! 
   honourCardFrom(transfercode:String!): Boolean!

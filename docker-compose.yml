@@ -62,6 +62,7 @@ services:
       - CROWN_BAR_URL=$CROWN_BAR_URL
       - CROWN_BAR_INSTA=$CROWN_BAR_INSTA
       - TOAST_AUTO_HIDE_DURATION=$TOAST_AUTO_HIDE_DURATION
+      - JWT_EXPIRES_IN=$JWT_EXPIRES_IN
     restart: always
     volumes:
       - ./client:/usr/src/app

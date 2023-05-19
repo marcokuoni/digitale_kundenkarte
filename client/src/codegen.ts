@@ -30,7 +30,7 @@ export type Card = {
 export type IpBlock = {
   __typename?: 'IpBlock';
   _id: Scalars['ID'];
-  blockedUntil: Scalars['Date'];
+  blockedUntil?: Maybe<Scalars['Date']>;
   createdAt: Scalars['Date'];
   ip: Scalars['String'];
   updatedAt: Scalars['Date'];
@@ -59,7 +59,7 @@ export type Mutation = {
 
 
 export type MutationAddIpBlockArgs = {
-  blockedUntil: Scalars['Date'];
+  blockedUntil?: InputMaybe<Scalars['Date']>;
   ip: Scalars['String'];
 };
 
@@ -193,7 +193,7 @@ export type UserFragmentFragment = { __typename?: 'User', _id: string, transferc
 
 export type RefreshTokenFragmentFragment = { __typename?: 'RefreshToken', _id: string, expires: any, created: any, createdByIp: string, createdByUserAgent: string, createdAt: any, updatedAt: any, user: { __typename?: 'User', _id: string } };
 
-export type IpBlockFramentFragment = { __typename?: 'IpBlock', _id: string, ip: string, blockedUntil: any, createdAt: any, updatedAt: any };
+export type IpBlockFramentFragment = { __typename?: 'IpBlock', _id: string, ip: string, blockedUntil?: any | null, createdAt: any, updatedAt: any };
 
 export type UrlTokenFragmentFragment = { __typename?: 'UrlToken', token: string, validUntil: any, blockForMinutes: number };
 
@@ -215,7 +215,7 @@ export type GetActiveRefreshTokensQuery = { __typename?: 'Query', getActiveRefre
 export type GetIpBlocksQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetIpBlocksQuery = { __typename?: 'Query', getIpBlocks: Array<{ __typename?: 'IpBlock', _id: string, ip: string, blockedUntil: any, createdAt: any, updatedAt: any } | null> };
+export type GetIpBlocksQuery = { __typename?: 'Query', getIpBlocks: Array<{ __typename?: 'IpBlock', _id: string, ip: string, blockedUntil?: any | null, createdAt: any, updatedAt: any } | null> };
 
 export type UpdateUserMutationVariables = Exact<{
   _id: Scalars['ID'];
@@ -274,7 +274,7 @@ export type DeleteIpBlockMutation = { __typename?: 'Mutation', deleteIpBlock: bo
 
 export type AddIpBlockMutationVariables = Exact<{
   ip: Scalars['String'];
-  blockedUntil: Scalars['Date'];
+  blockedUntil?: InputMaybe<Scalars['Date']>;
 }>;
 
 
@@ -478,7 +478,7 @@ export const DeleteIpBlockDoc = gql`
 }
     `;
 export const AddIpBlockDoc = gql`
-    mutation addIpBlock($ip: String!, $blockedUntil: Date!) {
+    mutation addIpBlock($ip: String!, $blockedUntil: Date) {
   addIpBlock(ip: $ip, blockedUntil: $blockedUntil)
 }
     `;

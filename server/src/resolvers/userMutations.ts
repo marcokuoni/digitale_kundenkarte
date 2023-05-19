@@ -143,7 +143,7 @@ export const Mutation = {
   },
   async addIpBlock(
     root: never,
-    { ip, blockedUntil }: { ip: string; blockedUntil: Date },
+    { ip, blockedUntil }: { ip: string; blockedUntil?: Date },
     context: ServerContext
   ) {
     checkAccessRights(context.user, [USER_ROLES.ADMIN])

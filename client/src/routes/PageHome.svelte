@@ -42,7 +42,6 @@
         <p class="info-text">Transfercode: {$currentUser.transfercode}</p>
 
         <NoteForMailAddressTransfercode />
-
       {/if}
 
       <nav>

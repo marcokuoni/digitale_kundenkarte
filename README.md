@@ -61,19 +61,8 @@ sudo cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
 
 
 # TODO
-- [ ] Buttons check if cursor pointer ist set everywhere connected devices
-- [x] ~~Button all area clickable und immer pointer cursor, vielleicht besser vereinheitlichen~~
-- Modal styling
-
 - [ ] 404 page, forbidden page (i think not possible with the current router) -> sonst später mit SvelteKit
-- [ ] Couldnt find a way to stop executing default redirections on fetch and just do the custom one
-
-### Nice to have
-- [ ] QR-Code generiärä für Stämpfel 
-- [ ] QR-Code generiärä fürs ilösä 
-- [ ] Chartä iilösä 
-- [ ] Benutzergruppäverwaltä 
-- [ ] Blockiärti IPs
+- [ ] Couldnt find a way to stop executing default redirections on fetch and just do the custom ones
 
 
 ## Notes

@@ -55,9 +55,8 @@
   }
 
   .title {
-    font-family: 'Tiempos Fine', serif;
-    font-size: 26pt;
-    padding-bottom: 4px;
+    margin-bottom: 0;
+    padding-bottom: 20px;
   }
 
   .stamp-wrapper {
@@ -73,7 +72,7 @@
     padding-bottom: 3%;
 
     color: var(--secondary-color);
-    font-size: 8px;
+    font-size: 0.5rem;
   }
 
   .surprise-arrow {

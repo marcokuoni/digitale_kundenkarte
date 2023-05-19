@@ -1,24 +1,48 @@
 <script lang="ts">
-  import { PATHS } from '../lib/const'
+  import { PATHS, TARGETS } from '../lib/const'
   import currentUser from '../stores/currentUser'
-  import NavLink from './NavLink.svelte'
 </script>
 
-<p>Tipp: Speichere dein Transfercode und Passwort in einen Passwort Manager.</p>
-
-{#if $currentUser && (!$currentUser.emailValidatedAt || !$currentUser.email)}
-  <p>
-    Zudem empfiehlt es sich eine validierte E-Mailadresse dem Profil zu
-    hinterlegen
-  </p>
-  <NavLink to={`/${PATHS.SETTINGS}/${PATHS.PROFILE}`}>Profil</NavLink>
-{/if}
-
+<h3>Tipp</h3>
+<ul>
+  <li>
+    <p>
+      Speichere dein Transfercode und Passwort in einen Passwort Manager.
+    </p>
+  </li>
+  {#if $currentUser && (!$currentUser.emailValidatedAt || !$currentUser.email)}
+    <li>
+      <p>
+        Es empfiehlt sich eine validierte E-Mailadresse dem Profil zu
+        hinterlegen <br />
+        <a href={`/${PATHS.SETTINGS}/${PATHS.PROFILE}`} target={TARGETS.SELF}
+          >E-Mailladresse hinterlegen</a
+        >
+      </p>
+    </li>
+  {/if}
+</ul>
 
 <style>
-
-  p {
-    opacity: 0.5;
+  ul {
+    padding-left: 12px;
+  }
+  li {
+    padding: 0;
+  }
+  ul, li {
   }
 
+  h3, ul {
+    opacity: 0.5;
+    font-size: 0.5rem;
+    font-style: italic;
+  }
+  
+  a,
+  a:visited,
+  a:active,
+  a:hover {
+    color: var(--white);
+  }
 </style>

@@ -85,12 +85,11 @@
 
     <Separator>oder</Separator>
 
-    <NavLink to={`/${PATHS.FORGOT_TRANSFERCODE}`}
+    <NavLink to={`/${PATHS.FORGOT_TRANSFERCODE}/${PATHS.WITH_PASSWORD}`}
       >Transfercode vergessen</NavLink
     >
-    <!--<NavLink to={`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}>Anmelden</NavLink>-->
-    <!--<NavLink to={`/${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}>Benutzer erstellen</NavLink>-->
-    <NavLink to={`/${PATHS.HOME}`}>Startseite</NavLink>
+    <NavLink to={`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}>Anmelden</NavLink>
+    <NavLink to={`/${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}>Benutzer erstellen</NavLink>
   </div>
 </main>
 
@@ -102,7 +101,7 @@
   }
 
   label {
-    font-size: 11pt;
+    font-size: 1rem;
     font-weight: bold;
   }
 

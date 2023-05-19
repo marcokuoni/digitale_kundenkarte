@@ -17,6 +17,8 @@
   import loader from '../stores/loader'
   import alerts from '../stores/alerts'
 
+  export let withPassword: string = ''
+
   let success = false
   const production = PROCESS_ENV.NODE_ENV.toString() === PRODUCTION
 
@@ -85,10 +87,18 @@
 
     <Separator>oder</Separator>
 
-    <NavLink to={`/${PATHS.FORGOT_PASSWORD}`}>Passwort vergessen</NavLink>
-    <!--    <NavLink to={`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}>Anmelden</NavLink>-->
-    <!--    <NavLink to={`/${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}>Benutzer erstellen</NavLink>-->
-    <NavLink to={`/${PATHS.HOME}`}>Startseite</NavLink>
+    {#if withPassword !== ''}
+      <NavLink to={`/${PATHS.FORGOT_PASSWORD}`}>Passwort vergessen</NavLink>
+      <NavLink to={`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}
+        >Anmelden</NavLink
+      >
+      <NavLink to={`/${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}
+        >Benutzer erstellen</NavLink
+      >
+    {:else}
+      <NavLink to={`/${PATHS.LOGIN_USER}`}>Ich besitze bereits eine Karte</NavLink>
+      <NavLink to={`/${PATHS.CREATE_USER}`}>Neue Karte erstellen</NavLink>
+    {/if}
   </div>
 </main>
 
@@ -100,7 +110,7 @@
   }
 
   label {
-    font-size: 11pt;
+    font-size: 1rem;
     font-weight: bold;
   }
 

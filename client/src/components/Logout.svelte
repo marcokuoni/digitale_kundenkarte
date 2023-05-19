@@ -72,7 +72,7 @@
     cursor: pointer;
     padding: 2px 4px;
 
-    font-size: 8pt;
+    font-size: 0.75rem;
     font-weight: bold;
     color: var(--secondary-color);
     background-color: transparent;

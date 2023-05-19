@@ -41,6 +41,7 @@ export default {
       'process.env.ADMIN_EMAIL_ADDRESS': process.env.ADMIN_EMAIL_ADDRESS,   
       'process.env.TOAST_AUTO_HIDE_DURATION': process.env.TOAST_AUTO_HIDE_DURATION,
       'process.env.NODE_ENV': process.env.NODE_ENV,
+      'process.env.JWT_EXPIRES_IN': process.env.JWT_EXPIRES_IN,
     }),
     svelte({
       preprocess: sveltePreprocess({ sourceMap: !production }),
@@ -71,7 +72,7 @@ export default {
 
     // Watch the `public` directory and refresh the
     // browser on changes when not in production
-    !production && livereload('public'),
+    // !production && livereload('public'),
 
     // If we're building for production (npm run build
     // instead of npm run dev), minify

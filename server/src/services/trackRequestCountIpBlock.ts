@@ -22,7 +22,7 @@ async function _checkForExistingIpBlock(clientIP: string) {
   try {
     const blockedIP = await IpBlock.findOne({ ip: clientIP })
 
-    if (blockedIP && blockedIP.blockedUntil > new Date()) {
+    if (blockedIP && (!blockedIP.blockedUntil || blockedIP.blockedUntil > new Date())) {
       throwForbidden('IP got blocked')
     }
   } catch (error) {
@@ -41,7 +41,7 @@ function _checkForFutureIpBlock(clientIP: string) {
     ([timestamp, ip]) => timestamp >= timeWindowStart && ip === clientIP
   )
 
-  console.log('%ctrackRequestCountIpBlock.ts line:44 requestCountINTimeW', 'color: #007acc;', requestCountInTimeWindow.length, maxRequests);
+  console.log('trackRequestCountIpBlock.ts line:44 requestCount maxAllowed', requestCountInTimeWindow.length, maxRequests);
 
   if (requestCountInTimeWindow.length >= maxRequests) {
     const blockedUntil = new Date(currentTime + blockingDurationMs)

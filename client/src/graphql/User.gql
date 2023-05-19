@@ -132,7 +132,7 @@ mutation deleteIpBlock($_id: ID!) {
   deleteIpBlock(_id: $_id)
 }
 
-mutation addIpBlock($ip: String!, $blockedUntil: Date!) {
+mutation addIpBlock($ip: String!, $blockedUntil: Date) {
   addIpBlock(ip: $ip, blockedUntil: $blockedUntil)
 }
 

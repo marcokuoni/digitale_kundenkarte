@@ -2,15 +2,15 @@ import mongoose from 'mongoose'
 
 const Schema = mongoose.Schema
 
-export interface iUser {
+export interface iIpBlockSchema {
   _id: string
   ip: string
-  blockedUntil: Date
+  blockedUntil?: Date
   createdAt: Date
   updatedAt: Date
 }
 
-const IpBlockSchema = new Schema<iUser>(
+const IpBlockSchema = new Schema<iIpBlockSchema>(
   {
     ip: {
       type: String,
@@ -19,7 +19,7 @@ const IpBlockSchema = new Schema<iUser>(
     },
     blockedUntil: {
       type: Date,
-      required: true,
+      required: false,
     },
   },
   {

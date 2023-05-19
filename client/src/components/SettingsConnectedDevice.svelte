@@ -1,5 +1,6 @@
 <script lang="ts">
   import {
+    BUTTON_TYPES,
     DE_CH,
     FETCH_POLICY,
     KIND,
@@ -51,28 +52,37 @@
 
 <main class="device-wrapper">
   <div class="device-info-wrapper">
-    <p class="device-info-label">ID:</p>
-    <p>{device._id}</p>
+    <p>
+      <span class="device-info-label">ID:</span><br />
+      {device._id}
+    </p>
   </div>
 
   <div class="device-info-wrapper">
-    <p class="device-info-label">Gültig bis:</p>
-    <p>{new Date(device.expires).toLocaleString(DE_CH)}</p>
+    <p>
+      <span class="device-info-label">Gültig bis:</span><br />
+      {new Date(device.expires).toLocaleString(DE_CH)}
+    </p>
   </div>
 
   <div class="device-info-wrapper">
-    <p class="device-info-label">Ausgestellt am:</p>
-    <p>{new Date(device.created).toLocaleString(DE_CH)}</p>
+    <p>
+      <span class="device-info-label">Ausgestellt am:</span><br />
+      {new Date(device.created).toLocaleString(DE_CH)}
+    </p>
   </div>
 
   <div class="device-info-wrapper">
-    <p class="device-info-label">Erstellt von:</p>
-    <p>{device.createdByIp}</p>
-    <p>{device.createdByUserAgent}</p>
+    <p>
+      <span class="device-info-label">Erstellt von:</span><br />
+      {device.createdByIp}<br />
+      {device.createdByUserAgent}
+    </p>
   </div>
 
   <button
     class="default-button"
+    type={BUTTON_TYPES.BUTTON}
     on:click={revokeClickHandler}
     data-_id={device._id}
   >
@@ -90,6 +100,5 @@
 
   .device-info-label {
     font-weight: bold;
-    margin-top: 4px;
   }
 </style>

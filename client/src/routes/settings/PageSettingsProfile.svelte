@@ -185,7 +185,7 @@
   }
 
   label {
-    font-size: 11pt;
+    font-size: 1rem;
     font-weight: bold;
   }
 

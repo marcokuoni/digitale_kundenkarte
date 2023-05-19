@@ -75,36 +75,45 @@
 </script>
 
 <MoreRightsPage title="Karte Einlösen">
+  <p>
+    {#if successfully === true}
+      <h3 class="positive">Eine Karte wurde erfolgreich eingelöst</h3>
+    {:else if successfully === false}
+      <h3 class="negative">Keine Karte konnte eingelöst werden</h3>
+    {/if}
+  </p>
   <form on:submit|preventDefault={honourCard}>
     <label for={NAMES.TRANSFERCODE}>Transfer Code</label>
     <input
+      required
       type={INPUT_TYPES.TEXT}
       id={NAMES.TRANSFERCODE}
+      name={NAMES.TRANSFERCODE}
       value={transfercode}
     />
 
-    <button class="default-button" type={BUTTON_TYPES.BUTTON}>Einlösen</button>
+    <button class="default-button" type={BUTTON_TYPES.SUBMIT}>Einlösen</button>
   </form>
-
-  <p>
-    {#if successfully === true}
-      <span>Eine Karte wurde erfolgreich eingelöst</span>
-    {:else if successfully === false}
-      <span>Keine Karte konnte eingelöst werden</span>
-    {/if}
-  </p>
 
   <Separator>oder</Separator>
 </MoreRightsPage>
 
 <style>
+  h3.positive {
+    color: var(--positive-color);
+  }
+
+  h3.negative {
+    color: var(--negative-color);
+  }
+
   form {
     display: flex;
     flex-direction: column;
   }
 
   label {
-    font-size: 11pt;
+    font-size: 1rem;
     font-weight: bold;
   }
 

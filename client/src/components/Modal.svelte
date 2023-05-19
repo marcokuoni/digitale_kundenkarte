@@ -119,14 +119,15 @@
     fill: var(--accent-color);
   }
 
-  #close line {
-    stroke: var(--foreground-color);
-    stroke-width: 2;
-  }
   #modal-content {
-    max-width: calc(100vw - 20px);
-    max-height: calc(100vh - 20px);
+    max-width: calc(100vw - 100px);
+    max-height: calc(100vh - 100px);
     overflow: auto;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 
   .btn {

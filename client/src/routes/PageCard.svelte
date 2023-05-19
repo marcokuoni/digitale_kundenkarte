@@ -13,6 +13,7 @@
   import { onDestroy } from 'svelte'
   import { navigate } from 'svelte-routing'
   import EmailAlert from '../components/EmailAlert.svelte'
+  import NoteForMailAddressTransfercode from '../components/NoteForMailAddressTransfercode.svelte'
 
   const stampsLength = parseInt(PROCESS_ENV.STAMPS_LENGTH || '8')
 
@@ -62,34 +63,34 @@
       <span>Kein Benutzer gefunden</span>
       <Logout />
     {:else}
-      <section class="card-section">
+      <section class="default-section">
         <div class="card-wrapper">
           <Card {stamps} />
         </div>
       </section>
 
-      <section class="info-section">
+      <section class="default-section">
         <div class="info-wrapper">
           {#if $currentUser && $currentUser.name}
-            <p class="info-label">Name</p>
+            <h4 class="info-label">Name</h4>
             <p class="info-text">{$currentUser.name}</p>
           {/if}
 
-          <p class="info-label">Transfercode</p>
+          <h4 class="info-label">Transfercode</h4>
           {#if $currentUser}
             <p class="info-text">{$currentUser.transfercode}</p>
           {/if}
 
           <div class="info-group">
             <div>
-              <p class="info-label">Stempel</p>
+              <h4 class="info-label">Stempel</h4>
               <p class="info-text">
                 {stampCount}<span class="stamps-secondary-text">/ 8</span>
               </p>
             </div>
 
             <div>
-              <p class="info-label">Letzter</p>
+              <h4 class="info-label">Letzter</h4>
               {#if timeSpanToLastStamp !== 0}
                 <p class="info-text">
                   {timeSpanToLastStamp
@@ -100,45 +101,53 @@
             </div>
           </div>
 
-          <!--
-        {#if $currentUser.cards.length > 0}
-          <div class="info-group">
-            <div>
-              <p class="info-label">Einzulösende Karten</p>
-              <p class="info-text">
-                {$currentUser.cards.filter(
-                  (card) =>
-                    !card.honouredAt && card.stamps.length === stampsLength
-                ).length}<span class="stamps-secondary-text"
-                  >/ {$currentUser.cards.length}</span
-                >
-              </p>
+          {#if $currentUser.cards.length > 0}
+            <div class="info-group">
+              <div>
+                <h4 class="info-label">Einzulösende Karten</h4>
+                <p class="info-text">
+                  {$currentUser.cards.filter(
+                    (card) =>
+                      !card.honouredAt && card.stamps.length === stampsLength
+                  ).length}<span class="stamps-secondary-text"
+                    >/ {$currentUser.cards.length}</span
+                  >
+                </p>
+              </div>
             </div>
-          </div>
-        {/if}
-        -->
+          {/if}
         </div>
       </section>
 
       <section class="default-section footer">
         <div class="default-wrapper">
-          <!--        <NoteForMailAddressTransfercode />-->
-          <!--        <NavLink to={`/${PATHS.SETTINGS}`}>Einstellungen</NavLink>-->
-          <a href={`/${PATHS.SETTINGS}`} target={TARGETS.SELF}>Settings</a>
-          <Logout />
-          <a
-            href={PROCESS_ENV.CROWN_BAR_URL}
-            target={TARGETS.BLANK}
-            rel={NOOPENER_NPREFERRER}>Website</a
-          >
-          <a
-            href={PROCESS_ENV.CROWN_BAR_INSTA}
-            target={TARGETS.BLANK}
-            rel={NOOPENER_NPREFERRER}>Instagram</a
-          >
           {#if hasAFullCard}
-            <HonourQrCode transfercode={$currentUser.transfercode} />
+            <div>
+              <HonourQrCode transfercode={$currentUser.transfercode} />
+            </div>
+          {:else}
+            <NoteForMailAddressTransfercode />
           {/if}
+          <div class="second-row">
+            <div class="left">
+              <a href={`/${PATHS.SETTINGS}`} target={TARGETS.SELF}
+                >Einstellungen</a
+              >
+              <Logout />
+            </div>
+            <div class="right">
+              <a
+                href={PROCESS_ENV.CROWN_BAR_URL}
+                target={TARGETS.BLANK}
+                rel={NOOPENER_NPREFERRER}>Website</a
+              >
+              <a
+                href={PROCESS_ENV.CROWN_BAR_INSTA}
+                target={TARGETS.BLANK}
+                rel={NOOPENER_NPREFERRER}>Instagram</a
+              >
+            </div>
+          </div>
         </div>
       </section>
     {/if}
@@ -150,19 +159,14 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    min-height: 80vh;
+    justify-content: space-between;
+    min-height: calc(100vh - 40px);
   }
 
-  .card-wrapper {
+  .card-wrapper,
+  .info-wrapper {
     width: 80vw;
     max-width: 400px;
-  }
-
-  .card-section {
-    width: 100vw;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
   }
 
   a {
@@ -170,7 +174,7 @@
     cursor: pointer;
     padding: 2px 4px;
 
-    font-size: 8pt;
+    font-size: 0.75rem;
     font-weight: bold;
     color: var(--secondary-color);
     background-color: transparent;
@@ -180,54 +184,33 @@
   }
 
   /* info */
-
-  .info-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .info-wrapper {
-    width: 80vw;
-    max-width: 400px;
-    margin: 40px -20px -20px;
-  }
-
   .info-group {
     display: flex;
-    /*margin-top: 20px;*/
   }
 
   .info-group div {
     margin-right: 20px;
   }
 
-  .info-label {
-    font-size: 9pt;
-    font-weight: bold;
-    text-transform: uppercase;
-    color: var(--accent-color);
-    margin-top: 20px;
-  }
-
   .info-text {
-    font-size: 22pt;
+    font-size: 1.7rem;
     font-family: 'Tiempos Fine', serif;
     font-weight: bold;
   }
 
   .stamps-secondary-text {
     color: var(--secondary-color);
-    font-size: 14pt;
+    font-size: 1rem;
     margin-left: 4px;
   }
 
-  /* footer */
+  .second-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-  .footer {
-    position: absolute;
-    bottom: 40px;
-
-    width: 100vw;
+  .second-row .right {
+    text-align: right;
   }
 </style>

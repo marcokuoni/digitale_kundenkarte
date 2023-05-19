@@ -13,13 +13,14 @@
   } from '../../lib/const'
   import loader from '../../stores/loader'
   import alerts from '../../stores/alerts'
+  import { onDestroy } from 'svelte'
 
   const production = PROCESS_ENV.NODE_ENV.toString() === PRODUCTION
   const query = getUsersWithPassword({
     fetchPolicy: FETCH_POLICY.NETWORK_ONLY,
   })
 
-  query.subscribe((result) => {
+  const unsubscribe = query.subscribe((result) => {
     if (result.loading) {
       loader.setLoader(getUsersWithPassword.name, true)
     } else {
@@ -73,25 +74,33 @@
     }
     loader.setLoader(updateUserRoles.name, false)
   }
+
+  onDestroy(unsubscribe)
 </script>
 
 <MoreRightsPage title="Benutzer Gruppen verwalten">
   <div class="user-groups-list">
     {#each $query.data?.getUsersWithPassword || [] as user}
-      <div class="user-group-block">
-        <div class="user-group-item">
-          <p>ID:</p>
-          <p>{user._id || '–'}</p>
+      <div class="user-group-wrapper">
+        <div class="user-info-wrapper">
+          <p>
+            <span class="user-info-label">ID:</span><br />
+            {user._id}
+          </p>
         </div>
 
-        <div class="user-group-item">
-          <p>E-Mail:</p>
-          <p>{user.email || '–'}</p>
+        <div class="user-info-wrapper">
+          <p>
+            <span class="user-info-label">E-Mailadresse:</span><br />
+            {user.email || '–'}
+          </p>
         </div>
 
-        <div class="user-group-item">
-          <p>Gruppenname:</p>
-          <p>{user.name || '–'}</p>
+        <div class="user-info-wrapper">
+          <p>
+            <span class="user-info-label">Name:</span><br />
+            {user.name || '–'}
+          </p>
         </div>
 
         <div class="user-group-item">
@@ -142,7 +151,7 @@
   }
 
   label {
-    font-size: 11pt;
+    font-size: 1rem;
     font-weight: bold;
   }
 
@@ -156,17 +165,14 @@
     border-radius: 8px;
   }
 
-  .user-group-block {
-    border: 1px solid var(--background-raised-color);
-    border-radius: 8px;
-    padding: 12px;
-  }
-
-  .user-group-item {
+  .user-group-wrapper {
     margin: 8px 0;
+    padding: 12px;
+    border: solid 1px var(--background-raised-color);
+    border-radius: 8px;
   }
 
-  .user-group-item p:nth-child(1) {
-    opacity: 0.5;
+  .user-info-label {
+    font-weight: bold;
   }
 </style>

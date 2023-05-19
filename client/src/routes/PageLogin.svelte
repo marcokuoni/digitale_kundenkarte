@@ -11,7 +11,6 @@
     RECEIVED_CODE_503,
   } from '../lib/const'
   import NavLink from '../components/NavLink.svelte'
-  import currentUser from '../stores/currentUser'
   import Logout from '../components/Logout.svelte'
   import { formatRelativeTimeS } from '../lib/formater'
   import Separator from '../components/Separator.svelte'
@@ -42,19 +41,29 @@
           },
         })
         if (data && data.signIn) {
-          !production && console.error(
-            'This should not happen otherwise the browser will cache the input data'
-          )
+          !production &&
+            console.error(
+              'This should not happen otherwise the browser will cache the input data'
+            )
         } else {
-          alerts.addAlert(KIND.WARNING, 'Etwas ist schief gelaufen. Bitte versuche es erneut')
+          alerts.addAlert(
+            KIND.WARNING,
+            'Etwas ist schief gelaufen. Bitte versuche es erneut'
+          )
         }
       } catch (e) {
         if (e.message.indexOf(RECEIVED_CODE_503) >= 0) {
-          alerts.addAlert(KIND.NEGATIVE, `Der Server ist gerade nicht erreichbar. Vermutlich wurdest du für ${formatRelativeTimeS(
+          alerts.addAlert(
+            KIND.NEGATIVE,
+            `Der Server ist gerade nicht erreichbar. Vermutlich wurdest du für ${formatRelativeTimeS(
               blockinDurationInMs
-            )} gesperrt`)
+            )} gesperrt`
+          )
         } else {
-          alerts.addAlert(KIND.NEGATIVE, 'Transfercode oder Passwort ist falsch')
+          alerts.addAlert(
+            KIND.NEGATIVE,
+            'Transfercode oder Passwort ist falsch'
+          )
         }
         !production && console.error(e)
       }
@@ -63,70 +72,82 @@
   }
 </script>
 
-
 <main class="default-section">
   <div class="default-wrapper">
+    <h1>
+      {#if withPassword !== ''}
+        Anmelden
+      {:else}
+        Zur Karte
+      {/if}
+    </h1>
 
-    <h1>Anmelden</h1>
-
-    {#if $currentUser}
+    {#if localStorage.getItem(PROCESS_ENV.JWT_COOKIE_NAME)}
       <Logout />
+      {#if withPassword !== ''}
+        <NavLink to={`/${PATHS.HOME}`}>Startseite</NavLink>
+      {:else}
+        <NavLink to={`/${PATHS.CARD}`}>Zu meiner Karte</NavLink>
+      {/if}
     {:else}
       <form on:submit|preventDefault={loginUser}>
-
         <label for={NAMES.TRANSFERCODE}>Transfer Code:</label>
-        <input type={INPUT_TYPES.TEXT}
-               id={NAMES.TRANSFERCODE}
-               name={NAMES.TRANSFERCODE}
-               required
-               value=""/>
+        <input
+          type={INPUT_TYPES.TEXT}
+          id={NAMES.TRANSFERCODE}
+          name={NAMES.TRANSFERCODE}
+          required
+          value=""
+        />
 
         {#if withPassword !== ''}
           <label for={NAMES.PASSWORD}>Passwort</label>
-          <input type={INPUT_TYPES.PASSWORD}
-                 id={NAMES.PASSWORD}
-                 name={NAMES.PASSWORD}
-                 required
-                 value=""/>
+          <input
+            type={INPUT_TYPES.PASSWORD}
+            id={NAMES.PASSWORD}
+            name={NAMES.PASSWORD}
+            required
+            value=""
+          />
         {/if}
 
-        <button type={BUTTON_TYPES.SUBMIT} class="default-button">Anmelden</button>
-
+        <button type={BUTTON_TYPES.SUBMIT} class="default-button">
+          {#if withPassword !== ''}
+            Anmelden
+          {:else}
+            Zur Karte
+          {/if}
+        </button>
       </form>
 
       <Separator>oder</Separator>
 
       {#if withPassword !== ''}
+        <NavLink to={`/${PATHS.FORGOT_TRANSFERCODE}/${PATHS.WITH_PASSWORD}`}
+          >Transfercode vergessen</NavLink
+        >
         <NavLink to={`/${PATHS.FORGOT_PASSWORD}`}>Passwort vergessen</NavLink>
+        <NavLink to={`/${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}>
+          Benutzer erstellen</NavLink
+        >
       {:else}
+        <NavLink to={`/${PATHS.FORGOT_TRANSFERCODE}`}
+          >Transfercode vergessen</NavLink
+        >
         <NavLink to={`/${PATHS.CREATE_USER}`}>Neue Karte erstellen</NavLink>
       {/if}
-
-      <NavLink to={`/${PATHS.FORGOT_TRANSFERCODE}`}>Transfercode vergessen</NavLink>
-
     {/if}
-
-    {#if withPassword !== ''}
-      <NavLink to={`/${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}>
-        Benutzer erstellen</NavLink>
-      <NavLink to={`/${PATHS.HOME}`}>Startseite</NavLink>
-    {:else}
-      <NavLink to={`/${PATHS.CARD}`}>Zu meiner Karte</NavLink>
-    {/if}
-
   </div>
 </main>
 
-
 <style>
-
   form {
     display: flex;
     flex-direction: column;
   }
 
   label {
-    font-size: 11pt;
+    font-size: 1rem;
     font-weight: bold;
   }
 
@@ -139,5 +160,4 @@
     border: none;
     border-radius: 8px;
   }
-
 </style>

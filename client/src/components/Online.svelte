@@ -143,6 +143,7 @@
 </button>
 
 <Modal>
+  <h2>Status</h2>
   <ul>
     <li>
       <span>Applikation ist {clientOffline ? 'offline' : 'online'}</span>
@@ -175,13 +176,13 @@
   }
 
   ul {
-    list-style: none;
     padding: 0;
+    padding-left: 15px;
     margin: 0;
   }
 
   ul li span {
-    font-size: 11pt;
+    font-size: 1rem;
     line-height: 1.2;
     color: var(--foreground-color);
   }

@@ -1,6 +1,6 @@
 <script lang="ts">
   import MoreRightsPage from '../../components/layouts/MoreRightsPageLayout.svelte'
-  import { getIpBlocks, addIpBlock, deleteIpBlock } from '../../codegen'
+  import { getIpBlocks, addIpBlock, deleteIpBlock, type AddIpBlockMutationVariables } from '../../codegen'
   import {
     BUTTON_TYPES,
     DE_CH,
@@ -14,13 +14,16 @@
   } from '../../lib/const'
   import loader from '../../stores/loader'
   import alerts from '../../stores/alerts'
+  import { onDestroy } from 'svelte'
 
   const production = PROCESS_ENV.NODE_ENV.toString() === PRODUCTION
+  let resultRef = null
   const query = getIpBlocks({
     fetchPolicy: FETCH_POLICY.NETWORK_ONLY,
   })
 
-  query.subscribe((result) => {
+  const unsubscribe = query.subscribe((result) => {
+    resultRef = result
     if (result.loading) {
       loader.setLoader(getIpBlocks.name, true)
     } else {
@@ -44,11 +47,14 @@
       const ip = formData.get(NAMES.IP)?.toString()
       const blockedUntil = formData.get(NAMES.BLOCKED_UNTIL)?.toString()
       try {
+        const variables: AddIpBlockMutationVariables = {
+          ip,
+        }
+        if (new Date(blockedUntil) > new Date()) {
+          variables.blockedUntil = blockedUntil
+        }
         const { data } = await addIpBlock({
-          variables: {
-            ip,
-            blockedUntil,
-          },
+          variables,
         })
         if (data && data.addIpBlock) {
           alerts.addAlert(KIND.POSITIVE, 'IP wurde erfolgreich blockiert')
@@ -102,6 +108,8 @@
 
     loader.setLoader(deleteIpBlock.name, false)
   }
+
+  onDestroy(unsubscribe)
 </script>
 
 <MoreRightsPage title="IPs Blockieren">
@@ -124,8 +132,6 @@
         type={INPUT_TYPES.DATETIME_LOCAL}
         id={NAMES.BLOCKED_UNTIL}
         name={NAMES.BLOCKED_UNTIL}
-        required
-        value=""
       />
     </div>
 
@@ -136,25 +142,34 @@
 
   <div class="blocked-list">
     {#each $query.data?.getIpBlocks || [] as ipBlock}
-      <div class="ip-block">
-        <div class="ip-block-group">
-          <p>ID:</p>
-          <p>{ipBlock._id}</p>
+      <main class="ip-wrapper">
+        <div class="ip-info-wrapper">
+          <p>
+            <span class="ip-info-label">ID:</span><br />
+            {ipBlock._id}
+          </p>
+        </div>
+        <div class="ip-info-wrapper">
+          <p>
+            <span class="ip-info-label">IP Adresse:</span><br />
+            {ipBlock.ip}
+          </p>
         </div>
 
-        <div class="ip-block-group">
-          <p>IP Address:</p>
-          <p>{ipBlock.ip}</p>
-        </div>
+        {#if ipBlock.blockedUntil}
+          <div class="ip-info-wrapper">
+            <p>
+              <span class="ip-info-label">Blockiert bis:</span><br />
+              {new Date(ipBlock.blockedUntil).toLocaleString(DE_CH)}
+            </p>
+          </div>
+        {/if}
 
-        <div class="ip-block-group">
-          <p>Blocked until:</p>
-          <p>{new Date(ipBlock.blockedUntil).toLocaleString(DE_CH)}</p>
-        </div>
-
-        <div class="ip-block-group">
-          <p>Created at:</p>
-          <p>{new Date(ipBlock.createdAt).toLocaleString(DE_CH)}</p>
+        <div class="ip-info-wrapper">
+          <p>
+            <span class="ip-info-label">Erstellt am:</span><br />
+            {new Date(ipBlock.createdAt).toLocaleString(DE_CH)}
+          </p>
         </div>
 
         <button
@@ -163,9 +178,9 @@
           on:click={deleteClickHandler}
           data-_id={ipBlock._id}
         >
-          Löschen
+          Entfernen
         </button>
-      </div>
+      </main>
     {/each}
   </div>
 </MoreRightsPage>
@@ -187,7 +202,7 @@
   }
 
   label {
-    font-size: 11pt;
+    font-size: 1rem;
     font-weight: bold;
   }
 
@@ -201,17 +216,14 @@
     border-radius: 8px;
   }
 
-  .ip-block {
-    border: 1px solid var(--background-raised-color);
-    border-radius: 8px;
-    padding: 12px;
-  }
-
-  .ip-block-group {
+  .ip-wrapper {
     margin: 8px 0;
+    padding: 12px;
+    border: solid 1px var(--background-raised-color);
+    border-radius: 8px;
   }
 
-  .ip-block-group p:nth-child(1) {
-    opacity: 0.5;
+  .ip-info-label {
+    font-weight: bold;
   }
 </style>

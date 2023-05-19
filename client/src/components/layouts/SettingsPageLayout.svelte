@@ -12,8 +12,6 @@
 
     <slot />
 
-    <NavLink to={`/${PATHS.SETTINGS}`}>Zurück</NavLink>
-    <!-- <NavLink to={`/${PATHS.CARD}`}>Zu meiner Karte</NavLink> -->
-
+    <button class="default-button" on:click={() => history.back()}>Zurück</button>
   </div>
 </main>
