@@ -40,7 +40,7 @@ export default {
       'process.env.CROWN_BAR_INSTA': process.env.CROWN_BAR_INSTA,   
       'process.env.ADMIN_EMAIL_ADDRESS': process.env.ADMIN_EMAIL_ADDRESS,   
       'process.env.TOAST_AUTO_HIDE_DURATION': process.env.TOAST_AUTO_HIDE_DURATION,
-      'process.env.NODE_ENV': process.env.NODE_ENV,
+      'process.env.NODE_ENV_OWN': process.env.NODE_ENV_OWN,
       'process.env.JWT_EXPIRES_IN': process.env.JWT_EXPIRES_IN,
     }),
     svelte({

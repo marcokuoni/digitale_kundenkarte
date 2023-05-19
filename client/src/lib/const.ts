@@ -54,7 +54,7 @@ export enum PROCESS_ENV {
     CROWN_BAR_INSTA = 'process.env.CROWN_BAR_INSTA',
     ADMIN_EMAIL_ADDRESS = 'process.env.ADMIN_EMAIL_ADDRESS',
     TOAST_AUTO_HIDE_DURATION = 'process.env.TOAST_AUTO_HIDE_DURATION',
-    NODE_ENV = 'process.env.NODE_ENV',
+    NODE_ENV = 'process.env.NODE_ENV_OWN',
     JWT_EXPIRES_IN = 'process.env.JWT_EXPIRES_IN',
 }
 

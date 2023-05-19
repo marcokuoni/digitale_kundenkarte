@@ -4,6 +4,7 @@
   import { PATHS } from '../../lib/const'
   import currentUser from '../../stores/currentUser'
   import Separator from '../../components/Separator.svelte'
+  import Logout from '../../components/Logout.svelte'
 
   let hasMoreRights = false
   const unsubscribe = currentUser.subscribe((currentUser) => {
@@ -37,6 +38,7 @@
       {:else}
         <NavLink to={`/${PATHS.CARD}`}>Zurück zu meiner Karte</NavLink>
       {/if}
+      <Logout />
     </div>
 
   </div>
