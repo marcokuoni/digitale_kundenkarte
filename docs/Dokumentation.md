@@ -85,7 +85,7 @@ Komponenten:
 
 ### Frontend
 
-`npm install` -> added 754 packages, and audited 755 packages in 11s
+`npm install` -> added 754 packages, and audited 755 packages in 8s
 From 3rd Parties:
 
 - npm WARN deprecated rollup-plugin-terser@7.0.2: This package has been deprecated and is no longer maintained. Please use @rollup/plugin-terser
@@ -117,7 +117,7 @@ Komponenten:
 
 ### API
 
-`npm install` -> added 381 packages, and audited 382 packages in 3s
+`npm install` -> added 385 packages, and audited 386 packages in 4s
 `npm audit` -> found 0 vulnerabilities
 `npm outdated` -> no response
 
