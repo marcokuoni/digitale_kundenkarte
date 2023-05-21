@@ -91,7 +91,9 @@ From 3rd Parties:
 - npm WARN deprecated rollup-plugin-terser@7.0.2: This package has been deprecated and is no longer maintained. Please use @rollup/plugin-terser
 - npm WARN deprecated rollup-plugin-terser@7.0.2: This package has been deprecated and is no longer maintained. Please use @rollup/plugin-terser
 - npm WARN deprecated sourcemap-codec@1.4.8: Please use @jridgewell/sourcemap-codec instead
+
   `npm audit` -> found 0 vulnerabilities
+
   `npm outdated` ->
   | Package | Current | Wanted | Latest | Location | Depended by |
   | --------------------- | --------| ------ | ------ | ---------------------------------- | ----------- |
@@ -155,20 +157,20 @@ Komponenten:
 ## Herausforderungen
 
 - Cookie Handlings (Serversite)
-- 302 Redirect after Login
-- Offline Funktionalität (Apollo Client Links, Cache Persists, Service Worker)
-- Browserverlauf beim Stempeln
-- Preflight Requests. Traefik antwortet mit 404 wenn Route nicht erreichbar anstatt 503, was zu einem Problem führt bei dem Service Worker queueing
-- Svelte Router, 404, Forbidden oder optionale Parameter sind nicht unterstütz mit unserer Library
+- 302 Redirect after Login um Caching zu verhindern
+- Offline Funktionalität (Apollo Client mit custom Links, Cache Persists, Service Worker)
+- Browserverlauf beim Stempeln, blockierung von Zurück Button
+- Preflight Requests. Traefik antwortet mit 404 wenn Route nicht erreichbar anstatt 503, was zu einem Problem führt bei dem Google Service Worker queueing
+- Svelte Router, 404, Forbidden oder optionale Parameter sind nicht unterstütz oder schön implementiert mit unserer Library
 - GraphQL Endpunkt Redirect so Umleiten, dass es ein Redirect auf dem Client bewirkt
 
 ## Sumup and Highlights
 
-- Svelte ist ein sehr gutes Framework, aber noch nicht ganz ausgereift. Es fehlen noch einige Features und die Community ist noch nicht so gross wie bei React oder Vue. Es ist aber sehr einfach zu erlernen, fühlt sich intuitiv an und hat ein sehr gutes Konzept. Es ist sehr schnell und hat eine sehr gute Dokumentation. Es ist sehr gut für kleine Projekte geeignet, aber für grosse Projekte fehlen noch einige Features.
-- GraphQL ist ein wirklich interessanter Ansatz für eine API. Vor allem im zusammen Spiel mit MongoDB bzw. Mongoos wird die API fast zur direkten Datenbank Anbindung und das Konzept der Dokumente zieht sich komplett durch. Im Zusammenspiel mit Codegen, holt man sich das maximum an einer automatisierten Typisierung und Codegenerierung heraus. Zudem bietet GraphQL eine sehr gute Dokumentation und liefert eine direkte online Anbindung für Sandboxing an seine eigene API an.
-- MongoDB ist eine sehr gute Datenbank, die sehr einfach zu bedienen ist. Sie ist sehr schnell und hat eine sehr gute Dokumentation. Mit Compass, kann man einfach die Datenbank administrieren und Requests testen.
-- Mongoose ist ein sehr gutes Framework um mit MongoDB zu arbeiten. Es ist sehr einfach zu bedienen und hat eine sehr gute Dokumentation. Die Typisierung ist hervoragend und die Schemadefinitionen ermöglicht viele Features, welche wir bei weitem nicht optimal ausgeschöpft haben.
-- Traefik ist ein sehr guter Reverse Proxy, der sehr einfach zu bedienen ist. Er hat eine sehr gute Dokumentation und ist sehr schnell. In diesem Projekt war vorallem die enge Koplung zu Docker hilfreich, damit sehr einfach skaliert werden kann.
-- Workbox von Google, eignet sich sehr gut um schnell und einfach seinen Service Worker zu konfigurieren. Es ist sehr einfach zu bedienen und hat eine sehr gute Dokumentation.
-- JWT ist eine sehr gute und einfache Möglichkeit um Payload zu hashen und zu signieren. Dazu gibt es genügend stabile und gut dokumentierte Bibliotheken.
+- Svelte ist ein gutes Framework, aber noch nicht ganz ausgereift. Es fehlen noch einige Features und die Community ist noch nicht so gross wie bei React oder Vue. Es ist aber einfach zu erlernen, fühlt sich intuitiv an und hat ein gutes Konzept. Es ist schnell und hat eine gute Dokumentation. Es ist sicherlich gut für kleine Projekte geeignet, aber für grosse Projekte fehlen noch einige Features.
+- GraphQL ist ein wirklich interessanter Ansatz für eine API. Vor allem im zusammen Spiel mit MongoDB bzw. Mongoos wird die API fast zur direkten Datenbank Anbindung und das Konzept der Dokumente zieht sich komplett durch. Im Zusammenspiel mit Codegen, holt man sich das maximum an einer automatisierten Typisierung und Codegenerierung heraus. Zudem bietet GraphQL eine gute Dokumentation und liefert eine direkte online Anbindung für Sandboxing an seine eigene API an.
+- MongoDB ist eine gute, schnelle Datenbank, die einfach zu bedienen ist. Sie ist schnell und hat eine gute Dokumentation. Etwas schwieriger wird es wenn man Relationen oder komplexere Typisierungen verwenden möchte. Zudem können zu tief verschachtelte Dokumente, zu mühsamen Queries führen. Mit Compass kann man aber einfach die Datenbank administrieren und Requests testen/formulieren.
+- Mongoose ist ein gutes Framework um mit der MongoDB zu arbeiten. Es ist einfach zu implementieren und hat eine gute Dokumentation. Die Typisierung ist hervoragend und die Schemadefinitionen ermöglicht viele Features, welche wir bei weitem nicht optimal ausgeschöpft haben. Zudem wirk es etwas der Herausforderungen von MongoDB (Typisierung, Relationen) entgegen.
+- Traefik ist ein guter Reverse Proxy, der einfach zu bedienen ist. Er hat eine gute Dokumentation und ist schnell. In diesem Projekt war vorallem die enge Koplung zu Docker hilfreich, damit einfach skaliert und getestet werden kann.
+- Workbox von Google, eignet sich gut um schnell und einfach seinen Service Worker zu konfigurieren/zusammen zu stellen. Es ist einfach zu bedienen und hat eine gute Dokumentation.
+- JWT ist eine gute und einfache Möglichkeit um Payload zu hashen und zu signieren. Zur Unterstützung gibt es genügend stabile und gut dokumentierte Bibliotheken.
 - Rollup funktioniert gut mit Svelte zusammen und dank der guten Dokumentation und der grossen Anzahl an Plugins ist es gut für verschiedene Anwendungsfälle geeignet. Leider hat es aber noch einige Plugins mit debrecated Referenzen, was zu Warnungen führt.
