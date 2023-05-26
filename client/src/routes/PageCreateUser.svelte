@@ -65,7 +65,13 @@
 
 <main class="default-section">
   <div class="default-wrapper">
-    <h1>Karte erstellen</h1>
+    <h1>
+      {#if withPassword !== ''}
+        Benutzer erstellen
+      {:else}
+        Karte erstellen
+      {/if}
+    </h1>
     <form on:submit|preventDefault={createUser}>
       <div class="input-wrapper">
         <label for={NAMES.NAME}>Name</label>
@@ -123,8 +129,12 @@
         >
       {/if}
 
-      <button type={BUTTON_TYPES.SUBMIT} class="default-button">
-        Karte erstellen
+      <button type={BUTTON_TYPES.SUBMIT} class="default-button">        
+        {#if withPassword !== ''}
+          Benutzer erstellen
+        {:else}
+          Karte erstellen
+        {/if}
       </button>
     </form>
 

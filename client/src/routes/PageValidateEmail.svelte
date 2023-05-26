@@ -29,6 +29,11 @@
             KIND.POSITIVE,
             'E-Mailadresse wurde erfolgreich validiert'
           )
+          
+          loader.setLoader(currentUser.fetchCurrentUser.name, true)
+          currentUser.fetchCurrentUser()
+          loader.setLoader(currentUser.fetchCurrentUser.name, false)
+
           if (!userLoggedIn) {
             navigate(`/${PATHS.LOGIN_USER}`)
           } else {

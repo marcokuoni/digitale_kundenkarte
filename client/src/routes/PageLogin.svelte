@@ -74,7 +74,13 @@
 
 <main class="default-section">
   <div class="default-wrapper">
-    <h1>Zur Karte</h1>
+    <h1>
+      {#if withPassword !== ''}
+        Anmelden
+      {:else}
+        Zur Karte
+      {/if}
+    </h1>
 
     {#if localStorage.getItem(PROCESS_ENV.JWT_COOKIE_NAME)}
       <Logout />
@@ -119,7 +125,11 @@
         {/if}
 
         <button type={BUTTON_TYPES.SUBMIT} class="default-button">
-          Zur Karte
+          {#if withPassword !== ''}
+            Anmelden
+          {:else}
+            Zur Karte
+          {/if}
         </button>
       </form>
 

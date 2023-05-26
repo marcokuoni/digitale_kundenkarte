@@ -66,7 +66,7 @@ export const signUp = async (
 ) => {
   const user = await createUser(newUser)
 
-  await signIn(req, res, successRedirect, user.transfercode, user.password)
+  await signIn(req, res, successRedirect, user.transfercode, newUser.password)
 }
 
 export const signIn = async (

@@ -103,7 +103,6 @@
       </div>
 
       <div class="form-input-wrapper">
-        <EmailAlert />
         <label for={NAMES.EMAIL}>
           E-Mail {$currentUser.emailValidatedAt
             ? `(Validiert am: ${new Date(
@@ -119,6 +118,7 @@
             $currentUser.userRoles.length > 0}
           value={$currentUser && $currentUser.email}
         />
+        <EmailAlert smallVersion />
       </div>
 
       <div class="form-input-wrapper form-input-wrapper-checkbox">
@@ -150,6 +150,9 @@
           name={NAMES.PASSWORD}
           value={''}
         />
+        <p class="note">
+          Lass das Feld leer um dein Passwort nicht neu zu definieren.
+        </p>
       </div>
 
       <button
@@ -197,5 +200,12 @@
 
     border: none;
     border-radius: 8px;
+  }
+
+  .note {
+    margin-top: 4px;
+    opacity: 0.5;
+    font-size: 0.75rem;
+    font-style: italic;
   }
 </style>

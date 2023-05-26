@@ -51,11 +51,13 @@ export const createUser = async (values: iUpdateUser) => {
     await changePasssword(newValues, newValues.password)
   }
 
-  await changeEmail(newValues)
-
-  return await User.create({
+  const user = await User.create({
     ...newValues,
   })
+
+  await changeEmail(newValues)
+
+  return user
 }
 
 export const resendTransfercode = async (email: string) => {
