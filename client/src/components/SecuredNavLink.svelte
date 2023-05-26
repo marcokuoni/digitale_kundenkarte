@@ -18,10 +18,4 @@
   <NavLink {to}>
     <slot />
   </NavLink>
-{:else}
-  <span>Keine Berechtigung</span>
-  <Logout />
-  <NavLink to={`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}
-    >Anmelden mit Passwort</NavLink
-  >
 {/if}

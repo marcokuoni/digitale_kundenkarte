@@ -44,34 +44,47 @@
 </script>
 
 {#if $currentUser && !$currentUser.emailValidatedAt && $currentUser.email}
-  <p class="intro">Wir empfehlen dir dringend deine E-Mail-Adresse zu validieren</p>
-  {#if !smallVersion || success}
-    <ul>
-      <li>
-        <p>
-          Bitte prüfe dein E-Mail Postfach und folge den Anweisungen darin. Im
-          Ausnahme Fall kann es auch im Spam Ordner landen.
-        </p>
-      </li>
-      <li>
-        <p>
-          Vielleicht ist auch deine E-Mailadresse falsch hinterlegt, prüfe dies
-          <a href={`/${PATHS.SETTINGS}/${PATHS.PROFILE}`} target={TARGETS.SELF}
-            >in deinem Profil</a
-          >
-        </p>
-      </li>
-    </ul>
-  {/if}
-  <button
-    class="default-button"
-    type={BUTTON_TYPES.BUTTON}
-    on:click={sendValidationMailHandler}
-    >Validierungs E-Mail nochmals senden</button
-  >
-  {#if !smallVersion}
-    <Logout />
-  {/if}
+  <div>
+    <p class="intro">
+      Wir empfehlen dir dringend deine E-Mail-Adresse zu validieren
+    </p>
+    {#if !smallVersion || success}
+      <ul>
+        <li>
+          <p>
+            Bitte prüfe dein E-Mail Postfach und folge den Anweisungen darin. Im
+            Ausnahme Fall kann es auch im Spam Ordner landen.
+          </p>
+        </li>
+        <li>
+          <p>
+            Vielleicht ist auch deine E-Mailadresse falsch hinterlegt, prüfe
+            dies
+            <a
+              href={`/${PATHS.SETTINGS}/${PATHS.PROFILE}`}
+              target={TARGETS.SELF}>in deinem Profil</a
+            >
+          </p>
+        </li>
+      </ul>
+    {/if}
+    {#if !smallVersion}
+      <button
+        class="default-button"
+        type={BUTTON_TYPES.BUTTON}
+        on:click={sendValidationMailHandler}
+        >Validierungs E-Mail nochmals senden</button
+      >
+      <Logout />
+    {:else}
+      <button
+        class="default-button second-level"
+        type={BUTTON_TYPES.BUTTON}
+        on:click={sendValidationMailHandler}
+        >Validierungs E-Mail nochmals senden</button
+      >
+    {/if}
+  </div>
 {:else}
   <slot />
 {/if}
@@ -94,7 +107,6 @@
     margin: 0;
   }
 
-  h3,
   ul {
     opacity: 0.5;
     font-size: 0.75rem;

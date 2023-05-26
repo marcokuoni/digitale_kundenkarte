@@ -62,40 +62,22 @@
             Benutzergruppen verwalten
           </SecuredNavLink>
 
-          <NavLink to={`/${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}>
-            Benutzer erstellen mit Passwort
-          </NavLink>
-
-          {#if $currentUser}
-
-            {#if checkAccessRights($currentUser, [USER_ROLES.ADMIN])}
-              <NavLink to={`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}>Anmelden mit Passwort</NavLink>
-            {/if}
-
-          {:else}
-            <NavLink to={`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}>Anmelden mit Passwort</NavLink>
-          {/if}
-
           <PasswordAlert />
           <NavLink to={`/${PATHS.SETTINGS}`}>Einstellungen</NavLink>
 
         {:else}
-
           <NavLink to={`/${PATHS.CREATE_USER}`}>Ich möchte eine Karte erstellen</NavLink>
 
-          {#if $currentUser}
-            <Logout />
-          {:else}
+          {#if !$currentUser}
             <NavLink to={`/${PATHS.LOGIN_USER}`}>Ich besitze bereits eine Karte (Anmelden)</NavLink>
           {/if}
 
         {/if}
-
+        {#if $currentUser}
+          <Logout />
+        {/if}
       </nav>
 
-      {#if $currentUser && hasMoreRights}
-        <Logout />
-      {/if}
 
     </EmailAlert>
 

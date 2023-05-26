@@ -13,7 +13,7 @@
 
     <slot />
 
-    <NavLink to={`/${PATHS.HOME}`}>Home</NavLink>
+    <NavLink to={`/${PATHS.HOME}`}>Zurück Startseite</NavLink>
     <Logout />
   </div>
 

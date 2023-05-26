@@ -58,104 +58,109 @@
 </script>
 
 <main>
-  <EmailAlert>
-    {#if !$currentUser}
-      <span>Kein Benutzer gefunden</span>
-      <Logout />
-    {:else}
-      <section class="default-section">
-        <div class="card-wrapper">
-          <Card {stamps} />
-        </div>
-      </section>
-
-      <section class="default-section">
-        <div class="info-wrapper">
-          {#if $currentUser && $currentUser.name}
-            <h4 class="info-label">Name</h4>
-            <p class="info-text">{$currentUser.name}</p>
-          {/if}
-
-          <h4 class="info-label">Dein Transfercode</h4>
-          {#if $currentUser}
-            <p class="info-text">{$currentUser.transfercode}</p>
-          {/if}
-
-          <div class="info-group">
-            <div>
-              <h4 class="info-label">Stempel</h4>
-              <p class="info-text">
-                {stampCount}<span class="stamps-secondary-text">/ 8</span>
-              </p>
+  <div class="default-section">
+    <div class="card-page-wrapper">
+      <EmailAlert>
+        {#if !$currentUser}
+          <span>Kein Benutzer gefunden</span>
+          <Logout />
+        {:else}
+          <section>
+            <div class="card-wrapper">
+              <Card {stamps} />
             </div>
+          </section>
 
-            <div>
-              <h4 class="info-label">Letzter</h4>
-              {#if timeSpanToLastStamp !== 0}
-                <p class="info-text">
-                  {timeSpanToLastStamp
-                    ? formatRelativeTimeS(timeSpanToLastStamp)
-                    : '-'}
-                </p>
+          <section>
+            <div class="info-wrapper">
+              {#if $currentUser && $currentUser.name}
+                <h4 class="info-label">Name</h4>
+                <p class="info-text">{$currentUser.name}</p>
+              {/if}
+
+              <h4 class="info-label">Dein Transfercode</h4>
+              {#if $currentUser}
+                <p class="info-text">{$currentUser.transfercode}</p>
+              {/if}
+
+              <div class="info-group">
+                <div>
+                  <h4 class="info-label">Stempel</h4>
+                  <p class="info-text">
+                    {stampCount}<span class="stamps-secondary-text">/ 8</span>
+                  </p>
+                </div>
+
+                <div>
+                  <h4 class="info-label">Letzter</h4>
+                  {#if timeSpanToLastStamp !== 0}
+                    <p class="info-text">
+                      {timeSpanToLastStamp
+                        ? formatRelativeTimeS(timeSpanToLastStamp)
+                        : '-'}
+                    </p>
+                  {/if}
+                </div>
+              </div>
+
+              {#if $currentUser.cards.length > 0}
+                <div class="info-group">
+                  <div>
+                    <h4 class="info-label">Einzulösende Karten</h4>
+                    <p class="info-text">
+                      {$currentUser.cards.filter(
+                        (card) =>
+                          !card.honouredAt &&
+                          card.stamps.length === stampsLength
+                      ).length}<span class="stamps-secondary-text"
+                        >/ {$currentUser.cards.length}</span
+                      >
+                    </p>
+                  </div>
+                </div>
               {/if}
             </div>
-          </div>
+          </section>
 
-          {#if $currentUser.cards.length > 0}
-            <div class="info-group">
-              <div>
-                <h4 class="info-label">Einzulösende Karten</h4>
-                <p class="info-text">
-                  {$currentUser.cards.filter(
-                    (card) =>
-                      !card.honouredAt && card.stamps.length === stampsLength
-                  ).length}<span class="stamps-secondary-text"
-                    >/ {$currentUser.cards.length}</span
+          <section class="footer">
+            <div>
+              {#if hasAFullCard}
+                <div>
+                  <HonourQrCode transfercode={$currentUser.transfercode} />
+                </div>
+              {:else}
+                <NoteForMailAddressTransfercode />
+              {/if}
+              <div class="second-row">
+                <div class="left">
+                  <a href={`/${PATHS.SETTINGS}`} target={TARGETS.SELF}
+                    >Einstellungen</a
                   >
-                </p>
+                  <Logout />
+                </div>
+                <div class="right">
+                  <a
+                    href={PROCESS_ENV.CROWN_BAR_URL}
+                    target={TARGETS.BLANK}
+                    rel={NOOPENER_NPREFERRER}>Website</a
+                  >
+                  <a
+                    href={PROCESS_ENV.CROWN_BAR_INSTA}
+                    target={TARGETS.BLANK}
+                    rel={NOOPENER_NPREFERRER}>Instagram</a
+                  >
+                </div>
               </div>
             </div>
-          {/if}
-        </div>
-      </section>
-
-      <section class="default-section footer">
-        <div class="default-wrapper">
-          {#if hasAFullCard}
-            <div>
-              <HonourQrCode transfercode={$currentUser.transfercode} />
-            </div>
-          {:else}
-            <NoteForMailAddressTransfercode />
-          {/if}
-          <div class="second-row">
-            <div class="left">
-              <a href={`/${PATHS.SETTINGS}`} target={TARGETS.SELF}
-                >Einstellungen</a
-              >
-              <Logout />
-            </div>
-            <div class="right">
-              <a
-                href={PROCESS_ENV.CROWN_BAR_URL}
-                target={TARGETS.BLANK}
-                rel={NOOPENER_NPREFERRER}>Website</a
-              >
-              <a
-                href={PROCESS_ENV.CROWN_BAR_INSTA}
-                target={TARGETS.BLANK}
-                rel={NOOPENER_NPREFERRER}>Instagram</a
-              >
-            </div>
-          </div>
-        </div>
-      </section>
-    {/if}
-  </EmailAlert>
+          </section>
+        {/if}
+      </EmailAlert>
+    </div>
+  </div>
 </main>
 
 <style>
-  main {
+  .card-page-wrapper {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -163,10 +168,8 @@
     min-height: calc(100vh - 40px);
   }
 
-  .card-wrapper,
-  .info-wrapper {
-    width: 80vw;
-    max-width: 400px;
+  .card-wrapper {
+    margin-bottom: 20px;
   }
 
   a {

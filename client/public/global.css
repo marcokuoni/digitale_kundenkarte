@@ -149,7 +149,7 @@ button.default-button {
   border-radius: 0;
 }
 
-.default-button.second-level a {
+.default-button.second-level a, .default-button.second-level {
   margin: 0;
 
   text-transform: uppercase;
