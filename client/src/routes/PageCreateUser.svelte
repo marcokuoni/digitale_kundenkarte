@@ -65,13 +65,7 @@
 
 <main class="default-section">
   <div class="default-wrapper">
-    <h1>
-      {#if withPassword !== ''}
-        Benutzer erstellen
-      {:else}
-        Karte erstellen
-      {/if}
-    </h1>
+    <h1>Karte erstellen</h1>
     <form on:submit|preventDefault={createUser}>
       <div class="input-wrapper">
         <label for={NAMES.NAME}>Name</label>
@@ -116,14 +110,21 @@
             value=""
           />
         </div>
+        <NavLink
+          classes={['second-level']}
+          to={`/${PATHS.CREATE_USER}`}
+          >Ohne Passwort</NavLink
+        >
+      {:else}
+        <NavLink
+          classes={['second-level']}
+          to={`/${PATHS.CREATE_USER}/${PATHS.WITH_PASSWORD}`}
+          >Mit Passwort</NavLink
+        >
       {/if}
 
       <button type={BUTTON_TYPES.SUBMIT} class="default-button">
-        {#if withPassword !== ''}
-          Benutzer erstellen
-        {:else}
-          Karte erstellen
-        {/if}
+        Karte erstellen
       </button>
     </form>
 

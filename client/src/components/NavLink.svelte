@@ -2,6 +2,7 @@
   import { Link } from 'svelte-routing';
 
   export let to = '';
+  export let classes = [];
 
   function getProps({ href, isPartiallyCurrent, isCurrent }) {
     const isActive = href === '/' ? isCurrent : isPartiallyCurrent || isCurrent;
@@ -14,7 +15,7 @@
   }
 </script>
 
-<div class="default-button">
+<div class="default-button {classes.join(' ')}">
   <Link {to} {getProps}>
     <slot />
   </Link>

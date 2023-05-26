@@ -137,6 +137,33 @@ button.default-button {
   padding: 12px 16px;
 }
 
+
+
+.default-button.second-level {
+  background-color: transparent;
+  text-align: right;
+
+  margin: 0;
+  padding: 0;
+
+  border-radius: 0;
+}
+
+.default-button.second-level a {
+  margin: 0;
+
+  text-transform: uppercase;
+  padding: 2px 4px;
+
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: var(--secondary-color);
+  background-color: transparent;
+
+  border: none;
+  text-decoration: none;
+}
+
 h1,
 h2 {
   font-family: 'Tiempos Fine', serif;

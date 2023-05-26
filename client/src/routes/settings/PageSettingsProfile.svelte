@@ -134,23 +134,23 @@
 
       {#if $currentUser?.userRoles && $currentUser.userRoles.length > 0}
         <PasswordAlert />
-
-        <div class="form-input-wrapper">
-          <label for={NAMES.PASSWORD}>
-            Passwort {$currentUser.passwordChangedAt
-              ? `(letzte Änderung am: ${new Date(
-                  $currentUser.passwordChangedAt
-                ).toLocaleString(DE_CH)})`
-              : ''}
-          </label>
-          <input
-            type={INPUT_TYPES.PASSWORD}
-            id={NAMES.PASSWORD}
-            name={NAMES.PASSWORD}
-            value={''}
-          />
-        </div>
       {/if}
+
+      <div class="form-input-wrapper">
+        <label for={NAMES.PASSWORD}>
+          Passwort {$currentUser.passwordChangedAt
+            ? `(letzte Änderung am: ${new Date(
+                $currentUser.passwordChangedAt
+              ).toLocaleString(DE_CH)})`
+            : ''}
+        </label>
+        <input
+          type={INPUT_TYPES.PASSWORD}
+          id={NAMES.PASSWORD}
+          name={NAMES.PASSWORD}
+          value={''}
+        />
+      </div>
 
       <button
         class="default-button form-submit-button"

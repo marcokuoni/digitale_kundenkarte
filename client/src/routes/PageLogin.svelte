@@ -74,13 +74,7 @@
 
 <main class="default-section">
   <div class="default-wrapper">
-    <h1>
-      {#if withPassword !== ''}
-        Anmelden
-      {:else}
-        Zur Karte
-      {/if}
-    </h1>
+    <h1>Zur Karte</h1>
 
     {#if localStorage.getItem(PROCESS_ENV.JWT_COOKIE_NAME)}
       <Logout />
@@ -113,14 +107,19 @@
               value=""
             />
           </div>
+          <NavLink classes={['second-level']} to={`/${PATHS.LOGIN_USER}`}
+            >Ohne Passwort</NavLink
+          >
+        {:else}
+          <NavLink
+            classes={['second-level']}
+            to={`/${PATHS.LOGIN_USER}/${PATHS.WITH_PASSWORD}`}
+            >Mit Passwort</NavLink
+          >
         {/if}
 
         <button type={BUTTON_TYPES.SUBMIT} class="default-button">
-          {#if withPassword !== ''}
-            Anmelden
-          {:else}
-            Zur Karte
-          {/if}
+          Zur Karte
         </button>
       </form>
 
