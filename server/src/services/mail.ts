@@ -80,9 +80,9 @@ const _getMailTemplate = (template: string, data?: MailTemplateData) => {
               
                 ${
                   data?.hasOldValidToken ?
-                  'Du hattest bereits eine Anfrage zum Rücksetzen deines Passworts gestellt. Falls nicht wechsle umbedingt auch das Passwort von deinem E-Mailkonto um sicher zu gehen, dass niemand anderes dein Passwort zurücksetzen kann.' : ''
-                }
-              
+                  `Du hattest bereits eine Anfrage zum Rücksetzen deines Passworts gestellt. Falls nicht wechsle umbedingt auch das Passwort von deinem E-Mailkonto um sicher zu gehen, dass niemand anderes dein Passwort zurücksetzen kann.
+                  ` : ''
+                }              
                 Um dein Passwort zurückzusetzen, klicke bitte auf folgenden Link:
                 ${process.env.CLIENT_URL}/${PATHS.RESET_PASSWORD}/${
           data?.resetToken
@@ -206,9 +206,9 @@ const _getMailTemplate = (template: string, data?: MailTemplateData) => {
                   data?.hasOldValidToken ?
                   `Du hattest bereits eine Anfrage zum Validieren deiner E-Mailadresse gestellt. Falls nicht wechsle umbedingt auch das Passwort von deinem Konto um sicher zu gehen, dass niemand anderes deine E-Mailadresse validieren wollte.
                   
-                  Passwort ändern: ${process.env.CLIENT_URL}/${PATHS.SETTINGS}/${PATHS.PROFILE}` : ''
+                  Passwort ändern: ${process.env.CLIENT_URL}/${PATHS.SETTINGS}/${PATHS.PROFILE}
+                  ` : ''
                 }
-
                 Bitte bestätige deine E-Mail Adresse in dem du auf folgenden Link klickst:
 
                 ${process.env.CLIENT_URL}/${PATHS.VERIFY_EMAIL}/${data?.validateToken}
