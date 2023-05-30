@@ -56,6 +56,7 @@ export const sendValidationMail = async (email: string) => {
     if (user.email) {
       await sendMailWithTemplate(user.email, MAIL_TEMPLATES.VERIFY_EMAIL, {
         name: user.name,
+        transfercode: user.transfercode,
         validateToken,
         hasOldValidToken,
       })
