@@ -1,8 +1,9 @@
 import App from './App.svelte'
+import { PROCESS_ENV } from './lib/const'
 import initPersistor from './services/apollo/persistor'
 ;(async () => {
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', async () => {
+  window.addEventListener('load', async () => {
+    if ('serviceWorker' in navigator) {
       const { Workbox } = await import('workbox-window')
 
       const wb = new Workbox('/sw.js')
@@ -28,10 +29,14 @@ import initPersistor from './services/apollo/persistor'
       })
 
       //NOTE deactivate local storage cache
-      wb.register()
+      wb.register().then((reg) => {
+        setInterval(function () {
+          reg.update()
+        }, parseInt(PROCESS_ENV.CLIENT_PING_INTERVAL || '5000'))
+      })
       // /NOTE deactivate local storage cache
-    })
-  }
+    }
+  })
 
   await initPersistor()
 
