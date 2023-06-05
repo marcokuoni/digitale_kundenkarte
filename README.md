@@ -8,6 +8,7 @@ do the hosts entry `sudo vi /etc/hosts`
 ```
 127.0.0.1 karte.localhost
 ```
+`npm install` on client and server
 
 ## Running
 mit drei Servern
