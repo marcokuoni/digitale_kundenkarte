@@ -6,8 +6,7 @@ Let's go
 do the hosts entry `sudo vi /etc/hosts`
 
 ```
-127.0.0.1 client.localhost
-127.0.0.1 server.localhost
+127.0.0.1 karte.localhost
 ```
 
 ## Running
